@@ -1,4 +1,4 @@
 
-Change from my development environment. For conflict
+Change from my development environment. From Github
 
 Change from Github
