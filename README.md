@@ -6,7 +6,7 @@ If you're like me, you have photos, videos and files you want to access and shar
 
 ### Design
 
-![Mock]()
+![Mock](mockup.png)
 
 ### Key features
 
