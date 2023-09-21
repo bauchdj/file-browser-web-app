@@ -22,6 +22,7 @@ May need api for file type icons + technical name _(.py is python, etc)_
 - Searching: Regular find, Regex
 - Trash: If file exists, create hidden file with filename + '-date-time' and put file inside that directory. Need system to handle duplicates.
 - Filemeta data: What info can I get on linux?
+- Drag and drop?
 
 ## Settings
 - Hidden files _(hide / show)_
