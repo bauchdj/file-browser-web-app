@@ -9,7 +9,7 @@ May need api for file type icons + technical name _(.py is python, etc)_
 - Show **options** bar when item(s) are selected.
 - Sidebar: Home (root directory), Shared, Trash, + Add Current Path _(organized by when added)_
 - Columns: Select boxes, Name, Modified, Creation, Size, Type _(make order rearrangeable)_
-- Details box: Icon, list of details _(Ex. Modified: 09/19/2023 at 9:53AM)_
+- Details box: Icon, list of details _(atime, mtime, ctime)_ _(Ex. Modified: 09/19/2023 at 9:53AM)_
 
 ## Drop down / pop up menus / options
 - Add New Button: New folder, Blank Text file, Upload Folder, Upload files, Link to file, Link to folder (downloads directly to server)
