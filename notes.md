@@ -1,6 +1,6 @@
 ### Current Ideas List
 
-May need api for file type icons + names of file type
+May need api for file type icons + technical name _(.py is python, etc)_
 
 ## HTML
 - Buttons: Account & Settings, Home, Log out, column sort button, on hover copy path.
@@ -11,7 +11,7 @@ May need api for file type icons + names of file type
 - Columns: Select boxes, Name, Modified, Creation, Size, Type _(make order rearrangeable)_
 - Details box: Icon, list of details _(Ex. Modified: 09/19/2023 at 9:53AM)_
 
-# Drop down / pop up menus / options
+## Drop down / pop up menus / options
 - Add New Button: New folder, Blank Text file, Upload Folder, Upload files, Link to file, Link to folder (downloads directly to server)
 - Folder & File options: Download, Rename, Trash, Delete, Create link _or_ Copy Link _(if link exists)_, Move to, Copy to, Symbolically link to, Details
 - Multi-selected options: Download, Move to, Copy to, Trash, Delete, Symbolically link to
