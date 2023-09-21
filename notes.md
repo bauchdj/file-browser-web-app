@@ -32,6 +32,7 @@ May need api for file type icons + technical name _(.py is python, etc)_
 - Manage sidebar locations. _(Rearrange the order too)_
 - Single click to select or open
 - 12hr or 24hr format
+- Use KB (1000 bytes) or KiB (1024 bytes) for file size
 
 ### GitHub Merging Conflicts
 This is the key to merging the conflicts after you select what to keep.
