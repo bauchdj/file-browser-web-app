@@ -29,6 +29,7 @@ May need api for file type icons + technical name _(.py is python, etc)_
 - Put Folders at the top despite sorting
 - Default sorting
 - Default column order, _(arrangemnet)_
+- Default column widths
 - Manage sidebar locations. _(Rearrange the order too)_
 - Single click to select or open
 - 12hr or 24hr format
