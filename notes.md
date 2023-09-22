@@ -40,3 +40,7 @@ This is the key to merging the conflicts after you select what to keep.
 ```
 git commit -am "merge(notes) combined both edits"
 ```
+
+### Caddy
+- Routes traffic from 443 to specified ports based on subdomain
+- Automatically creates domain certificates useing LetsEncrypt / certbot
