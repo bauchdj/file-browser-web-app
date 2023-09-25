@@ -44,3 +44,6 @@ git commit -am "merge(notes) combined both edits"
 ### Caddy
 - Routes traffic from 443 to specified ports based on subdomain
 - Automatically creates domain certificates useing LetsEncrypt / certbot
+
+### HTMl Structure
+- Wrapping elements in div, etc allow you to put elements in relative scope and placement on the page
