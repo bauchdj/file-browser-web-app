@@ -47,3 +47,12 @@ git commit -am "merge(notes) combined both edits"
 
 ### HTMl Structure
 - Wrapping elements in div, etc allow you to put elements in relative scope and placement on the page
+
+### HTML Input
+There are a lot of different input types. The checkbox will be very helpful for my file browser
+
+### HTML Media
+This was good practice since I will be loading raw files (photos, videos) in my file browser at some point.
+
+### Deploying
+The deploy script works great. Got simon.talkofchrist.org setup as well. The simon code is helpful because it splits it into 3 main chuncks header, body, footer.
