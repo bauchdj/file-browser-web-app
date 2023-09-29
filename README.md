@@ -30,7 +30,7 @@ If you're like me, you have photos, videos and files you want to access and shar
 
 # HTML deliverable
 
-- **HTML pages** - Two HTML pages. File browsing and login page. Shared files will still use index.html, however they will be limited to "Guest" permissions. The "Shared" button will take you to the root directory for guests. This will be handled by JavaScript.
+- **HTML pages** - Three HTML pages. File browsing (index.html), login, and about page. Shared files will still use index.html, however they will be limited to "Guest" permissions. The "Shared" button will take you to the root directory for guests. This will be handled by JavaScript.
 - **Links** - The login page automatically links to the root directory. Password requires at least one letter and one number.
 - **Text** - File metadata and details placeholders.
 - **Images** - Header icon. File type icons placeholders.
