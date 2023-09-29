@@ -58,9 +58,9 @@ This was good practice since I will be loading raw files (photos, videos) in my 
 The deploy script works great. Got simon.talkofchrist.org setup as well. The simon code is helpful because it splits it into 3 main chuncks header, body, footer.
 
 ### HTML Structure - Checkpoint #1
-- Add icon placeholder for each file
+- Add icon placeholder for each file DONE
 - Add websocket live update for users in same directory
-- Login page
+- Login page DONE
 - About page
-- Logout button
-- Username credentials stored in databased
+- Logout button DONE
+- Username credentials stored in databased DONE
