@@ -14,7 +14,7 @@
 			</b>
 			<nav>
 				<form action="/search" method="get">
-					<input type="text" id="searchInput" name="q" placeholder="Search...">
+					<input type="text" placeholder="Search...">
 					<button type="submit">Search</button>
 				</form>
 			</nav>
@@ -26,42 +26,49 @@
 			<div>Home</div>
 			<div>Shared</div>
 			<div>Trash</div>
+			<div>File count: 3</div>
 		</div>
 
 		<br />
 		<div>
-			<b>Path: /Photos/...</b>
+			<label>Path: </label>
+			<input type="text" value="/Photos/...">
+
 			<table>
 				<thead>
 					<tr>
-						<th><input type="checkbox" id="myCheckbox" name="myCheckbox" value="checkbox_value"></th>
+						<td><input type="checkbox"></td>
 						<th>File Name</th>
 						<th>Date Modified</th>
 						<th>Date Created</th>
 						<th>Size (bytes)</th>
+						<th>Type</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td><input type="checkbox" id="myCheckbox" name="myCheckbox" value="checkbox_value"></td>
+						<td><input type="checkbox"></td>
 						<td>example_file1.txt</td>
 						<td>2023-09-25 14:30:00</td>
 						<td>2023-09-20 10:15:00</td>
 						<td>1024</td>
+						<td>Text file</td>
 					</tr>
 					<tr>
-						<td><input type="checkbox" id="myCheckbox" name="myCheckbox" value="checkbox_value"></td>
+						<td><input type="checkbox"></td>
 						<td>example_file2.jpg</td>
 						<td>2023-09-26 09:45:00</td>
 						<td>2023-09-18 14:20:00</td>
 						<td>2048</td>
+						<td>JPG image</td>
 					</tr>
 					<tr>
-						<td><input type="checkbox" id="myCheckbox" name="myCheckbox" value="checkbox_value"></td>
+						<td><input type="checkbox"></td>
 						<td>example_file3.pdf</td>
 						<td>2023-09-27 16:00:00</td>
 						<td>2023-09-19 11:30:00</td>
 						<td>3072</td>
+						<td>PDF file</td>
 					</tr>
 				</tbody>
 			</table>
