@@ -9,72 +9,45 @@
 	<body>
 		<header>
 			<h2>
-				<div>Users & Settings</div>
-				<div>Username</div>
+				<span>Users & Settings</span>
+				<span> | </span>
+				<span>Username</span>
 			</h2>
 		</header>
+		<div>
+			<table>
+				<thead>
+					<tr>
+						<th>File Name</th>
+						<th>Date Modified</th>
+						<th>Date Created</th>
+						<th>Size (bytes)</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>example_file1.txt</td>
+						<td>2023-09-25 14:30:00</td>
+						<td>2023-09-20 10:15:00</td>
+						<td>1024</td>
+					</tr>
+					<tr>
+						<td>example_file2.jpg</td>
+						<td>2023-09-26 09:45:00</td>
+						<td>2023-09-18 14:20:00</td>
+						<td>2048</td>
+					</tr>
+					<tr>
+						<td>example_file3.pdf</td>
+						<td>2023-09-27 16:00:00</td>
+						<td>2023-09-19 11:30:00</td>
+						<td>3072</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
-		<table>
-			<thead>
-				<tr>
-					<th>File Name</th>
-					<th>Date Modified</th>
-					<th>Date Created</th>
-					<th>Size (bytes)</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>example_file1.txt</td>
-					<td>2023-09-25 14:30:00</td>
-					<td>2023-09-20 10:15:00</td>
-					<td>1024</td>
-				</tr>
-				<tr>
-					<td>example_file2.jpg</td>
-					<td>2023-09-26 09:45:00</td>
-					<td>2023-09-18 14:20:00</td>
-					<td>2048</td>
-				</tr>
-				<tr>
-					<td>example_file3.pdf</td>
-					<td>2023-09-27 16:00:00</td>
-					<td>2023-09-19 11:30:00</td>
-					<td>3072</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<h3>
-			<div>
-				<span>Add New +</span>
-				<span>Path: /</span>
-			</div>
-			<span>
-				<span>Add New +</span>
-				<span>Path: /</span>
-			</span>
-		</h3>
-		<main>
-			<ul class="file-list">
-				<li>
-					<a href="/" class="file-columns">
-						<div>Test 1</div>
-						<div>302 bytes</div>
-						<div>2020-09-22 03:53:12</div>
-						<div>2020-08-22 00:00:00</div>
-					</a>
-				</li>
-				<li class="file-columns">
-					<a href="/" class="file-columns">
-						<div>Test 2</div>
-						<div>302 bytes</div>
-						<div>2020-09-22 03:53:12</div>
-						<div>2020-08-22 00:00:00</div>
-					</a>
-				</li>
-			</ul>
-		</main>
+		<br />
 		<footer>
 			<div>Author Name(s)</div>
 			<a href="https://github.com/bauchdj/startup-file-browser-web-app/">GitHub</a>
