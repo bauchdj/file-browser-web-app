@@ -7,18 +7,16 @@
 	</head>
 	<body>
 		<header>
-			<img src="file-browser-icon.png" />
+			<img style="width:2.5rem" src="file-browser-icon.png" />
 			<b>
 				<span>Users & Settings</span>
 				<span>|</span>
 				<span>Username (retrieved from database after login)</span>
 			</b>
-			<nav>
-				<form action="/search" method="get">
-					<input type="text" placeholder="Search...">
-					<button type="submit">Search</button>
-				</form>
-			</nav>
+			<form action="/search" method="get">
+				<input type="text" placeholder="Search...">
+				<button type="submit">Search</button>
+			</form>
 		</header>
 		<br />
 
@@ -36,6 +34,11 @@
 			</div>
 			<div>
 				<button>Trash</button>
+			</div>
+			<div>
+				<a href="about.html">
+					<button>About page</button>
+				</a>
 			</div>
 			<div>
 				<a href="login.html">
