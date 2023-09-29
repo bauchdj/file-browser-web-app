@@ -10,8 +10,8 @@
 			<img src="file-browser-icon.png" />
 			<b>
 				<span>Users & Settings</span>
-				<span> | </span>
-				<span>Username</span>
+				<span>|</span>
+				<span>Username (retrieved from database after login)</span>
 			</b>
 			<nav>
 				<form action="/search" method="get">
@@ -32,12 +32,15 @@
 				</a>
 			</div>
 			<div>
-				<a href="shared.html">
-					<button>Shared</button>
-				</a>
+				<button>Shared</button>
 			</div>
 			<div>
 				<button>Trash</button>
+			</div>
+			<div>
+				<a href="login.html">
+					<button>Log out</button>
+				</a>
 			</div>
 			<div>File count: 3</div>
 		</div>
@@ -51,6 +54,7 @@
 				<thead>
 					<tr>
 						<td><input type="checkbox"></td>
+						<th>Icon</th>
 						<th>File Name</th>
 						<th>Date Modified</th>
 						<th>Date Created</th>
@@ -61,6 +65,7 @@
 				<tbody>
 					<tr>
 						<td><input type="checkbox"></td>
+						<td><img style="width:2.5em" src="file-browser-icon.png" /></td>
 						<td>example_file1.txt</td>
 						<td>2023-09-25 14:30:00</td>
 						<td>2023-09-20 10:15:00</td>
@@ -69,6 +74,7 @@
 					</tr>
 					<tr>
 						<td><input type="checkbox"></td>
+						<td><img style="width:2.5em" src="file-browser-icon.png" /></td>
 						<td>example_file2.jpg</td>
 						<td>2023-09-26 09:45:00</td>
 						<td>2023-09-18 14:20:00</td>
@@ -77,6 +83,7 @@
 					</tr>
 					<tr>
 						<td><input type="checkbox"></td>
+						<td><img style="width:2.5em" src="file-browser-icon.png" /></td>
 						<td>example_file3.pdf</td>
 						<td>2023-09-27 16:00:00</td>
 						<td>2023-09-19 11:30:00</td>
