@@ -64,4 +64,3 @@ The deploy script works great. Got simon.talkofchrist.org setup as well. The sim
 - About page
 - Logout button
 - Username credentials stored in databased
-- Add icon image to top left
