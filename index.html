@@ -7,19 +7,19 @@
 	</head>
 	<body>
 		<header>
-			<h2>
+			<b>
 				<span>Users & Settings</span>
 				<span> | </span>
 				<span>Username</span>
-			</h2>
+			</b>
+			<nav>
+				<form action="/search" method="get">
+					<input type="text" id="searchInput" name="q" placeholder="Search...">
+					<button type="submit">Search</button>
+				</form>
+			</nav>
 		</header>
-
-		<nav>
-			<form action="/search" method="get">
-				<input type="text" id="searchInput" name="q" placeholder="Search...">
-				<button type="submit">Search</button>
-			</form>
-		</nav>
+		<br />
 
 		<div>
 			<div>Add New +</div>
