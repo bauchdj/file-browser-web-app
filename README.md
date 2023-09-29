@@ -12,36 +12,36 @@ If you're like me, you have photos, videos and files you want to access and shar
 
 - Secure login over HTTPS
 - Mobile and Desktop friend design.
-- Ability to select multiple files and make custom shared collections.
-- Download multiple files as zip or without zip.
+- Ability to select multiple files and make custom shared collections available to guests.
+- Download multiple files as zip file or separate, singular, files back to back.
 - Regular and Regex file search.
 - File system management built on Nodejs.
 
 ### Technologies
 
-- **HTML** - Simple, clean HTML structure for home page and sharing page.
+- **HTML** - Simple, clean HTML structure for home page and login page.
 - **CSS** - Application styling that looks good on different screen sizes, color scheme, vivid and intuitive buttons.
 - **JavaScript** - Provides login, window resizing, Nodejs file management, dynamic file column sorting.
-- **Service** - Uses api to get icon based on file type.
+- **Service** - Uses api to get icon and name based on file extension.
 - **DB** - Store users credentials.
 - **Login** - Register and login users. Credentials securely stored in database. Only users can access file directory and secured file collections.
-- **WebSocket** - Anyone viewing a shared collection is shown **live** in viewer box.
+- **WebSocket** - Every directory will show a **live** list of viewers.
 - **React** - Application ported to use the React web framework.
 
 # HTML deliverable
 
-- **HTML pages** - Two HTML pages. File browsing and shared file collection.
+- **HTML pages** - Two HTML pages. File browsing and login page. Shared files will still use default homepage, the user will just be labeled as "Guest".
 - **Links** - The login page automatically links to the root folder of you files directory.
 - **Text** - File metadata and details.
-- **Images** - File type icons.
+- **Images** - Header icon. File type icons.
 - **Login** - Input box and submit button for login.
 - **Database** - Users credentials.
-- **WebSocket** - In shared file collections a **live viewers** list will constantly be updated so you can see anyone else looking at the same files.
+- **WebSocket** - Box that shows all **viewers live** in that currenty directory (same file path).
 
 # CSS deliverable
 
-- **Header, footer, and main content body**
-- **Navigation elements** - I dropped the underlines and changed the color for anchor elements.
+- **Header, footer, and main content body** - 
+- **Navigation elements** - 
 - **Responsive to window resizing** - My app looks great on all window sizes and devices
 - **Application elements** - Used good contrast and whitespace
 - **Application text content** - Consistent fonts
@@ -49,18 +49,18 @@ If you're like me, you have photos, videos and files you want to access and shar
 
 # JavaScript deliverable
 
-- **login** - When you press enter or the login button it takes you to the voting page.
-- **database** - Displayed the voting counts. Currently this is stored and retrieved from local storage, but it will be replaced with the database data later.
-- **WebSocket** - I used the setInterval function to periodically increase a random vote count. This will be replaced with WebSocket messages later.
-- **application logic** - The highlight and ranking number change based up the user's selections.
+- **login** - When you press enter or the login button it takes you to your root folder.
+- **database** - 
+- **WebSocket** - 
+- **application logic** -
 
 # Service deliverable
 
 - **Node.js/Express HTTP service** - 
 - **Static middleware for frontend** - 
 - **Calls to third party endpoints** - Serve up icon based on file type.
-- **Backend service endpoints** - Placeholders for login that stores the current user on the server. Endpoints for voting.
-- **Frontend calls service endpoints** - I did this using the fetch function.
+- **Backend service endpoints** - 
+- **Frontend calls service endpoints** - 
 
 ## DB deliverable
 
