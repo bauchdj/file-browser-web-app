@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>File Browser</title>
+	</head>
+	<body>
+		<header>
+			<img src="file-browser-icon.png" />
+			<b>
+				<span>Login page</span>
+			</b>
+		</header>
+		<br />
+
+		<div>
+			<form action="index.html" method="get">
+				<fieldset>
+					<legend>Username</legend>
+					<input type="text" placeholder="Username" required>
+				</fieldset>
+
+				<fieldset>
+					<legend>Password</legend>
+					<input type="password" placeholder="Password" required pattern="^(?=.*[a-zA-Z])(?=.*\d).+$">
+					<label for="password">Must contain at least one letter and one number</label>
+				</fieldset>
+
+				<button type="submit">Log In</button>
+			</form>
+		</div>
+
+		<br />
+		<footer>
+			<div>David Bauch</div>
+			<a href="https://github.com/bauchdj/startup-file-browser-web-app/">GitHub</a>
+		</footer>
+	</body>
+</html>
