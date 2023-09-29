@@ -30,13 +30,13 @@ If you're like me, you have photos, videos and files you want to access and shar
 
 # HTML deliverable
 
-- **HTML pages** - Two HTML pages. File browsing and login page. Shared files will still use default homepage, the user will just be labeled as "Guest".
-- **Links** - The login page automatically links to the root folder of you files directory.
-- **Text** - File metadata and details.
-- **Images** - Header icon. File type icons.
+- **HTML pages** - Two HTML pages. File browsing and login page. Shared files will still use index.html, however they will be limited to "Guest" permissions.
+- **Links** - The login page automatically links to the root directory.
+- **Text** - File metadata and details placeholders.
+- **Images** - Header icon. File type icons placeholders.
 - **Login** - Input box and submit button for login.
 - **Database** - Users credentials.
-- **WebSocket** - Box that shows all **viewers live** in that currenty directory (same file path).
+- **WebSocket** - Box that shows all **viewers live** in that currenty directory (viewers with same directory path).
 
 # CSS deliverable
 
