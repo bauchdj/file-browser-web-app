@@ -14,7 +14,7 @@
 				<span>Username (retrieved from database after login)</span>
 			</b>
 			<form action="/search" method="get">
-				<input name="search" type="text" placeholder="Search...">
+				<input type="text" name="search" placeholder="Search...">
 				<button type="submit">Search</button>
 			</form>
 		</header>
@@ -51,12 +51,12 @@
 		<br />
 		<div>
 			<label>Path: </label>
-			<input name="path" type="text" value="/Photos/...">
+			<input type="text" name="path" value="/Photos/...">
 
 			<table>
 				<thead>
 					<tr>
-						<td><input name="select-all" type="checkbox"></td>
+						<td><input type="checkbox" name="select-all"></td>
 						<th>Icon</th>
 						<th>File Name</th>
 						<th>Date Modified</th>
