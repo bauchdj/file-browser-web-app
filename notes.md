@@ -23,6 +23,7 @@ May need api for file type icons + technical name _(.py is python, etc)_
 - Trash: If file exists, create hidden file with filename + '-date-time' and put file inside that directory. Need system to handle duplicates.
 - Filemeta data: What info can I get on linux?
 - Drag and drop?
+- Websocket: Have box that displays live connection to server. Guarantees upload and connection = confidence in file management in the browser.
 
 ## Settings
 - Hidden files _(hide / show)_
