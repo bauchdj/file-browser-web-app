@@ -581,6 +581,87 @@ As part of the installation of Caddy we created two links in the Ubuntu user's h
 
   Therefore, according to this configuration, whenever Caddy receives an HTTP request for any domain name on port 80 it will use the path of the request to find a corresponding file in this directory. For example, a request for `http://yourdomainname/index.html` will look for a file named `index.html` in the `public_html` directory.
 
+# Hypertext Markup Language
+
+## Common elements
+
+Modern HTML contains over 100 different elements. Here is a short list of HTML elements that you will commonly see.
+
+| element   | meaning                                                                |
+| --------- | ---------------------------------------------------------------------- |
+| `html`    | The page container                                                     |
+| `head`    | Header information                                                     |
+| `title`   | Title of the page                                                      |
+| `meta`    | Metadata for the page such as character set or viewport settings       |
+| `script`  | JavaScript reference. Either a external reference, or inline           |
+| `include` | External content reference                                             |
+| `body`    | The entire content body of the page                                    |
+| `header`  | Header of the main content                                             |
+| `footer`  | Footer of the main content                                             |
+| `nav`     | Navigational inputs                                                    |
+| `main`    | Main content of the page                                               |
+| `section` | A section of the main content                                          |
+| `aside`   | Aside content from the main content                                    |
+| `div`     | A block division of content                                            |
+| `span`    | An inline span of content                                              |
+| `h<1-9>`  | Text heading. From h1, the highest level, down to h9, the lowest level |
+| `p`       | A paragraph of text                                                    |
+| `b`       | Bring attention                                                        |
+| `table`   | Table                                                                  |
+| `tr`      | Table row                                                              |
+| `th`      | Table header                                                           |
+| `td`      | Table data                                                             |
+| `ol,ul`   | Ordered or unordered list                                              |
+| `li`      | List item                                                              |
+| `a`       | Anchor the text to a hyperlink                                         |
+| `img`     | Graphical image reference                                              |
+| `dialog`  | Interactive component such as a confirmation                           |
+| `form`    | A collection of user input                                             |
+| `input`   | User input field                                                       |
+| `audio`   | Audio content                                                          |
+| `video`   | Video content                                                          |
+| `svg`     | Scalable vector graphic content                                        |
+| `iframe`  | Inline frame of another HTML page                                      |
+
+## Comments
+
+You can include comments in your HTML files by starting the comment with `<!--` and ending it with `-->`. Any text withing a comment block will be completely ignored when the browser renders it.
+
+```html
+<!-- commented text -->
+```
+
+## Special characters
+
+HTML uses several reserved characters for defining its file format. If you want to use those characters in your content then you need to escape them using the `entity` syntax. For example, to display a less than symbol (`<`) you would instead use the less than entity (`&lt;`). You can also use the entity syntax to represent any unicode character.
+
+| Character | Entity      |
+| --------- | ----------- |
+| &amp;     | `&amp;`     |
+| <         | `&lt;`      |
+| >         | `&gt;`      |
+| "         | `&quot;`    |
+| '         | `&apos;`    |
+| &#128512; | `&#128512;` |
+
+## HTML Versions
+
+Understanding when different HTML features were introduced helps you know what has been around for a long time and probably supported by all browsers, and what is new and may not work everywhere. HTML is pretty stable, but it is still good to check a website like [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p#browser_compatibility) or [canIUse](https://caniuse.com/mdn-html_elements_p) to make sure.
+
+| Year | Version | Features                                  |
+| ---- | ------- | ----------------------------------------- |
+| 1990 | HTML1   | format tags                               |
+| 1995 | HTML2   | tables, internationalization              |
+| 1997 | HTML3   | MathML, CSS, frame tags                   |
+| 1999 | HTML4   | external CSS                              |
+| 2014 | HTML5   | email, password, media, and semantic tags |
+
+## index.html
+
+By default a web server will display the HTML file named `index.html` when a web browser, such as Google Chrome, makes a request without asking for a specific HTML file. For example, when you ask for `https://google.com` in your web browser you will actually get back the HTML for the file `https://google.com/index.html`. For this reason, it is very common to name the main HTML file for your web application `index.html`.
+
+
+
 
 ### Caddy
 - Routes traffic from 443 to specified ports based on subdomain
