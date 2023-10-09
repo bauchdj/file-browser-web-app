@@ -25,7 +25,7 @@ If you're like me, you have photos, videos and files you want to access and shar
 - **Service** - Uses api to get icon and name based on file extension.
 - **DB** - Store users credentials.
 - **Login** - Register and login users. Credentials securely stored in database. Only users can access file directory and secured file collections.
-- **WebSocket** - Every directory will show a **live** list of viewers.
+- **WebSocket** - Nice connection status between you and the server
 - **React** - Application ported to use the React web framework.
 
 # HTML deliverable
@@ -36,7 +36,7 @@ If you're like me, you have photos, videos and files you want to access and shar
 - **Images** - Header icon. File type icons placeholders.
 - **Login** - Input box and submit button for login.
 - **Database** - Users credentials used at login, and username displayed in header after login.
-- **WebSocket** - Box that shows all **viewers live** in that currenty directory (viewers with same directory path).
+- **WebSocket** - Status of connection. Connected or Not connected.
 
 # CSS deliverable
 
