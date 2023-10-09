@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,10 +8,14 @@
 	</head>
 	<body>
 		<header>
-			<img style="width:2.5rem" src="file-browser-icon.png" />
-			<b>
-				<span>Login page</span>
-			</b>
+			<nav class="navbar bg-body-tertiary">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="#">
+						<img style="width:2.5rem" src="file-browser-icon.png" />
+						Login
+					</a>
+				</div>
+			</nav>
 		</header>
 		<br />
 
@@ -21,7 +25,6 @@
 					<legend>Username</legend>
 					<input type="text" name="username" placeholder="Username" required>
 				</fieldset>
-
 				<fieldset>
 					<legend>Password</legend>
 					<input type="password" name="password" placeholder="Password" required pattern="^(?=.*[a-zA-Z])(?=.*\d).+$">
