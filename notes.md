@@ -712,6 +712,28 @@ You should also have validation built into your JavaScript that checks input dat
 
 The HTML elements that represent media include `img`, `audio`, `video`, `svg`, and `canvas`. The `img`, `audio`, and `video` elements are all simple references to an external file, but `svg` and `canvas` both contain the code to render a visual image that can even be animated.
 
+## The box model
+
+CSS defines everything as boxes. When you apply styles, you are applying them to a region of the display that is a rectangular box. Within an element's box there are several internal boxes. The innermost box holds the element's content. This is where things like the text or image of an element is displayed. Next comes the padding. The padding will inherit things like the background color. After padding is the border, which has properties like color, thickness and line style. The final box is the margin. The margin is considered external to the actual styling of the box and therefore only represents whitespace. It is important to understand each of these boxes so that you can achieve the desired visual result by applying the proper CSS declaration.
+
+![CSS box model](cssBoxModel.jpg)
+
+By default, the width and height of an element is defined by the width and height of the content box. You can change the `box-sizing` CSS property from the default value of `content-box` to `border-box` in order to redefine the width and height to also include the padding and the border. This often makes it easier to style elements when their visual size matches their actual size.
+
+## CSS Versions
+
+As with HTML, CSS has evolved significantly over the years. The following version table gives you an idea of when certain features were added and therefore how stable the support for them are.
+
+| Year      | Version | Features                                                                                   |
+| --------- | ------- | ------------------------------------------------------------------------------------------ |
+| 1996      | CSS1    | selectors, font, color, background, alignment, margin, border, padding                     |
+| 1998      | CSS2    | positioning, z-index, bidirectional text, shadows                                          |
+| 2011      | CSS2.1  | removed incompatible features                                                              |
+| 1999-2021 | CSS3    | enhancements for media, box, background, borders, color, template, multi-column, selectors |
+
+Beginning with CSS3 the specification was divided into modules so that they could be implemented at different levels of maturity. Whether these modules will culminate in a CSS4 specification has not yet been decided.
+
+
 
 ### Caddy
 - Routes traffic from 443 to specified ports based on subdomain
