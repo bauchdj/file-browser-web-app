@@ -17,25 +17,18 @@
 				</div>
 			</nav>
 		</header>
-		<br />
-
-		<div>
+		<div style="display: flex; justify-content: center; align-items: center;">
 			<form action="home.html" method="get">
-				<fieldset>
-					<legend>Username</legend>
-					<input type="text" name="username" placeholder="Username" required>
-				</fieldset>
-				<fieldset>
-					<legend>Password</legend>
-					<input type="password" name="password" placeholder="Password" required pattern="^(?=.*[a-zA-Z])(?=.*\d).+$">
-					<label for="password">Must contain at least one letter and one number</label>
-				</fieldset>
-
-				<button type="submit">Log In</button>
+				<div class="mb-3">
+					<input type="text" class="form-control" name="username" placeholder="Username" required>
+				</div>
+				<div class="mb-3">
+					<input type="password" class="form-control" name="password" placeholder="Password" required pattern="^(?=.*[a-zA-Z])(?=.*\d).+$">
+					<div id="passwordHelp" class="form-text">Must contain at least one letter and one number</div>
+				</div>
+				<button type="submit" class="btn btn-primary">Login</button>
 			</form>
 		</div>
-
-		<br />
 		<footer>
 			<div>David Bauch</div>
 			<a href="https://github.com/bauchdj/startup-file-browser-web-app/">GitHub</a>
