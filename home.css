@@ -19,7 +19,14 @@ footer {
 	padding: 0.5rem;
 }
 
-body > div {
+.dropdown {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	align-content: center;
+}
+
+body ~ div {
 	flex: auto;
 	margin: 1rem;
 	display: flex;
