@@ -712,6 +712,8 @@ You should also have validation built into your JavaScript that checks input dat
 
 The HTML elements that represent media include `img`, `audio`, `video`, `svg`, and `canvas`. The `img`, `audio`, and `video` elements are all simple references to an external file, but `svg` and `canvas` both contain the code to render a visual image that can even be animated.
 
+# CSS Introduction
+
 ## The box model
 
 CSS defines everything as boxes. When you apply styles, you are applying them to a region of the display that is a rectangular box. Within an element's box there are several internal boxes. The innermost box holds the element's content. This is where things like the text or image of an element is displayed. Next comes the padding. The padding will inherit things like the background color. After padding is the border, which has properties like color, thickness and line style. The final box is the margin. The margin is considered external to the actual styling of the box and therefore only represents whitespace. It is important to understand each of these boxes so that you can achieve the desired visual result by applying the proper CSS declaration.
@@ -733,6 +735,72 @@ As with HTML, CSS has evolved significantly over the years. The following versio
 
 Beginning with CSS3 the specification was divided into modules so that they could be implemented at different levels of maturity. Whether these modules will culminate in a CSS4 specification has not yet been decided.
 
+# CSS Selectors
+
+## Combinators
+
+Next we want to change the color of the second level headings (`h2`), but we only want to do that within the sections for each department. To make that happen we can provide a `descendant combinator` that is defined with a space delimited list of values where each item in the list is a descendant of the previous item. So our selector would be all `h2` elements that are descendants of `section` elements.
+
+There are other types of combinators that you can use. These include the following.
+
+| Combinator       | Meaning                    | Example        | Description                                |
+| ---------------- | -------------------------- | -------------- | ------------------------------------------ |
+| Descendant       | A list of descendants      | `body section` | Any section that is a descendant of a body |
+| Child            | A list of direct children  | `section > p`  | Any p that is a direct child of a section  |
+| General sibling  | A list of siblings         | `p ~ div`      | Any p that has a div sibling               |
+| Adjacent sibling | A list of adjacent sibling | `p + div`      | Any p that has an adjacent div sibling     |
+
+## Class selector
+
+The next selector we will use is the class selector. Remember that any element can have zero or more classifications applied to it. For example, our document has a class of `introduction` applied to the first paragraph, and a class of `summary` applied to the final paragraph of each section.
+
+```css
+.summary {
+  font-weight: bold;
+}
+```
+
+You can also combine the element name and class selectors to select all paragraphs with a class of summary.
+
+```css
+p.summary {
+  font-weight: bold;
+}
+```
+
+## ID selector
+
+ID selectors reference the ID of an element. All IDs should be unique within an HTML document and so this select targets a specific element. To use the ID selector you prefix the ID with the hash symbol (`#`).
+
+```css
+#physics {
+  border-left: solid 1em purple;
+}
+```
+
+## Attribute selector
+
+Attribute selectors allow you to select elements based upon their attributes. You use an attribute selector to select any element with a given attribute (`a[href]`). You can also specify a required value for an attribute (`a[href="./fish.png"]`) in order for the selector to match. Attribute selectors also support wildcards such as the ability to select attribute values containing specific text (`p[href*="https://"]).
+
+```css
+p[class='summary'] {
+  color: red;
+}
+```
+
+For a full description of attribute selections refer to [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors).
+
+## Pseudo selector
+
+CSS also defines a significant list of pseudo selectors which select based on positional relationships, mouse interactions, hyperlink visitation states, and attributes.
+
+```css
+section:hover {
+  border-left: solid 1em purple;
+}
+```
+
+You can find out more about pseudo selectors on [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes).
 
 
 ### Caddy
