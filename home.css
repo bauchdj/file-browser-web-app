@@ -20,14 +20,14 @@ footer {
 
 .dropdown {
 	display: flex;
-	justify-content: center;
+	justify-content: left;
 	flex-wrap: wrap;
 	align-content: center;
 }
 
 body > div {
 	flex: auto;
-	margin: 0.7rem;
+	margin: 0.4rem;
 	display: flex;
 }
 
@@ -35,14 +35,20 @@ body > div {
 .files {
 	display: flex;
 	flex-direction: column;
-	margin: 0.3rem;
+	margin: 0.2rem;
+}
+
+.files {
+	width: -webkit-fill-available;
+	overflow: auto;
 }
 
 .btn {
 	padding: 0.25rem;
-	/* transition: 2s; */
+	text-align: left;
 }
 
-.btn:hover {
+.btn:not(.btn-success, .btn-danger):hover {
 	color: #6ea8fe;
 }
+
