@@ -43,9 +43,24 @@ body > div {
 	overflow: auto;
 }
 
+.file-options {
+	display: flex;
+	flex-direction: inline;
+}
+
+.file-options > div:nth-child(1) {
+	flex: 1;
+	padding: 0 0.2rem 0 0;
+}
+
+th, td {
+	white-space: nowrap;
+}
+
 .btn {
 	padding: 0.25rem;
 	text-align: left;
+	white-space: nowrap;
 }
 
 .btn:not(.btn-success, .btn-danger):hover {
