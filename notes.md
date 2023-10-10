@@ -2,6 +2,13 @@
 
 May need api for file type icons + technical name _(.py is python, etc)_
 
+## CSS
+- All checked boxes show selected row (light gray theme)
+- Mobile friendly side bar
+- Add icons to side bar
+- Have path on top of drop downs on mobile
+- Full screen mode
+
 ## HTML
 - Buttons: Account & Settings, Home, Log out, column sort button, on hover copy path.
 - Text: Path bar at top, File + Directory count at top, Storage used, Columns by file name + date modified + date created (if possible) + size.
