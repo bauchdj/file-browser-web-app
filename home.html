@@ -16,19 +16,10 @@
 					<div class="d-inline-flex">
 						<a class="navbar-brand" href="#">
 							<img src="file-browser-icon.png" />
-							Username
 						</a>
-						<div class="dropdown">
-							<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								Dropdown
-							</a>
-							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="#">Action</a></li>
-								<li><a class="dropdown-item" href="#">Another action</a></li>
-								<li><hr class="dropdown-divider"></li>
-								<li><a class="dropdown-item" href="#">Something else here</a></li>
-							</ul>
-						</div>
+						<a class="navbar-brand" href="#">
+							<span id=user>Username</span>
+						</a>
 					</div>
 					<form class="d-flex" role="search">
 						<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -36,101 +27,94 @@
 					</form>
 				</div>
 			</nav>
-			<nav class="navbar navbar-expand-lg bg-body-tertiary">
-				<div class="container-fluid">
-					<a class="navbar-brand" href="#">Navbar</a>
-					<div class="collapse navbar-collapse" id="navbarSupportedContent">
-						<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-							<li class="nav-item">
-								<a class="nav-link active" aria-current="page" href="#">Home</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">Link</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link disabled" aria-disabled="true">Disabled</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</nav>
 		</header>
 		<div>
-			<div>
-				<b>WebSocket Status</b>
+			<div class="menu">
+				<div>
+					<button class="btn btn-success" onclick="this.classList.toggle('btn-success');this.classList.toggle('btn-danger');this.textContent==='Connected'?this.textContent='Disconnected':this.textContent='Connected';">Connected</button>
+				</div>
+					<div class="dropdown">
+						<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							Add New +
+						</button>
+						<ul class="dropdown-menu">
+							<li><a class="dropdown-item" href="#">Action</a></li>
+							<li><a class="dropdown-item" href="#">Another action</a></li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="#">Something else here</a></li>
+						</ul>
+					</div>
+				<div>
+					<a href="home.html">
+						<button class="btn">Home</button>
+					</a>
+				</div>
+				<div>
+					<button class="btn">Shared</button>
+				</div>
+				<div>
+					<button class="btn">Trash</button>
+				</div>
+				<div>
+					<a href="about.html">
+						<button class="btn">About page</button>
+					</a>
+				</div>
+				<div>
+					<a href="index.html">
+						<button class="btn">Log out</button>
+					</a>
+				</div>
+				<div class="btn">File count: 3</div>
 			</div>
-			<div>
-				<button>Add New +</button>
+			<div class="files">
+				<div>
+					<label>Path: </label>
+					<input type="text" name="path" value="Ex: /Photos/...">
+				</div>
+				<table>
+					<thead>
+						<tr>
+							<td><input type="checkbox" name="select-all"></td>
+							<th>Icon</th>
+							<th>File Name</th>
+							<th>Date Modified</th>
+							<th>Date Created</th>
+							<th>Size (bytes)</th>
+							<th>Type</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><input type="checkbox"></td>
+							<td><img style="width:2.5em" src="file-browser-icon.png" /></td>
+							<td>example_file1.txt</td>
+							<td>2023-09-25 14:30:00</td>
+							<td>2023-09-20 10:15:00</td>
+							<td>1024</td>
+							<td>Text file</td>
+						</tr>
+						<tr>
+							<td><input type="checkbox"></td>
+							<td><img style="width:2.5em" src="file-browser-icon.png" /></td>
+							<td>example_file2.jpg</td>
+							<td>2023-09-26 09:45:00</td>
+							<td>2023-09-18 14:20:00</td>
+							<td>2048</td>
+							<td>JPG image</td>
+						</tr>
+						<tr>
+							<td><input type="checkbox"></td>
+							<td><img style="width:2.5em" src="file-browser-icon.png" /></td>
+							<td>example_file3.pdf</td>
+							<td>2023-09-27 16:00:00</td>
+							<td>2023-09-19 11:30:00</td>
+							<td>3072</td>
+							<td>PDF file</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
-			<div>
-				<a href="home.html">
-					<button>Home</button>
-				</a>
-			</div>
-			<div>
-				<button>Shared</button>
-			</div>
-			<div>
-				<button>Trash</button>
-			</div>
-			<div>
-				<a href="about.html">
-					<button>About page</button>
-				</a>
-			</div>
-			<div>
-				<a href="index.html">
-					<button>Log out</button>
-				</a>
-			</div>
-			<div>File count: 3</div>
-		</div>
-		<div>
-			<label>Path: </label>
-			<input type="text" name="path" value="/Photos/...">
-
-			<table>
-				<thead>
-					<tr>
-						<td><input type="checkbox" name="select-all"></td>
-						<th>Icon</th>
-						<th>File Name</th>
-						<th>Date Modified</th>
-						<th>Date Created</th>
-						<th>Size (bytes)</th>
-						<th>Type</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><input type="checkbox"></td>
-						<td><img style="width:2.5em" src="file-browser-icon.png" /></td>
-						<td>example_file1.txt</td>
-						<td>2023-09-25 14:30:00</td>
-						<td>2023-09-20 10:15:00</td>
-						<td>1024</td>
-						<td>Text file</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox"></td>
-						<td><img style="width:2.5em" src="file-browser-icon.png" /></td>
-						<td>example_file2.jpg</td>
-						<td>2023-09-26 09:45:00</td>
-						<td>2023-09-18 14:20:00</td>
-						<td>2048</td>
-						<td>JPG image</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox"></td>
-						<td><img style="width:2.5em" src="file-browser-icon.png" /></td>
-						<td>example_file3.pdf</td>
-						<td>2023-09-27 16:00:00</td>
-						<td>2023-09-19 11:30:00</td>
-						<td>3072</td>
-						<td>PDF file</td>
-					</tr>
-				</tbody>
-			</table>
 		</div>
 		<footer>
 			<div>David Bauch</div>
