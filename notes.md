@@ -990,11 +990,35 @@ That's everything we need to do. However, let's make one more addition. It would
 
 ### [UX Design](https://github.com/webprogramming260/.github/blob/main/profile/uxdesign/uxdesign.md)
 
+### [JS Intro](https://github.com/webprogramming260/.github/blob/main/profile/javascript/introduction/introduction.md)
+
+### [JS Console](https://github.com/webprogramming260/.github/blob/main/profile/javascript/console/console.md)
+
+### [Adding JS to HTML](https://github.com/webprogramming260/.github/blob/main/profile/javascript/addingToHtml/addingToHtml.md)
+
+### [JS Type and Construct](https://github.com/webprogramming260/.github/blob/main/profile/javascript/typeConstruct/typeConstruct.md)
+
+### [JS String](https://github.com/webprogramming260/.github/blob/main/profile/javascript/string/string.md)
+
+### [JS Functions](https://github.com/webprogramming260/.github/blob/main/profile/javascript/functions/functions.md)
+
+### [JS Arrow Functions](https://github.com/webprogramming260/.github/blob/main/profile/javascript/arrow/arrow.md)
+
+### [JS Arrays](https://github.com/webprogramming260/.github/blob/main/profile/javascript/array/array.md)
+
+### [JSON](https://github.com/webprogramming260/.github/blob/main/profile/javascript/json/json.md)
+
+### []()
+
 ### []()
 
 ### []()
 
 ### []()
+
+### []()
+
+
 
 ### Caddy
 - Routes traffic from 443 to specified ports based on subdomain
