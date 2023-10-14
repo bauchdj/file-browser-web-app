@@ -984,7 +984,17 @@ That's everything we need to do. However, let's make one more addition. It would
 
 ### [CSS Flexbox](https://github.com/webprogramming260/.github/blob/main/profile/css/flexbox/flexbox.md)
 
+### [CSS Debugging](https://github.com/webprogramming260/.github/blob/main/profile/css/debuggingCss/debuggingCss.md)
 
+### [CSS Frameworks](https://github.com/webprogramming260/.github/blob/main/profile/css/frameworks/frameworks.md)
+
+### [UX Design](https://github.com/webprogramming260/.github/blob/main/profile/uxdesign/uxdesign.md)
+
+### []()
+
+### []()
+
+### []()
 
 ### Caddy
 - Routes traffic from 443 to specified ports based on subdomain
