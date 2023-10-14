@@ -37,12 +37,3 @@ header > nav > a > img {
 	flex-wrap: wrap;
 	align-content: center;
 }
-
-@media (max-width: 900px) {
-	header > nav > .flex-fill {
-		flex: 0 !important;
-	}
-	header > nav > form {
-		flex: 1;
-	}
-}

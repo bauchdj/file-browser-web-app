@@ -3,6 +3,15 @@ header form .btn {
 	border-radius: 100%;
 }
 
+@media (max-width: 900px) {
+	header > nav > .flex-fill {
+		flex: 0 !important;
+	}
+	header > nav > form {
+		flex: 1;
+	}
+}
+
 .files {
 	width: -webkit-fill-available;
 	overflow: auto;
