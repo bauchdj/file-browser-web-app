@@ -10,6 +10,33 @@ footer {
 	flex: none;
 }
 
+.navbar {
+	justify-content: right;
+}
+
+header nav .navbar-brand {
+	margin: 0 0.5rem 0 0.5rem;
+}
+
+header > nav > button.btn.btn-primary.navbar-brand {
+	padding: 0;
+}
+
+.flex-fill {
+	flex: auto;
+}
+
+header form .btn {
+	padding: 0 0.65rem 0 0.65rem;
+	border-radius: 100%;
+}
+
+.center {
+	display: flex;
+	flex-wrap: wrap;
+	align-content: center;
+}
+
 header img {
 	width: 2.5rem;
 }
