@@ -1,0 +1,33 @@
+body > div {
+	flex: auto;
+	margin: 0.4rem;
+	display: flex;
+}
+
+header > nav > button.btn.btn-primary.navbar-brand {
+	padding: 0;
+}
+
+.btn {
+	padding: 0.25rem;
+	text-align: left;
+	white-space: nowrap;
+}
+
+.btn:not(.btn-success, .btn-danger):hover {
+	color: #6ea8fe;
+}
+
+.dropdown {
+	display: flex;
+	justify-content: left;
+	flex-wrap: wrap;
+	align-content: center;
+}
+
+.menu,
+.files {
+	display: flex;
+	flex-direction: column;
+	margin: 0.2rem;
+}

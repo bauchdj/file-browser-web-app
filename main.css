@@ -18,11 +18,11 @@ footer {
 	justify-content: right;
 }
 
-header nav .navbar-brand {
+header > nav > .navbar-brand {
 	margin: 0 0 0 0.5rem;
 }
 
-header img {
+header > nav > a > img {
 	width: 2.5rem;
 	margin: 0 0.5rem 0 0.5rem;
 }
