@@ -978,7 +978,11 @@ That's everything we need to do. However, let's make one more addition. It would
 }
 ```
 
+### [CSS Responsive Design](https://github.com/webprogramming260/.github/blob/main/profile/css/responsive/responsive.md)
 
+### [CSS Grid](https://github.com/webprogramming260/.github/blob/main/profile/css/grid/grid.md)
+
+### [CSS Flexbox](https://github.com/webprogramming260/.github/blob/main/profile/css/flexbox/flexbox.md)
 
 
 
