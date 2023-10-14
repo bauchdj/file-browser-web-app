@@ -10,9 +10,17 @@ footer {
 	flex: none;
 }
 
+.navbar {
+	justify-content: right;
+}
+
+.navbar-brand {
+	margin: 0 0 0 0.5rem;
+}
+
 header img {
 	width: 2.5rem;
-	margin: 0 0.5rem 0 0;
+	margin: 0 0.5rem 0 0.5rem;
 }
 
 footer {
