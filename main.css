@@ -15,6 +15,8 @@ footer {
 }
 
 .navbar {
+	display: flex;
+	flex-direction: row;
 	justify-content: right;
 }
 
@@ -22,12 +24,12 @@ header > nav > .navbar-brand {
 	margin: 0 0.5rem 0 0.5rem;
 }
 
-header > nav > a > img {
-	width: 2.5rem;
+header > nav > form {
+	flex: 0.5;
 }
 
-.flex-fill {
-	flex: auto;
+header > nav > a > img {
+	width: 2.5rem;
 }
 
 .center-vert {
@@ -36,8 +38,11 @@ header > nav > a > img {
 	align-content: center;
 }
 
-@media (max-width: 365px) {
-	header > nav > a > img {
-		display: none;
+@media (max-width: 900px) {
+	header > nav > .flex-fill {
+		flex: 0 !important;
+	}
+	header > nav > form {
+		flex: 1;
 	}
 }

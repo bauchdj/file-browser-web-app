@@ -10,7 +10,7 @@ header form .btn {
 
 .file-options {
 	display: flex;
-	flex-direction: inline;
+	flex-direction: row;
 }
 
 .file-options > div:nth-child(1) {
