@@ -108,6 +108,7 @@ function ajaxPostFileListRequest(path) {
 		dataType: 'json',
 		data: { user: path },
 		success: function(data) {
+			if (data.error) return console.error(data.error);
 			addFilesToTable(data);
 		},
 		error: function() {

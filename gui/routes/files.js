@@ -6,17 +6,19 @@ function getDirectorySize(directoryPath, callback) {
 	let totalSize = 0;
 
 	function calculateSize(filePath, callback) {
-		fs.stat(filePath, (error, stats) => {
+		fs.stat(filePath, (err, stats) => {
+			if (err) return callback(err);
+
 			if (stats.isFile()) {
 				totalSize += stats.size;
-				callback(null, totalSize);
+				callback(err, totalSize);
 			} else if (stats.isDirectory()) {
 				const files = fs.readdirSync(filePath);
 				async.each(files, (file, acb) => {
 					const subPath = path.join(filePath, file);
 					calculateSize(subPath, acb);
 				}, (err) => {
-					callback(null, totalSize);
+					callback(err, totalSize);
 				});
 			}
 		});
@@ -29,46 +31,42 @@ function getListOfFiles(directoryPath, callback) {
 	const fileList = [];
 
 	fs.readdir(directoryPath, (err, files) => {
-		if (err) {
-			console.error('Error reading directory:', err);
-			return;
-		}
+		if (err) return callback(err);
+
 		async.each(files, (file, acb) => {
 			const filePath = path.join(directoryPath, file);
-			fs.stat(filePath, (error, fileStats) => {
+
+			fs.stat(filePath, (err, fileStats) => {
+				if (err) return callback(err);
+
 				getDirectorySize(filePath, (err, size) => {
+					if (err) return callback(err);
+
 					const fileInfo = {
 						filename: file,
 						modifiedDate: fileStats.mtime,
 						creationDate: fileStats.birthtime,
-						// sizeInBytes: fileStats.size,
 						sizeInBytes: size,
 						fileExtension: path.extname(file).toLowerCase(),
 						isDirectory: fileStats.isDirectory(),
 					};
 
 					fileList.push(fileInfo);
-					acb(null);
+					acb(err);
 				});
 			});
 		}, (err) => {
-			callback(null, fileList);
+			callback(err, fileList);
 		});
 	});
 }
 
-const directoryPath = "/Users/djbauch/git/startup-file-browser-web-app/users/james/";
-/*
-getListOfFiles(directoryPath, (err, fileList) => {
-	console.log(fileList);
-	process.exit();
-});
-*/
-
 exports.setupFiles = function (app) {
 	app.post('/files', (req, res) => {
 		const directoryPath = "/Users/djbauch/git/startup-file-browser-web-app/users/" + req.body.user + "/";
+		
 		getListOfFiles(directoryPath, (err, fileList) => {
+			if (err) res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
 			res.end(JSON.stringify(fileList));
 		});
 	});
