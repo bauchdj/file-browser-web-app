@@ -54,11 +54,42 @@ function utcToCurrentTime(utcTimeString) {
 	return formattedLocalTime;
 }
 
-function addFilesToTable(fileList) {
+function sortArrOfObj(arr, key, direction = 1) {
+	arr.sort((a, b) => {
+		const valA = a[key];
+		const valB = b[key];
+		if (valA === true && valB === false) return -1
+		if (valA === false && valB === true) return 1
+		if (valA < valB) return -1 * direction;
+		if (valA > valB) return 1 * direction;
+		return 0;
+	});
+}
+
+function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey="filename") {
 	const tableBody = document.querySelector("body > div > div.files > table > tbody.table-group-divider");
 	const body = $(tableBody.outerHTML);
 	body.empty();
 
+	document.querySelector("#" + lastSortKey).classList.remove('selected');
+	document.querySelector("#" + sortKey).classList.add('selected');
+
+	sortArrOfObj(fileList, sortKey, sortDirection);
+	if ( sortKey === "filename" ) {
+		sortArrOfObj(fileList, "isDirectory", sortDirection);
+	}
+
+	const sortEls = document.querySelector("body > div > div.files > div > div.flex-r ul").children;
+	Array.from(sortEls).forEach( el => {
+		el.onclick = function (e) {
+			let sort = sortDirection;
+			if ( el.dataset.value === sortKey || sort === -1 ) {
+				sort = sort * -1;
+			}
+			addFilesToTable(fileList, el.dataset.value, sort, sortKey);
+		};
+	});
+	
 	fileList.forEach( fileStats => {
 		const fileType = fileStats.isDirectory ? "Folder" : fileStats.fileExtension;
 		const modifiedDate = utcToCurrentTime(fileStats.modifiedDate);

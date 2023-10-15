@@ -14,6 +14,7 @@ header > nav > button.btn.btn-primary.navbar-brand {
 	white-space: nowrap;
 }
 
+table > thead > tr > th.selected,
 .btn:not(.btn-success, .btn-danger):hover {
 	color: #6ea8fe;
 }

@@ -91,11 +91,11 @@
 								Sort by
 							</button>
 							<ul class="dropdown-menu">
-								<li class="dropdown-item">Name</li>
-								<li class="dropdown-item">Modified Date</li>
-								<li class="dropdown-item">Creation Date</li>
-								<li class="dropdown-item">Size</li>
-								<li class="dropdown-item">Type</li>
+								<li class="dropdown-item" data-value="filename">Name</li>
+								<li class="dropdown-item" data-value="modifiedDate">Modified Date</li>
+								<li class="dropdown-item" data-value="creationDate">Creation Date</li>
+								<li class="dropdown-item" data-value="sizeInBytes">Size</li>
+								<li class="dropdown-item" data-value="fileExtension">Type</li>
 							</ul>
 						</div>
 						<div class="dropdown">
@@ -128,11 +128,11 @@
 						<tr>
 							<td><input type="checkbox" name="select-all"></td>
 							<th>Icon</th>
-							<th>File Name</th>
-							<th>Date Modified</th>
-							<th>Date Created</th>
-							<th>Size (bytes)</th>
-							<th>Type</th>
+							<th id="filename">File Name</th>
+							<th id="modifiedDate">Modified Date</th>
+							<th id="creationDate">Created Date</th>
+							<th id="sizeInBytes">Size (bytes)</th>
+							<th id="fileExtension">Type</th>
 						</tr>
 					</thead>
 					<tbody class="table-group-divider">
