@@ -12,19 +12,17 @@ header form .btn {
 	}
 }
 
-.files {
+div.files div.center-y.flex-1.overflow-x-auto {
+	padding: 0 0.5rem 0 0.5rem;
+}
+
+div.files {
 	width: -webkit-fill-available;
 	overflow: auto;
 }
 
-.file-options {
-	display: flex;
-	flex-direction: row;
-}
-
-.file-options > div:nth-child(1) {
+div.flex-1 {
 	flex: 1;
-	padding: 0 0.2rem 0 0;
 }
 
 th, td {
