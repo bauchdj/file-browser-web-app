@@ -30,7 +30,6 @@ function updateDirectoryButtons(path) {
 }
 
 function updateInputPathText(path) {
-	// const path = (currentPath === "") ? userDirectory + '/' + directoryName : currentPath + '/' + directoryName; 
 	currentPath = path;
 	const input = document.querySelector("body > div > div.files > div > div.flex-1 > input");
 	input.value = path;
@@ -38,7 +37,6 @@ function updateInputPathText(path) {
 
 function openDirectory(path) {
 	path = path.replace(/\/$/, '');
-	console.log(path);
 	updateInputPathText(path);
 	updateDirectoryButtons(path);
 	ajaxPostFileListRequest(path);
