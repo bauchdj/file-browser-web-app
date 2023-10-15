@@ -36,6 +36,10 @@ function updateInputPathText(path) {
 }
 
 function openDirectory(path) {
+	Array.from(document.querySelector("body > div > div.files > table > thead > tr").children).forEach( el => {
+		el.classList.remove('selected');
+	});
+
 	path = path.replace(/\/$/, '');
 	updateInputPathText(path);
 	updateDirectoryButtons(path);
