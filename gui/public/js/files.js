@@ -7,25 +7,35 @@ function utcToCurrentTime(utcTimeString) {
 
 function addFilesToTable(fileList) {
 	const tableBody = document.querySelector("body > div > div.files > table > tbody.table-group-divider");
-	let html = '';
+	const body = $(tableBody.outerHTML);
+	body.html();
 
-	fileList.forEach((fileStats) => {
+	fileList.forEach( fileStats => {
 		const fileType = fileStats.isDirectory ? "Folder" : fileStats.fileExtension;
 		const modifiedDate = utcToCurrentTime(fileStats.modifiedDate);
 		const creationDate = utcToCurrentTime(fileStats.creationDate);
-		html += `
-			<tr>
-				<td><input type="checkbox"></td>
-				<td><img style="width:2.5em"src="images/file-browser-icon.png"/></td>
-				<td>${fileStats.filename}</td>
-				<td>${modifiedDate}</td>
-				<td>${creationDate}</td>
-				<td>${fileStats.sizeInBytes}</td>
-				<td>${fileType}</td>
-			</tr>`
+		const tableRow = document.createElement('tr');
+		const els = [
+			'<input type="checkbox">',
+			'<img style="width:2.5em"src="images/file-browser-icon.png"/>',
+			fileStats.filename,
+			modifiedDate,
+			creationDate,
+			fileStats.sizeInBytes,
+			fileType,
+		];
+		els.forEach( e => {
+			const tableData = document.createElement('td');
+			tableData.innerHTML = e;
+			tableRow.appendChild(tableData);
+		});
+		body.get(0).appendChild(tableRow);
+		// tableBody.appendChild(tableRow);
 	});
 
-	tableBody.innerHTML += html;
+	const table = document.querySelector("body > div > div.files > table");
+	table.removeChild(tableBody);
+	table.appendChild(body.get(0));
 }
 
 const userDirectory = "james";
