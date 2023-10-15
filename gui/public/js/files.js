@@ -62,8 +62,6 @@ function sortArrOfObj(arr, key, direction = 1) {
 	arr.sort((a, b) => {
 		const valA = a[key];
 		const valB = b[key];
-		if (valA === true && valB === false) return -1
-		if (valA === false && valB === true) return 1
 		if (valA < valB) return -1 * direction;
 		if (valA > valB) return 1 * direction;
 		return 0;
@@ -80,7 +78,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 
 	sortArrOfObj(fileList, sortKey, sortDirection);
 	if ( sortKey === "filename" ) {
-		sortArrOfObj(fileList, "isDirectory", sortDirection);
+		sortArrOfObj(fileList, "isDirectory", sortDirection * -1);
 	}
 
 	const sortEls = document.querySelector("body > div > div.files > div > div.flex-r ul").children;
