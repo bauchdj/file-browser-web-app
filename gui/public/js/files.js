@@ -94,14 +94,17 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 
 	const sortOptions = document.querySelector("body > div > div.files > div > div.flex-r ul").children;
 	Array.from(sortOptions).forEach(el => {
-		el.onclick = function (e) {
-			let column = el.dataset.value;
+		let value = el.dataset.value;
+		el.onclick = e => {
+			let column = value;
 			let direction = sortDirection;
 			if ( column === sortKey || direction === -1 ) { // Change direction if same option. Force back to 1 if changing direction column
 				direction = direction * -1;
 			}
 			addFilesToTable(fileList, column, direction, sortKey);
 		};
+
+		document.querySelector("#" + value).onclick = el.onclick; // Sets column onclick to sort option onclick
 	});
 	
 	fileList.forEach( fileStats => {
@@ -109,9 +112,8 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		const modifiedDate = utcToCurrentTime(fileStats.modifiedDate);
 		const creationDate = utcToCurrentTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
-		const onclickFunction = "addToSelected(this)";
 		const els = [
-			'<input class="checkbox" type="checkbox" filename="' + fileStats.filename + '" onclick="' + onclickFunction + '">',
+			'<input class="checkbox" type="checkbox" filename="' + fileStats.filename + '" onclick="addToSelected(this)">',
 			'<img style="width:2.5em"src="images/file-browser-icon.png"/>',
 			fileStats.filename,
 			modifiedDate,
