@@ -81,7 +81,7 @@
 						<button class="btn">Log out</button>
 					</a>
 				</div>
-				<div class="btn"><div>File count: 3</div></div>
+				<div id="file-count" class="btn">File count: 3</div>
 			</div>
 			<div class="files">
 				<div class="flex-c">
@@ -126,9 +126,9 @@
 				<table class="table table-hover">
 					<thead>
 						<tr>
-							<td><input type="checkbox" name="select-all"></td>
+							<td><input type="checkbox" onclick="Array.from(document.querySelectorAll('.checkbox')).forEach(el=>el.checked=this.checked);"></td>
 							<th>Icon</th>
-							<th id="filename">File Name</th>
+							<th id="filename">Name</th>
 							<th id="modifiedDate">Modified Date</th>
 							<th id="creationDate">Created Date</th>
 							<th id="sizeInBytes">Size (bytes)</th>

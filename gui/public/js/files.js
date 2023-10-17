@@ -36,7 +36,7 @@ function updateInputPathText(path) {
 }
 
 function openDirectory(path) {
-	Array.from(document.querySelector("body > div > div.files > table > thead > tr").children).forEach( el => {
+	Array.from(document.querySelector("body > div > div.files > table > thead > tr").children).forEach( el => { // Remove selected class from each sort option
 		el.classList.remove('selected');
 	});
 
@@ -62,6 +62,8 @@ function sortArrOfObj(arr, key, direction = 1) {
 	arr.sort((a, b) => {
 		const valA = a[key];
 		const valB = b[key];
+		if (valA === true && valB === false) return -1 * direction;
+		if (valA === false && valB === true) return 1 * direction;
 		if (valA < valB) return -1 * direction;
 		if (valA > valB) return 1 * direction;
 		return 0;
@@ -69,6 +71,9 @@ function sortArrOfObj(arr, key, direction = 1) {
 }
 
 function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey="filename") {
+	const numFiles = fileList.length;
+	document.querySelector("#file-count").textContent = "File Count: " + numFiles;
+
 	const tableBody = document.querySelector("body > div > div.files > table > tbody.table-group-divider");
 	const body = $(tableBody.outerHTML);
 	body.empty();
@@ -78,17 +83,18 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 
 	sortArrOfObj(fileList, sortKey, sortDirection);
 	if ( sortKey === "filename" ) {
-		sortArrOfObj(fileList, "isDirectory", sortDirection * -1);
+		sortArrOfObj(fileList, "isDirectory", sortDirection);
 	}
 
-	const sortEls = document.querySelector("body > div > div.files > div > div.flex-r ul").children;
-	Array.from(sortEls).forEach( el => {
+	const sortOptions = document.querySelector("body > div > div.files > div > div.flex-r ul").children;
+	Array.from(sortOptions).forEach(el => {
 		el.onclick = function (e) {
-			let sort = sortDirection;
-			if ( el.dataset.value === sortKey || sort === -1 ) {
-				sort = sort * -1;
+			let column = el.dataset.value;
+			let direction = sortDirection;
+			if ( column === sortKey || direction === -1 ) { // Change direction if same option. Force back to 1 if changing direction column
+				direction = direction * -1;
 			}
-			addFilesToTable(fileList, el.dataset.value, sort, sortKey);
+			addFilesToTable(fileList, column, direction, sortKey);
 		};
 	});
 	
@@ -98,7 +104,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		const creationDate = utcToCurrentTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
 		const els = [
-			'<input type="checkbox">',
+			'<input class="checkbox" type="checkbox">',
 			'<img style="width:2.5em"src="images/file-browser-icon.png"/>',
 			fileStats.filename,
 			modifiedDate,
