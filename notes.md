@@ -1,12 +1,13 @@
 ### Current Ideas List
 
-May need api for file type icons + technical name _(.py is python, etc)_
+- May need api for file type icons + technical name _(.py is python, etc)_
+- [How to get file format icon](https://cloudmersive.medium.com/how-to-get-a-file-format-icon-for-any-file-type-in-node-js-bc1ab0b0877c)
+- [Cloud Mersive](https://cloudmersive.com/convert-api)
+- [Convert API](https://www.convertapi.com/)
 
 ## CSS
 - All checked boxes show selected row (light gray theme)
-- Mobile friendly side bar
 - Add icons to side bar
-- Have path on top of drop downs on mobile
 - Full screen mode
 
 ## HTML
