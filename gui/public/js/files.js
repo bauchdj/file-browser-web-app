@@ -1,5 +1,11 @@
 const userDirectory = "james";
 let currentPath = userDirectory;
+const selected = {};
+
+function addToSelected(el) {
+	let key = el.getAttribute("filename");
+	selected[key] ? (delete selected[key]) : selected[key] = true;
+}
 
 function updateDirectoryButtons(path) {
 	const container = document.querySelector("body > div > div.files > div > div.flex-r > div:last-child");
@@ -103,8 +109,9 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		const modifiedDate = utcToCurrentTime(fileStats.modifiedDate);
 		const creationDate = utcToCurrentTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
+		const onclickFunction = "addToSelected(this)";
 		const els = [
-			'<input class="checkbox" type="checkbox">',
+			'<input class="checkbox" type="checkbox" filename="' + fileStats.filename + '" onclick="' + onclickFunction + '">',
 			'<img style="width:2.5em"src="images/file-browser-icon.png"/>',
 			fileStats.filename,
 			modifiedDate,
