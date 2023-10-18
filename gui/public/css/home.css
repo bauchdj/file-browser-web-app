@@ -17,12 +17,15 @@ div.files div.center-y.flex-1.overflow-x-auto {
 }
 
 div.files {
-	width: -webkit-fill-available;
 	overflow: auto;
 }
 
-div.flex-1 {
-	flex: 1;
+div.files > div.flex-c{
+	width: 110%;
+}
+
+div.flex-0-1 {
+	flex: 0 1 auto;
 }
 
 th, td {
