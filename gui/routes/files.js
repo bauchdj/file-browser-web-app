@@ -42,13 +42,16 @@ function getListOfFiles(directoryPath, callback) {
 				getDirectorySize(filePath, (err, size) => {
 					if (err) return callback(err);
 
+					isDirectory = fileStats.isDirectory();
+					fileExtension = isDirectory ? "" : path.extname(file);
+
 					const fileInfo = {
 						filename: file,
 						modifiedDate: fileStats.mtime,
 						creationDate: fileStats.birthtime,
 						sizeInBytes: size,
-						fileExtension: path.extname(file).toLowerCase(),
-						isDirectory: fileStats.isDirectory(),
+						fileExtension: fileExtension,
+						isDirectory: isDirectory,
 					};
 
 					fileList.push(fileInfo);

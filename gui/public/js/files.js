@@ -4,6 +4,7 @@ const selected = {};
 
 function addToSelected(el) {
 	let key = el.getAttribute("filename");
+	console.log(selected[key]);
 	selected[key] ? (delete selected[key]) : selected[key] = true;
 }
 
@@ -68,6 +69,7 @@ function sortArrOfObj(arr, key, direction = 1) {
 	arr.sort((a, b) => {
 		const valA = a[key];
 		const valB = b[key];
+		if ( valA === true ) console.log("valA", valA, "valB:", valB);
 		if (valA === true && valB === false) return -1 * direction;
 		if (valA === false && valB === true) return 1 * direction;
 		if (valA < valB) return -1 * direction;
@@ -89,7 +91,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 
 	sortArrOfObj(fileList, sortKey, sortDirection);
 	if ( sortKey === "filename" ) {
-		sortArrOfObj(fileList, "isDirectory", sortDirection);
+		sortArrOfObj(fileList, "fileExtension", sortDirection);
 	}
 
 	const sortOptions = document.querySelector("body > div > div.files > div > div.flex-r ul").children;
