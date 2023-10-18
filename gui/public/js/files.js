@@ -4,7 +4,6 @@ const selected = {};
 
 function addToSelected(el) {
 	let key = el.getAttribute("filename");
-	console.log(selected[key]);
 	selected[key] ? (delete selected[key]) : selected[key] = true;
 }
 
