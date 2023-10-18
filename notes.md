@@ -1,12 +1,13 @@
 ### Current Ideas List
 
-May need api for file type icons + technical name _(.py is python, etc)_
+- May need api for file type icons + technical name _(.py is python, etc)_
+- [How to get file format icon](https://cloudmersive.medium.com/how-to-get-a-file-format-icon-for-any-file-type-in-node-js-bc1ab0b0877c)
+- [Cloud Mersive](https://cloudmersive.com/convert-api)
+- [Convert API](https://www.convertapi.com/)
 
 ## CSS
 - All checked boxes show selected row (light gray theme)
-- Mobile friendly side bar
 - Add icons to side bar
-- Have path on top of drop downs on mobile
 - Full screen mode
 
 ## HTML
@@ -26,6 +27,9 @@ May need api for file type icons + technical name _(.py is python, etc)_
  
 ## JavaScript
 - Sorting: Type, Name, Modified Date, Creation Date, Size _(Ascending & Descending)_
+- File options
+  - Downloading: file OR multiple files OR directory OR multiple files + directory
+  - Uploading: same criteria if possible
 - Searching: Regular find, Regex
 - Trash: If file exists, create hidden file with filename + '-date-time' and put file inside that directory. Need system to handle duplicates.
 - Filemeta data: What info can I get on linux?
