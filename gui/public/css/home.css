@@ -17,6 +17,7 @@ div.files div.center-y.flex-1.overflow-x-auto {
 }
 
 div.files {
+	width: -webkit-fill-available;
 	overflow: auto;
 }
 
