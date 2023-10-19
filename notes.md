@@ -1,5 +1,7 @@
 ### Current Ideas List
 
+[Multi-File Download](https://medium.com/twodigits/multi-file-download-using-javascript-9b0b8a14639b)
+
 - May need api for file type icons + technical name _(.py is python, etc)_
 - [How to get file format icon](https://cloudmersive.medium.com/how-to-get-a-file-format-icon-for-any-file-type-in-node-js-bc1ab0b0877c)
 - [Cloud Mersive](https://cloudmersive.com/convert-api)

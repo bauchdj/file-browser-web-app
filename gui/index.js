@@ -12,7 +12,7 @@ const port = process.argv.length > 2 ? process.argv[2] : 3000;
 const serviceName = process.argv.length > 3 ? process.argv[3] : 'website';
 
 // Serve up the static content
-app.use(express.static('gui/public'));
+app.use(express.static(__dirname + '/public'));
 
 // Provide the version of the application
 app.get('/config', (_req, res) => {
@@ -20,11 +20,6 @@ app.get('/config', (_req, res) => {
 });
 
 fileRoutes.setupFiles(app);
-
-// Return the homepage if the path is unknown
-//app.use((_req, res) => {
-//	res.sendFile('index.html', { root: 'gui/public' });
-//});
 
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
