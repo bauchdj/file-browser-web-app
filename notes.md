@@ -1014,7 +1014,7 @@ That's everything we need to do. However, let's make one more addition. It would
 
 ### [JSON](https://github.com/webprogramming260/.github/blob/main/profile/javascript/json/json.md)
 
-### JavaScript regular expressions
+### JS regular expressions
 
 📖 **Deeper dive reading**: [MDN Regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions)
 
@@ -1043,15 +1043,15 @@ petRegex.test(text);
 // RETURNS: true
 ```
 
-### []()
+### [JS Exceptions](https://github.com/webprogramming260/.github/blob/main/profile/javascript/exceptions/exceptions.md)
 
-### []()
+### [JS Destructuring](https://github.com/webprogramming260/.github/blob/main/profile/javascript/destructuring/destructuring.md)
 
-### []()
+### [JS Objects && Classes](https://github.com/webprogramming260/.github/blob/main/profile/javascript/objectClasses/objectClasses.md)
 
-### []()
+### [JS Scope](https://github.com/webprogramming260/.github/blob/main/profile/javascript/scope/scope.md)
 
-### []()
+### [JS Modules](https://github.com/webprogramming260/.github/blob/main/profile/javascript/modules/modules.md)
 
 
 
