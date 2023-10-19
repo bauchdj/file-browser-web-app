@@ -65,11 +65,10 @@ function getListOfFiles(directoryPath, callback) {
 }
 
 exports.setupFiles = function (app) {
-	const basePath = __dirname + "/../../users/";
-	console.log(basePath);
+	const basePath = path.resolve(__dirname + "/../../users") + "/"; // Turns relative path to absolute path. Express relative path is malicious
 
 	app.post('/files', (req, res) => {
-		const directoryPath = basePath + req.body.user + "/";
+		const directoryPath = basePath + req.body.user + "/"; // Gets directory my user
 		
 		getListOfFiles(directoryPath, (err, fileList) => {
 			if (err) res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
@@ -85,8 +84,7 @@ exports.setupFiles = function (app) {
 		if (type === "file") {
 			res.setHeader('Content-Type', 'application/force-download');
 			res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
-			console.log(path);
-			res.sendFile(path);
+			res.sendFile(path, { dotfiles: 'allow' });
 		}
 	});
 }
