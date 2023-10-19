@@ -77,11 +77,15 @@ exports.setupFiles = function (app) {
 	});
 	
 	app.get('/download*', (req, res) => {
+		const type = req.query.type;
 		const path = basePath + decodeURIComponent(req.query.path);
 		const filename = path.split('/').pop();
 
-		res.setHeader('Content-Type', 'application/force-download');
-		res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
-		res.sendFile(path);
+		if (type === "file") {
+			res.setHeader('Content-Type', 'application/force-download');
+			res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
+			console.log(path);
+			res.sendFile(path);
+		}
 	});
 }

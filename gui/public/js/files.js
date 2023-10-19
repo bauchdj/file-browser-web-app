@@ -21,7 +21,7 @@ function downloadFile() {
 	const path = currentPath + "/" + Object.keys(selected)[0];
 	const iframe = document.createElement('iframe');
 	iframe.style = "visibility: hidden; height: 0; width: 0;";
-	iframe.src = `/download?path=${encodeURIComponent(path)}`;
+	iframe.src = `/download?type=file&path=${encodeURIComponent(path)}`;
 	document.body.appendChild(iframe);
 }
 
