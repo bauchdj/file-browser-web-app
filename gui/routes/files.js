@@ -65,12 +65,23 @@ function getListOfFiles(directoryPath, callback) {
 }
 
 exports.setupFiles = function (app) {
+	const basePath = "/Users/djbauch/git/startup-file-browser-web-app/users/";
+
 	app.post('/files', (req, res) => {
-		const directoryPath = "/Users/djbauch/git/startup-file-browser-web-app/users/" + req.body.user + "/";
+		const directoryPath = basePath + req.body.user + "/";
 		
 		getListOfFiles(directoryPath, (err, fileList) => {
 			if (err) res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
 			res.end(JSON.stringify(fileList));
 		});
+	});
+	
+	app.get('/download*', (req, res) => {
+		const path = basePath + decodeURIComponent(req.query.path);
+		const filename = path.split('/').pop();
+
+		res.setHeader('Content-Type', 'application/force-download');
+		res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
+		res.sendFile(path);
 	});
 }

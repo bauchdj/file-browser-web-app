@@ -3,12 +3,9 @@ let currentPath = userDirectory;
 const selected = {};
 
 function createPopUp(type, options) {
-/*
-fill-screen flex-justify-center flex-align-center
-<div style="background-color: rgba(0, 0, 0, 0.8); position: absolute; inset: 0px; display: flex; justify-content: center; align-items: center;">
-<div style="text-align: center; color: rgb(255, 255, 255); display: block; width: auto; background-color: rgba(0, 0, 0, 0.6); padding: 8px; border-radius: 20px; font-size: 2rem;">Select a camera:<div>Inside text</div></div>
-</div>
-*/
+// Message with Ok button
+// Message with Ok and Cancel button
+// Message takes input and Ok and Cancel button
 	const divContainer = document.createElement("div");
 	divContainer.className = "fill-screen center-y center-x black-transparent"
 	divContainer.onclick = function (e) { this.remove(); };
@@ -20,12 +17,21 @@ fill-screen flex-justify-center flex-align-center
 	document.body.appendChild(divContainer);
 }
 
+function downloadFile() {
+	const path = currentPath + "/" + Object.keys(selected)[0];
+	const iframe = document.createElement('iframe');
+	iframe.style = "visibility: hidden; height: 0; width: 0;";
+	iframe.src = `/download?path=${encodeURIComponent(path)}`;
+	document.body.appendChild(iframe);
+}
+
 function download() {
 	const numSelected = Object.keys(selected).length;
 	const includesFolder = Object.values(selected).includes("Folder");
 	console.log(selected, numSelected, includesFolder);
 	if (numSelected === 1 && !includesFolder) {
 		console.log("Download: one File");
+		downloadFile();
 	} else if (numSelected === 1 && includesFolder) {
 		console.log("Download one Folder");
 	} else if (numSelected > 1 && includesFolder) {
@@ -41,6 +47,7 @@ function rename() {
 	const numSelected = Object.keys(selected).length;
 	if (numSelected === 1) {
 		const filename = Object.keys(selected)[0];
+		// createPopUp type: prompt
 		const newFilename = prompt('Rename "' + filename + '" to:');
 		console.log(`Renamed "${filename}" to "${newFilename}"`)
 	} else {
