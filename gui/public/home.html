@@ -103,8 +103,8 @@
 								Options
 							</button>
 							<ul class="dropdown-menu">
-								<li class="dropdown-item" onclick="download();">Download</li>
-								<li class="dropdown-item" onclick="rename();">Rename</li>
+								<li class="dropdown-item" onclick="download()">Download</li>
+								<li class="dropdown-item" onclick="rename()">Rename</li>
 								<li class="dropdown-item">Create link</li>
 								<li><hr class="dropdown-divider"></li>
 								<li class="dropdown-item">Move</li>
@@ -126,7 +126,7 @@
 				<table class="table table-hover">
 					<thead>
 						<tr>
-							<td><input type="checkbox" onclick="Array.from(document.querySelectorAll('.checkbox')).forEach(el=>{if(el.checked!=this.checked){el.checked=this.checked;addToSelected(el)}});"></td>
+							<td><input type="checkbox" onclick="addAllSelected(this)"></td>
 							<th>Icon</th>
 							<th id="filename">Name</th>
 							<th id="modifiedDate">Modified Date</th>

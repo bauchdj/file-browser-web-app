@@ -62,6 +62,15 @@ function addToSelected(el) {
 	selected[key] === undefined ? selected[key] = value : (delete selected[key]);
 }
 
+function addAllSelected(el) {
+	Array.from(document.querySelectorAll('.checkbox')).forEach(checkboxEl => {
+		if (checkboxEl.checked != el.checked) {
+			checkboxEl.checked = el.checked;
+			addToSelected(checkboxEl);
+		}
+	});
+}
+
 function updateDirectoryButtons(path) {
 	const container = document.querySelector("body > div > div.files > div > div.flex-r > div:last-child");
 	const newContainer = $(container.outerHTML);
