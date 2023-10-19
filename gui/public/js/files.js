@@ -3,16 +3,17 @@ let currentPath = userDirectory;
 const selected = {};
 
 function download() {
-	let numSelected = selected.length;
-	let includesFolder = Object.values(selected.find).includes("Folder");
+	let numSelected = Object.keys(selected).length;
+	let includesFolder = Object.values(selected).includes("Folder");
+	console.log(selected, numSelected, includesFolder);
 	if (numSelected === 1 && !includesFolder) {
-		console.log("Download: one file");
+		console.log("Download: one File");
 	} else if (numSelected === 1 && includesFolder) {
-		console.log("Download one folder");
+		console.log("Download one Folder");
 	} else if (numSelected > 1 && includesFolder) {
-		console.log("Download multiple folders, and possibly files too");
+		console.log("Download " + numSelected + ". True for Folders or Folder && files(s)");
 	} else if (numSelected > 1 && !includesFolder) {
-		console.log("Download multiple files. No folders.");
+		console.log("Download " + numSelected + " Files. No Folders.");
 	} else {
 		console.log("Nothing selected");
 	}
@@ -20,8 +21,8 @@ function download() {
 
 function addToSelected(el) {
 	let key = el.getAttribute("filename");
-	let value = el.getAttribute("type");
-	selected[key] ? (delete selected[key]) : selected[key] = value;
+	let value = el.getAttribute("fileType");
+	selected[key] === undefined ? selected[key] = value : (delete selected[key]);
 }
 
 function updateDirectoryButtons(path) {
@@ -131,7 +132,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		const creationDate = utcToCurrentTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
 		const els = [
-			'<input class="checkbox" type="checkbox" filename="' + fileStats.filename + '" value="' + fileStats.fileExtension + '" onclick="addToSelected(this)">',
+			'<input class="checkbox" type="checkbox" filename="' + fileStats.filename + '" fileType="' + fileType + '" onclick="addToSelected(this)">',
 			'<img style="width:2.5em"src="images/file-browser-icon.png"/>',
 			fileStats.filename,
 			modifiedDate,
