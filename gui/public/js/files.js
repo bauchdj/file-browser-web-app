@@ -2,9 +2,23 @@ const userDirectory = "james";
 let currentPath = userDirectory;
 const selected = {};
 
+function createPopUp(type, options) {
+/*
+fill-screen flex-justify-center flex-align-center
+<div style="background-color: rgba(0, 0, 0, 0.8); position: absolute; inset: 0px; display: flex; justify-content: center; align-items: center;">
+<div style="text-align: center; color: rgb(255, 255, 255); display: block; width: auto; background-color: rgba(0, 0, 0, 0.6); padding: 8px; border-radius: 20px; font-size: 2rem;">Select a camera:<div>Inside text</div></div>
+</div>
+*/
+	const divContainer = document.createElement("div");
+	divContainer.className = "fill-screen flex-justify-center flex-align-center"
+	if (type === "message") {
+		
+	}
+}
+
 function download() {
-	let numSelected = Object.keys(selected).length;
-	let includesFolder = Object.values(selected).includes("Folder");
+	const numSelected = Object.keys(selected).length;
+	const includesFolder = Object.values(selected).includes("Folder");
 	console.log(selected, numSelected, includesFolder);
 	if (numSelected === 1 && !includesFolder) {
 		console.log("Download: one File");
@@ -16,6 +30,16 @@ function download() {
 		console.log("Download " + numSelected + " Files. No Folders.");
 	} else {
 		console.log("Nothing selected");
+	}
+}
+
+function rename() {
+	const numSelected = Object.keys(selected).length;
+	if (numSelected === 1) {
+		const newName = prompt("");
+	} else {
+		const message = (numSelected === 0 ) ? "Nothing is selected silly. Select one to rename." : "You can only selected one. You tried to rename " + numSelected + "."
+		createPopUp("message", message);
 	}
 }
 
@@ -32,7 +56,7 @@ function updateDirectoryButtons(path) {
 
 	let steppingPath = '';
 	const buttonList = path.split('/');
-	buttonList.forEach( elText => {
+	buttonList.forEach(elText => {
 		const button = document.createElement('button');
 		button.textContent = elText;
 		button.className = "btn";
@@ -59,7 +83,7 @@ function updateInputPathText(path) {
 }
 
 function openDirectory(path) {
-	Array.from(document.querySelector("body > div > div.files > table > thead > tr").children).forEach( el => { // Remove selected class from each sort option
+	Array.from(document.querySelector("body > div > div.files > table > thead > tr").children).forEach(el => { // Remove selected class from each sort option
 		el.classList.remove('selected');
 	});
 
@@ -86,7 +110,7 @@ function sortArrOfObj(arr, key, direction = 1) {
 	arr.sort((a, b) => {
 		const valA = a[key];
 		const valB = b[key];
-		if ( valA === true ) console.log("valA", valA, "valB:", valB);
+		if (valA === true) console.log("valA", valA, "valB:", valB);
 		if (valA === true && valB === false) return -1 * direction;
 		if (valA === false && valB === true) return 1 * direction;
 		if (valA < valB) return -1 * direction;
@@ -107,7 +131,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 	document.querySelector("#" + sortKey).classList.add('selected');
 
 	sortArrOfObj(fileList, sortKey, sortDirection);
-	if ( sortKey === "filename" ) {
+	if (sortKey === "filename") {
 		sortArrOfObj(fileList, "fileExtension", sortDirection);
 	}
 
@@ -117,7 +141,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		el.onclick = e => {
 			let column = value;
 			let direction = sortDirection;
-			if ( column === sortKey || direction === -1 ) { // Change direction if same option. Force back to 1 if changing direction column
+			if (column === sortKey || direction === -1) { // Change direction if same option. Force back to 1 if changing direction column
 				direction = direction * -1;
 			}
 			addFilesToTable(fileList, column, direction, sortKey);
@@ -126,7 +150,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		document.querySelector("#" + value).onclick = el.onclick; // Sets column onclick to sort option onclick
 	});
 	
-	fileList.forEach( fileStats => {
+	fileList.forEach(fileStats => {
 		const fileType = fileStats.isDirectory ? "Folder" : fileStats.fileExtension;
 		const modifiedDate = utcToCurrentTime(fileStats.modifiedDate);
 		const creationDate = utcToCurrentTime(fileStats.creationDate);
@@ -147,10 +171,10 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 			}
 		}
 
-		els.forEach( item => {
+		els.forEach(item => {
 			const tableData = document.createElement('td');
-			if ( item === fileStats.filename ) {
-				if ( fileStats.isDirectory ) {
+			if (item === fileStats.filename) {
+				if (fileStats.isDirectory) {
 					setElOnclick(tableData, openDirectory);
 				} else {
 					setElOnclick(tableData, openFile);

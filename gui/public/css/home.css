@@ -12,7 +12,7 @@ header form .btn {
 	}
 }
 
-div.files div.center-y.flex-1.overflow-x-auto {
+#filePathButtons {
 	padding: 0 0.5rem 0 0.5rem;
 }
 
@@ -23,10 +23,6 @@ div.files {
 
 div.files > div.flex-c{
 	width: 110%;
-}
-
-div.flex-0-1 {
-	flex: 0 1 auto;
 }
 
 th, td {
