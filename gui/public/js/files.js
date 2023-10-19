@@ -2,9 +2,26 @@ const userDirectory = "james";
 let currentPath = userDirectory;
 const selected = {};
 
+function download() {
+	let numSelected = selected.length;
+	let includesFolder = Object.values(selected.find).includes("Folder");
+	if (numSelected === 1 && !includesFolder) {
+		console.log("Download: one file");
+	} else if (numSelected === 1 && includesFolder) {
+		console.log("Download one folder");
+	} else if (numSelected > 1 && includesFolder) {
+		console.log("Download multiple folders, and possibly files too");
+	} else if (numSelected > 1 && !includesFolder) {
+		console.log("Download multiple files. No folders.");
+	} else {
+		console.log("Nothing selected");
+	}
+}
+
 function addToSelected(el) {
 	let key = el.getAttribute("filename");
-	selected[key] ? (delete selected[key]) : selected[key] = true;
+	let value = el.getAttribute("type");
+	selected[key] ? (delete selected[key]) : selected[key] = value;
 }
 
 function updateDirectoryButtons(path) {
@@ -114,7 +131,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		const creationDate = utcToCurrentTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
 		const els = [
-			'<input class="checkbox" type="checkbox" filename="' + fileStats.filename + '" onclick="addToSelected(this)">',
+			'<input class="checkbox" type="checkbox" filename="' + fileStats.filename + '" value="' + fileStats.fileExtension + '" onclick="addToSelected(this)">',
 			'<img style="width:2.5em"src="images/file-browser-icon.png"/>',
 			fileStats.filename,
 			modifiedDate,
