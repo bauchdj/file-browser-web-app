@@ -14,6 +14,24 @@ footer {
 	padding: 0.5rem;
 }
 
+header > nav > form {
+	flex: 0.5;
+}
+
+.navbar {
+	display: flex;
+	flex-direction: row;
+	justify-content: right;
+}
+
+.navbar-brand {
+	margin: 0 0.5rem 0 0.5rem;
+}
+
+header > nav > a > img {
+	width: 2.5rem;
+}
+
 .flex-c {
 	display: flex;
 	flex-direction: column;
@@ -24,22 +42,13 @@ footer {
 	flex-direction: row;
 }
 
-.navbar {
-	display: flex;
-	flex-direction: row;
-	justify-content: right;
+.flex-0-1 {
+	flex: 0 1 auto;
 }
 
-header > nav > .navbar-brand {
-	margin: 0 0.5rem 0 0.5rem;
-}
-
-header > nav > form {
-	flex: 0.5;
-}
-
-header > nav > a > img {
-	width: 2.5rem;
+.fill-screen {
+	position: absolute;
+	inset: 0px;
 }
 
 .center-x {

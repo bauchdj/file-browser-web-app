@@ -10,10 +10,14 @@ fill-screen flex-justify-center flex-align-center
 </div>
 */
 	const divContainer = document.createElement("div");
-	divContainer.className = "fill-screen flex-justify-center flex-align-center"
+	divContainer.className = "fill-screen center-y center-x black-transparent"
+	divContainer.onclick = function (e) { this.remove(); };
+	const innerDiv = document.createElement("div");
 	if (type === "message") {
-		
+		innerDiv.textContent = options[type];
 	}
+	divContainer.appendChild(innerDiv);
+	document.body.appendChild(divContainer);
 }
 
 function download() {
@@ -36,10 +40,12 @@ function download() {
 function rename() {
 	const numSelected = Object.keys(selected).length;
 	if (numSelected === 1) {
-		const newName = prompt("");
+		const filename = Object.keys(selected)[0];
+		const newFilename = prompt('Rename "' + filename + '" to:');
+		console.log(`Renamed "${filename}" to "${newFilename}"`)
 	} else {
-		const message = (numSelected === 0 ) ? "Nothing is selected silly. Select one to rename." : "You can only selected one. You tried to rename " + numSelected + "."
-		createPopUp("message", message);
+		const message = (numSelected === 0 ) ? "Nothing is selected silly. Select one to rename." : "You can only select one. You tried to rename " + numSelected + "."
+		createPopUp("message", { message: message });
 	}
 }
 
