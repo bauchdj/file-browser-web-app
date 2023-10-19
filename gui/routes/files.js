@@ -65,7 +65,8 @@ function getListOfFiles(directoryPath, callback) {
 }
 
 exports.setupFiles = function (app) {
-	const basePath = "/Users/djbauch/git/startup-file-browser-web-app/users/";
+	const basePath = __dirname + "/../../users/";
+	console.log(basePath);
 
 	app.post('/files', (req, res) => {
 		const directoryPath = basePath + req.body.user + "/";
