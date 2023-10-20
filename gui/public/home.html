@@ -86,36 +86,38 @@
 			<div class="files">
 				<div class="flex-c">
 					<div class="flex-r">
-						<div class="dropdown">
-							<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								Sort by
-							</button>
-							<ul class="dropdown-menu">
-								<li class="dropdown-item" data-value="filename">Name</li>
-								<li class="dropdown-item" data-value="modifiedDate">Modified Date</li>
-								<li class="dropdown-item" data-value="creationDate">Creation Date</li>
-								<li class="dropdown-item" data-value="sizeInBytes">Size</li>
-								<li class="dropdown-item" data-value="fileExtension">Type</li>
-							</ul>
-						</div>
-						<div class="dropdown">
-							<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								Options
-							</button>
-							<ul class="dropdown-menu">
-								<li class="dropdown-item" onclick="download()">Download</li>
-								<li class="dropdown-item" onclick="rename()">Rename</li>
-								<li class="dropdown-item">Create link</li>
-								<li><hr class="dropdown-divider"></li>
-								<li class="dropdown-item">Move</li>
-								<li class="dropdown-item">Copy</li>
-								<li class="dropdown-item">Symbolic link</li>
-								<li><hr class="dropdown-divider"></li>
-								<li class="dropdown-item">Trash</li>
-								<li class="dropdown-item">Delete</li>
-								<li><hr class="dropdown-divider"></li>
-								<li class="dropdown-item">Details</li>
-							</ul>
+						<div id="dropdowns" class="flex-r">
+							<div class="dropdown">
+								<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Sort by
+								</button>
+								<ul class="dropdown-menu">
+									<li class="dropdown-item" data-value="filename">Name</li>
+									<li class="dropdown-item" data-value="modifiedDate">Modified Date</li>
+									<li class="dropdown-item" data-value="creationDate">Creation Date</li>
+									<li class="dropdown-item" data-value="sizeInBytes">Size</li>
+									<li class="dropdown-item" data-value="fileExtension">Type</li>
+								</ul>
+							</div>
+							<div class="dropdown">
+								<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Options
+								</button>
+								<ul class="dropdown-menu">
+									<li class="dropdown-item" onclick="download()">Download</li>
+									<li class="dropdown-item" onclick="rename()">Rename</li>
+									<li class="dropdown-item">Create link</li>
+									<li><hr class="dropdown-divider"></li>
+									<li class="dropdown-item">Move</li>
+									<li class="dropdown-item">Copy</li>
+									<li class="dropdown-item">Symbolic link</li>
+									<li><hr class="dropdown-divider"></li>
+									<li class="dropdown-item">Trash</li>
+									<li class="dropdown-item">Delete</li>
+									<li><hr class="dropdown-divider"></li>
+									<li class="dropdown-item">Details</li>
+								</ul>
+							</div>
 						</div>
 						<div id="filePathButtons" class="flex-r flex-0-1 overflow-x-auto"></div>
 					</div>
