@@ -7,9 +7,18 @@
 - [Cloud Mersive](https://cloudmersive.com/convert-api)
 - [Convert API](https://www.convertapi.com/)
 
+## Ideas
+- Use localStorage for login placeholder
+- Navigation for move, download link, etc
+- Pop ups:
+  - Message (Ok)
+  - Rename (input, Ok, Cancel)
+  - Move, Copy, Download link (Ok, Cancel) then replace Sort By && Options with "Move/Copy/Download here" then show progress and when completed
+
 ## CSS
 - All checked boxes show selected row (light gray theme)
 - Add icons to side bar
+- Add Up and Down arrow for sort direction
 - Full screen mode
 
 ## HTML
