@@ -2,23 +2,85 @@ const userDirectory = "james";
 let currentPath = userDirectory;
 const selected = {};
 
-function createPopUp(type, options) {
-// Message with Ok button
-// Message with Ok and Cancel button
-// Message takes input and Ok and Cancel button
-	const divContainer = document.createElement("div");
-	divContainer.className = "fill-screen center-y center-x black-transparent"
-	divContainer.onclick = function (e) { this.remove(); };
-	const innerDiv = document.createElement("div");
-	if (type === "message") {
-		innerDiv.textContent = options[type];
-	}
-	divContainer.appendChild(innerDiv);
-	document.body.appendChild(divContainer);
+function fileNameExists(file) {
+	return false;
 }
 
-function downloadFile() {
-	const path = currentPath + "/" + Object.keys(selected)[0];
+function createPopUp(type, options) {
+	const divFillScreenBackground = document.createElement("div");
+	divFillScreenBackground.className = "fill-screen center-y center-x black-transparent";
+	const divContainer = document.createElement("div");
+	divFillScreenBackground.onclick = function (e) { this.remove(); };
+	divContainer.className = "popupContainer p-2";
+	divContainer.onclick = (e) => { e.stopPropagation(); };
+	const header = document.createElement("div");
+	const headerText = options.file ? options.title + " " + options.file : options.title;
+	header.innerHTML = `<b>${headerText}</b>`;
+	header.className = "p-1";
+	const body = document.createElement("div");
+	body.className = "p-1";
+	const footer = document.createElement("div");
+	footer.className = "right-x p-1";
+
+	function makeOkBtn(text = "Ok") {
+		const okBtn = document.createElement("button");
+		okBtn.className = "btn btn-primary margin-sides";
+		okBtn.textContent = text;
+		okBtn.onclick = () => divFillScreenBackground.remove();
+		footer.appendChild(okBtn);
+		return okBtn;
+	}
+
+	function makeCancelBtn(text = "Cancel") {
+		const cancelBtn = document.createElement("button");
+		cancelBtn.className = "btn btn-secondary";
+		cancelBtn.textContent = "Cancel";
+		cancelBtn.onclick = () => divFillScreenBackground.remove();
+		footer.appendChild(cancelBtn);
+		return cancelBtn;
+	}
+
+	if (type === "input") {
+		const okBtn = makeOkBtn(options.title);
+		makeCancelBtn();
+		const input = document.createElement("input");
+		input.placeholder = options.title + " " + options.file;
+		body.appendChild(input);
+		okBtn.onclick = (e) => {
+			const filename = input.value;
+			if (filename === undefined || filename === '' || fileNameExists(filename)) {
+				console.log("Name already exists, or no name enter");
+			} else {
+				options.callback(filename);
+				divFillScreenBackground.remove();
+			}
+		};
+	}
+	if (type === "options") {
+		body.textContent = options.message;
+		const btnOneText = options.optionOne ? options.optionOne : options.title;
+		const btnTwoText = options.optionTwo ? options.optionTwo : "Cancel";
+		const okBtn = makeOkBtn(btnOneText);
+		makeCancelBtn(btnTwoText);
+		okBtn.onclick = (e) => {
+			options.callback();
+			divFillScreenBackground.remove();
+		};
+	}
+	if (type === "message") {
+		body.textContent = options.message;
+		makeOkBtn();
+	}
+
+	divContainer.appendChild(header);
+	divContainer.appendChild(body);
+	divContainer.appendChild(footer);
+	divFillScreenBackground.appendChild(divContainer);
+	document.body.appendChild(divFillScreenBackground);
+}
+
+function downloadFile(file) {
+	const path = currentPath + "/" + file;
 	const iframe = document.createElement('iframe');
 	iframe.style = "visibility: hidden; height: 0; width: 0;";
 	iframe.src = `/download?type=file&path=${encodeURIComponent(path)}`;
@@ -28,10 +90,15 @@ function downloadFile() {
 function download() {
 	const numSelected = Object.keys(selected).length;
 	const includesFolder = Object.values(selected).includes("Folder");
-	console.log(selected, numSelected, includesFolder);
+	const title = "Download";
 	if (numSelected === 1 && !includesFolder) {
-		console.log("Download: one File");
-		downloadFile();
+		const filename = Object.keys(selected)[0];
+		const message = `Would you like to download ${filename}?`;
+		const cb = () => {
+			downloadFile(filename);
+			console.log("Downloaded: " + filename);
+		}
+		createPopUp("options", { title: title, message: message, file: filename, callback: cb });
 	} else if (numSelected === 1 && includesFolder) {
 		console.log("Download one Folder");
 	} else if (numSelected > 1 && includesFolder) {
@@ -45,14 +112,18 @@ function download() {
 
 function rename() {
 	const numSelected = Object.keys(selected).length;
+	const title = "Rename";
 	if (numSelected === 1) {
 		const filename = Object.keys(selected)[0];
-		// createPopUp type: prompt
-		const newFilename = prompt('Rename "' + filename + '" to:');
-		console.log(`Renamed "${filename}" to "${newFilename}"`)
+		const message = "What would you like to rename it to?";
+		const cb = (newFilename) => {
+			// ajax call to rename ${filename} to ${newFilename}
+			console.log(`Renamed "${filename}" to "${newFilename}"`);
+		};
+		createPopUp("input", { title: title, message: message, file: filename, callback: cb });
 	} else {
-		const message = (numSelected === 0 ) ? "Nothing is selected silly. Select one to rename." : "You can only select one. You tried to rename " + numSelected + "."
-		createPopUp("message", { message: message });
+		const message = (numSelected === 0 ) ? "Nothing is selected silly. Select one to rename." : "You can only select one. You tried to rename " + numSelected + ".";
+		createPopUp("message", { title: title, message: message });
 	}
 }
 
@@ -171,7 +242,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 
 		document.querySelector("#" + value).onclick = el.onclick; // Sets column onclick to sort option onclick
 	});
-	
+
 	fileList.forEach(fileStats => {
 		const fileType = fileStats.isDirectory ? "Folder" : fileStats.fileExtension;
 		const modifiedDate = utcToCurrentTime(fileStats.modifiedDate);

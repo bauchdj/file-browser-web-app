@@ -1,4 +1,4 @@
-header form .btn {
+#search-btn {
 	padding: 0 0.5rem 0 0.5rem;
 	border-radius: 100%;
 }
@@ -27,4 +27,13 @@ div.files > div.flex-c{
 
 th, td {
 	white-space: nowrap;
+}
+
+.popupContainer { 
+	background-color: var(--bs-dark-border-subtle);
+	border-radius: 0.375rem;
+}
+
+.popupContainer .margin-sides {
+	margin: 0 0.3rem 0 0.3rem;
 }

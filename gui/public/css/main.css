@@ -65,3 +65,8 @@ header > nav > a > img {
 	flex-wrap: wrap;
 	align-content: center;
 }
+
+.right-x {
+	display: flex;
+	justify-content: right;
+}
