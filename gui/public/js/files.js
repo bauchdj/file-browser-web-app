@@ -217,10 +217,6 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 	const numFiles = fileList.length;
 	document.querySelector("#file-count").textContent = "File Count: " + numFiles;
 
-	const tableBody = document.querySelector("body > div > div.files > table > tbody.table-group-divider");
-	const body = $(tableBody.outerHTML);
-	body.empty();
-
 	document.querySelector("#" + lastSortKey).classList.remove('selected');
 	document.querySelector("#" + sortKey).classList.add('selected');
 
@@ -243,6 +239,10 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 
 		document.querySelector("#" + value).onclick = el.onclick; // Sets column onclick to sort option onclick
 	});
+
+	const tableBody = document.querySelector("body > div > div.files > table > tbody.table-group-divider");
+	const newTableBody = document.createElement("tbody");
+	newTableBody.className = "table-group-divider";
 
 	fileList.forEach(fileStats => {
 		const fileType = fileStats.isDirectory ? "Folder" : fileStats.fileExtension;
@@ -277,13 +277,12 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 			tableData.innerHTML = item;
 			tableRow.appendChild(tableData);
 		});
-		body.get(0).appendChild(tableRow);
-		// tableBody.appendChild(tableRow);
+		newTableBody.appendChild(tableRow);
 	});
 
 	const table = document.querySelector("body > div > div.files > table");
 	table.removeChild(tableBody);
-	table.appendChild(body.get(0));
+	table.appendChild(newTableBody);
 }
 
 function ajaxPostFileListRequest(path) {
