@@ -11,9 +11,9 @@ function createPopUp(type, options) {
 	const divFillScreenBackground = document.createElement("div");
 	divFillScreenBackground.className = "fill-screen center-y center-x black-transparent";
 	const divContainer = document.createElement("div");
-	divFillScreenBackground.onclick = function (e) { this.remove(); };
+	divFillScreenBackground.onclick = function (event) { this.remove(); };
 	divContainer.className = "popupContainer p-2";
-	divContainer.onclick = (e) => { e.stopPropagation(); };
+	divContainer.onclick = (event) => { event.stopPropagation(); };
 	const header = document.createElement("div");
 	const headerText = isFileGiven ? options.title + " - " + options.file : options.title;
 	header.innerHTML = `<b>${headerText}</b>`;
@@ -48,7 +48,7 @@ function createPopUp(type, options) {
 		input.placeholder = options.message;
 		input.style = "width: 100%;";
 		body.appendChild(input);
-		okBtn.onclick = (e) => {
+		okBtn.onclick = (event) => {
 			const filename = input.value;
 			if (filename === undefined || filename === '' || fileNameExists(filename)) {
 				const div = document.createElement('div');
@@ -66,7 +66,7 @@ function createPopUp(type, options) {
 		const btnTwoText = options.optionTwo ? options.optionTwo : "Cancel";
 		const okBtn = makeOkBtn(btnOneText);
 		makeCancelBtn(btnTwoText);
-		okBtn.onclick = (e) => {
+		okBtn.onclick = (event) => {
 			divFillScreenBackground.remove();
 			options.callback();
 		};
@@ -83,7 +83,7 @@ function createPopUp(type, options) {
 	document.body.appendChild(divFillScreenBackground);
 }
 
-function createTextFile() {
+function createTextFile(event) {
 	const title = 'Create file';
 	const message = 'Type filename';
 	const cb = (filename) => {
@@ -94,7 +94,7 @@ function createTextFile() {
 	createPopUp("input", { title: title, message: message, callback: cb });
 }
 
-function createFolder() {
+function createFolder(event) {
 	const title = 'Create folder';
 	const message = 'Type folder name';
 	const cb = (filename) => {
@@ -119,7 +119,7 @@ function downloadFolder(file) {
 	a.click();
 }
 
-function download() {
+function download(event) {
 	const numSelected = Object.keys(selected).length;
 	const includesFolder = Object.values(selected).includes("Folder");
 	const title = "Download";
@@ -160,7 +160,7 @@ function download() {
 	}
 }
 
-function rename() {
+function rename(event) {
 	const numSelected = Object.keys(selected).length;
 	const title = "Rename";
 	if (numSelected === 1) {
@@ -174,6 +174,23 @@ function rename() {
 		createPopUp("input", { title: title, message: message, file: filename, callback: cb });
 	} else {
 		const message = (numSelected === 0 ) ? "Nothing is selected silly. Select one to rename." : "You can only select one. You tried to rename " + numSelected + ".";
+		createPopUp("message", { title: title, message: message });
+	}
+}
+
+function createLink(event) {
+	const numSelected = Object.keys(selected).length;
+	const title = "Create Shareable Link";
+	if (numSelected === 1) {
+		const message = "Type link name";
+		const cb = (linkName) => {
+			//ajax call to create shared files link
+			console.log(`Created link: "${linkName}"`);
+			createPopUp("message", { title: "Created Sharable Link", message: `Created link: ${linkName}` });
+		};
+		createPopUp("input", { title: title, message: message, callback: cb });
+	} else {
+		const message = "Nothing is selected silly. Select files to share.";
 		createPopUp("message", { title: title, message: message });
 	}
 }
@@ -206,7 +223,7 @@ function updateDirectoryButtons(path) {
 		button.className = "btn";
 		steppingPath += elText + '/';
 		let jumpToPath = steppingPath;
-		button.onclick = function (e) {
+		button.onclick = function (event) {
 			openDirectory(jumpToPath);
 		}
 		const div = document.createElement('div');
@@ -307,7 +324,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		const creationDate = utcToCurrentTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
 		const els = [
-			{ el: 'input', type: 'checkbox', className: 'checkbox', onclick: (e) => { addToSelected(e.target) }, attrs: { filename: fileStats.filename, fileType: fileType } },
+			{ el: 'input', type: 'checkbox', className: 'checkbox', onclick: (event) => { addToSelected(event.target) }, attrs: { filename: fileStats.filename, fileType: fileType } },
 			{ el: 'img', src: 'images/file-browser-icon.png', style: 'width:2.5rem' },
 			{ text: fileStats.filename },
 			{ text: modifiedDate },
@@ -317,7 +334,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		];
 
 		function setElOnclick(el, func) {
-			el.onclick = function (e) {
+			el.onclick = function (event) {
 				func(currentPath + '/' + fileStats.filename);
 			}
 		}

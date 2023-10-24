@@ -48,8 +48,8 @@
 					<div class="dropdown">
 						<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Add New</button>
 						<ul class="dropdown-menu">
-							<li class="dropdown-item" onclick="createFolder()">New folder</li>
-							<li class="dropdown-item" onclick="createTextFile()">New text file</li>
+							<li class="dropdown-item" onclick="createFolder(event)">New folder</li>
+							<li class="dropdown-item" onclick="createTextFile(event)">New text file</li>
 							<li><hr class="dropdown-divider"></li>
 							<li class="dropdown-item">Upload Folder</li>
 							<li class="dropdown-item">Upload files</li>
@@ -102,9 +102,9 @@
 									Options
 								</button>
 								<ul class="dropdown-menu">
-									<li class="dropdown-item" onclick="download()">Download</li>
-									<li class="dropdown-item" onclick="rename()">Rename</li>
-									<li class="dropdown-item">Create link</li>
+									<li class="dropdown-item" onclick="download(event)">Download</li>
+									<li class="dropdown-item" onclick="rename(event)">Rename</li>
+									<li class="dropdown-item" onclick="createLink(event)">Create link</li>
 									<li><hr class="dropdown-divider"></li>
 									<li class="dropdown-item">Move</li>
 									<li class="dropdown-item">Copy</li>
