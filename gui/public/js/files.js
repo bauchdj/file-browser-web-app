@@ -14,7 +14,7 @@ function createPopUp(type, options) {
 	divContainer.className = "popupContainer p-2";
 	divContainer.onclick = (e) => { e.stopPropagation(); };
 	const header = document.createElement("div");
-	const headerText = options.file ? options.title + " " + options.file : options.title;
+	const headerText = options.file ? options.title + " - " + options.file : options.title;
 	header.innerHTML = `<b>${headerText}</b>`;
 	header.className = "p-1";
 	const body = document.createElement("div");
@@ -80,35 +80,17 @@ function createPopUp(type, options) {
 }
 
 function downloadFile(file) {
-	function download(url, callback) {
-		const request = new XMLHttpRequest();
-		request.responseType = 'blob';
-		request.open('GET', url);
-		request.addEventListener('error', () => { console.error('error ' + file) });
-		request.addEventListener('progress', () => { console.log('progress ' + file) });
-		request.addEventListener('load', () => {
-			console.log('load ' + file);
-			callback(request.response);
-		});
-		request.send();
-	}
-
-	function save(object) {
-		const a = document.createElement('a');
-		a.href = URL.createObjectURL(object);
-		a.download = file;
-		a.click();
-	}
-
 	const path = currentPath + "/" + file;
-	const url = `/download?type=file&path=${encodeURIComponent(path)}`;
-	download(url, (data) => { save(data); });
+	const a = document.createElement('a');
+	a.href = `/download?type=file&path=${encodeURIComponent(path)}`;
+	a.click();
+}
 
-	//const iframe = document.createElement('iframe');
-	//iframe.style = "visibility: hidden; height: 0; width: 0;";
-	//iframe.style = "display: none";
-	//iframe.src = `/download?type=file&path=${encodeURIComponent(path)}`;
-	//document.body.appendChild(iframe);
+function downloadFolder(file) {
+	const path = currentPath + "/" + file;
+	const a = document.createElement('a');
+	a.href = `/download?type=zip&path=${encodeURIComponent(path)}`;
+	a.click();
 }
 
 function download() {
@@ -117,11 +99,16 @@ function download() {
 	const title = "Download";
 	if (numSelected === 1 && !includesFolder) {
 		const filename = Object.keys(selected)[0];
-		const message = `Would you like to download ${filename}?`;
+		const message = `Would you like to download this file?`;
 		const cb = () => { downloadFile(filename); };
 		createPopUp("options", { title: title, message: message, file: filename, callback: cb });
 	} else if (numSelected === 1 && includesFolder) {
-		console.log("Download one Folder");
+		const foldername = Object.keys(selected)[0];
+		const message = `Would you like to download this folder?`;
+		const cb = () => {
+			downloadFolder(foldername);
+		};
+		createPopUp("options", { title: title, message: message, file: filename, callback: cb });
 	} else if (numSelected > 1 && includesFolder) {
 		console.log("Download " + numSelected + ". True for Folders or Folder && files(s)");
 	} else if (numSelected > 1 && !includesFolder) {
@@ -270,13 +257,13 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		const creationDate = utcToCurrentTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
 		const els = [
-			'<input class="checkbox" type="checkbox" filename="' + fileStats.filename + '" fileType="' + fileType + '" onclick="addToSelected(this)">',
-			'<img style="width:2.5em"src="images/file-browser-icon.png"/>',
-			fileStats.filename,
-			modifiedDate,
-			creationDate,
-			fileStats.sizeInBytes,
-			fileType,
+			{ el: 'input', type: 'checkbox', className: 'checkbox', onclick: (e) => { addToSelected(e.target) }, attrs: { filename: fileStats.filename, fileType: fileType } },
+			{ el: 'img', src: 'images/file-browser-icon.png', style: 'width:2.5rem' },
+			{ text: fileStats.filename },
+			{ text: modifiedDate },
+			{ text: creationDate },
+			{ text:  fileStats.sizeInBytes },
+			{ text: fileType },
 		];
 
 		function setElOnclick(el, func) {
@@ -285,16 +272,34 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 			}
 		}
 
-		els.forEach(item => {
+		els.forEach(obj => {
 			const tableData = document.createElement('td');
-			if (item === fileStats.filename) {
-				if (fileStats.isDirectory) {
-					setElOnclick(tableData, openDirectory);
-				} else {
-					setElOnclick(tableData, openFile);
+			if (Object.keys(obj).length == 1 && obj.text) {
+				tableData.textContent = obj.text;
+				if (obj.text === fileStats.filename) {
+					if (fileStats.isDirectory) {
+						setElOnclick(tableData, openDirectory);
+					} else {
+						setElOnclick(tableData, openFile);
+					}
 				}
+			} else {
+				const el = document.createElement(obj.el);
+				if (obj.type) el.type = obj.type;
+				if (obj.src) el.src = obj.src;
+				if (obj.className) el.className = obj.className;
+				if (obj.style) el.style = obj.style;
+				if (obj.onclick) el.onclick = obj.onclick;
+				if (obj.attrs) {
+					Object.keys(obj.attrs).forEach(attr => {
+						el.setAttribute(attr, obj.attrs[attr]);
+					});
+					if (obj.type == 'checkbox' && selected[fileStats.filename]) {
+						el.checked = true;
+					}
+				}
+				tableData.appendChild(el);
 			}
-			tableData.innerHTML = item;
 			tableRow.appendChild(tableData);
 		});
 		newTableBody.appendChild(tableRow);
