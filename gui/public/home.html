@@ -46,12 +46,10 @@
 					<button class="btn btn-success" onclick="this.classList.toggle('btn-success');this.classList.toggle('btn-danger');this.textContent==='Connected'?this.textContent='Disconnected':this.textContent='Connected';">Connected</button>
 				</div>
 					<div class="dropdown">
-						<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							Add New
-						</button>
+						<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Add New</button>
 						<ul class="dropdown-menu">
-							<li class="dropdown-item">New folder</li>
-							<li class="dropdown-item">New text file</li>
+							<li class="dropdown-item" onclick="createFolder()">New folder</li>
+							<li class="dropdown-item" onclick="createTextFile()">New text file</li>
 							<li><hr class="dropdown-divider"></li>
 							<li class="dropdown-item">Upload Folder</li>
 							<li class="dropdown-item">Upload files</li>

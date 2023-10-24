@@ -7,6 +7,7 @@ function fileNameExists(file) {
 }
 
 function createPopUp(type, options) {
+	const isFileGiven = (options.file !== undefined);
 	const divFillScreenBackground = document.createElement("div");
 	divFillScreenBackground.className = "fill-screen center-y center-x black-transparent";
 	const divContainer = document.createElement("div");
@@ -14,7 +15,7 @@ function createPopUp(type, options) {
 	divContainer.className = "popupContainer p-2";
 	divContainer.onclick = (e) => { e.stopPropagation(); };
 	const header = document.createElement("div");
-	const headerText = options.file ? options.title + " - " + options.file : options.title;
+	const headerText = isFileGiven ? options.title + " - " + options.file : options.title;
 	header.innerHTML = `<b>${headerText}</b>`;
 	header.className = "p-1";
 	const body = document.createElement("div");
@@ -44,15 +45,18 @@ function createPopUp(type, options) {
 		const okBtn = makeOkBtn(options.title);
 		makeCancelBtn();
 		const input = document.createElement("input");
-		input.placeholder = options.title + " " + options.file;
+		input.placeholder = options.message;
+		input.style = "width: 100%;";
 		body.appendChild(input);
 		okBtn.onclick = (e) => {
 			const filename = input.value;
 			if (filename === undefined || filename === '' || fileNameExists(filename)) {
-				console.log("Name already exists, or no name enter");
+				const div = document.createElement('div');
+				div.textContent = "Name already exists, or no name entered";
+				header.appendChild(div);
 			} else {
-				options.callback(filename);
 				divFillScreenBackground.remove();
+				options.callback(filename);
 			}
 		};
 	}
@@ -63,8 +67,8 @@ function createPopUp(type, options) {
 		const okBtn = makeOkBtn(btnOneText);
 		makeCancelBtn(btnTwoText);
 		okBtn.onclick = (e) => {
-			options.callback();
 			divFillScreenBackground.remove();
+			options.callback();
 		};
 	}
 	if (type === "message") {
@@ -77,6 +81,28 @@ function createPopUp(type, options) {
 	divContainer.appendChild(footer);
 	divFillScreenBackground.appendChild(divContainer);
 	document.body.appendChild(divFillScreenBackground);
+}
+
+function createTextFile() {
+	const title = 'Create file';
+	const message = 'Type filename';
+	const cb = (filename) => {
+		// ajax call to create file
+		console.log("Created file: " + filename);
+		createPopUp("message", { title: "Created file", message: `New file: ${filename}` });
+	}
+	createPopUp("input", { title: title, message: message, callback: cb });
+}
+
+function createFolder() {
+	const title = 'Create folder';
+	const message = 'Type folder name';
+	const cb = (filename) => {
+		// ajax call to create new folder
+		console.log("Created folder: " + filename);
+		createPopUp("message", { title: "Created folder", message: `New folder: ${filename}` });
+	}
+	createPopUp("input", { title: title, message: message, callback: cb });
 }
 
 function downloadFile(file) {
@@ -100,21 +126,37 @@ function download() {
 	if (numSelected === 1 && !includesFolder) {
 		const filename = Object.keys(selected)[0];
 		const message = `Would you like to download this file?`;
-		const cb = () => { downloadFile(filename); };
+		const cb = () => {
+			downloadFile(filename);
+			createPopUp("message", { title: "Downloading file", message: `Currently downloading: ${filename}` });
+		};
 		createPopUp("options", { title: title, message: message, file: filename, callback: cb });
 	} else if (numSelected === 1 && includesFolder) {
-		const foldername = Object.keys(selected)[0];
+		const filename = Object.keys(selected)[0];
 		const message = `Would you like to download this folder?`;
 		const cb = () => {
-			downloadFolder(foldername);
+			// downloadFolder(foldername);
+			createPopUp("message", { title: "Downloading folder", message: `Currently downloading: ${filename}` });
 		};
 		createPopUp("options", { title: title, message: message, file: filename, callback: cb });
 	} else if (numSelected > 1 && includesFolder) {
-		console.log("Download " + numSelected + ". True for Folders or Folder && files(s)");
+		const cb = () => {
+			console.log("Download " + numSelected + ". True for Folders or Folder && files(s)");
+			createPopUp("message", { title: "Downloading folders / folder and file(s)", message: `Download ${numSelected}. Folders or Folder && files(s)` });
+		};
+		cb();
 	} else if (numSelected > 1 && !includesFolder) {
-		console.log("Download " + numSelected + " Files. No Folders.");
+		const cb = () => {
+			console.log("Download " + numSelected + " Files. No Folders.");
+			createPopUp("message", { title: "Downloading files", message: `Download ${numSelected} files. No Folders.` });
+		};
+		cb();
 	} else {
-		console.log("Nothing selected");
+		const cb = () => {
+			console.log("Nothing selected");
+			createPopUp("message", { title: "Attempted to Download", message: "Nothing selected" });
+		};
+		cb();
 	}
 }
 
@@ -123,10 +165,11 @@ function rename() {
 	const title = "Rename";
 	if (numSelected === 1) {
 		const filename = Object.keys(selected)[0];
-		const message = "What would you like to rename it to?";
+		const message = "Type new name";
 		const cb = (newFilename) => {
 			// ajax call to rename ${filename} to ${newFilename}
 			console.log(`Renamed "${filename}" to "${newFilename}"`);
+			createPopUp("message", { title: "Renamed file or folder", message: `Renamed "${filename}" to "${newFilename}"` });
 		};
 		createPopUp("input", { title: title, message: message, file: filename, callback: cb });
 	} else {
