@@ -32,6 +32,10 @@ header > nav > a > img {
 	width: 2.5rem;
 }
 
+.black-transparent {
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
 .flex-c {
 	display: flex;
 	flex-direction: column;
