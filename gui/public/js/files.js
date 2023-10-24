@@ -80,10 +80,30 @@ function createPopUp(type, options) {
 }
 
 function downloadFile(file) {
+	function download(url, callback) {
+		const request = new XMLHttpRequest();
+		request.responseType = 'blob';
+		request.open('GET', url);
+		request.addEventListener('error', () => { console.error('error ' + file) });
+		request.addEventListener('progress', () => { console.log('progress ' + file) });
+		request.addEventListener('load', () => {
+			console.log('load ' + file);
+			callback(request.response);
+		});
+		request.send();
+	}
+
+	function save(object) {
+		const a = document.createElement('a');
+		a.href = URL.createObjectURL(object);
+		a.download = file;
+		a.click();
+	}
+
 	const path = currentPath + "/" + file;
-	const downloadLink = document.createElement('a');
-	downloadLink.href = `/download?type=file&path=${encodeURIComponent(path)}`;
-	downloadLink.click();
+	const url = `/download?type=file&path=${encodeURIComponent(path)}`;
+	download(url, (data) => { save(data); });
+
 	//const iframe = document.createElement('iframe');
 	//iframe.style = "visibility: hidden; height: 0; width: 0;";
 	//iframe.style = "display: none";
