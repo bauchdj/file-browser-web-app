@@ -81,10 +81,14 @@ function createPopUp(type, options) {
 
 function downloadFile(file) {
 	const path = currentPath + "/" + file;
-	const iframe = document.createElement('iframe');
-	iframe.style = "visibility: hidden; height: 0; width: 0;";
-	iframe.src = `/download?type=file&path=${encodeURIComponent(path)}`;
-	document.body.appendChild(iframe);
+	const downloadLink = document.createElement('a');
+	downloadLink.href = `/download?type=file&path=${encodeURIComponent(path)}`;
+	downloadLink.click();
+	//const iframe = document.createElement('iframe');
+	//iframe.style = "visibility: hidden; height: 0; width: 0;";
+	//iframe.style = "display: none";
+	//iframe.src = `/download?type=file&path=${encodeURIComponent(path)}`;
+	//document.body.appendChild(iframe);
 }
 
 function download() {
@@ -94,10 +98,7 @@ function download() {
 	if (numSelected === 1 && !includesFolder) {
 		const filename = Object.keys(selected)[0];
 		const message = `Would you like to download ${filename}?`;
-		const cb = () => {
-			downloadFile(filename);
-			console.log("Downloaded: " + filename);
-		}
+		const cb = () => { downloadFile(filename); };
 		createPopUp("options", { title: title, message: message, file: filename, callback: cb });
 	} else if (numSelected === 1 && includesFolder) {
 		console.log("Download one Folder");
