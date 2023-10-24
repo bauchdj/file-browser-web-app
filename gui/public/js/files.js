@@ -211,11 +211,18 @@ function sortArrOfObj(arr, key, direction = 1) {
 	arr.sort((a, b) => {
 		const valA = a[key];
 		const valB = b[key];
-		if (valA === true) console.log("valA", valA, "valB:", valB);
-		if (valA === true && valB === false) return -1 * direction;
-		if (valA === false && valB === true) return 1 * direction;
-		if (valA < valB) return -1 * direction;
-		if (valA > valB) return 1 * direction;
+		if (valA === valB) return 0; // Short circuit if they're equal
+		let firstBool;
+		let secondBool;
+		if (key === "fileExtension") { // Sort folders & empty extensions above everything else
+			firstBool = (valA === '' && valB !== '');
+			secondBool = (valA !== '' && valB === '');
+		} else {
+			firstBool = (valA < valB);
+			secondBool = (valA > valB);
+		}
+		if (firstBool) return -1 * direction;
+		if (secondBool) return 1 * direction;
 		return 0;
 	});
 }
@@ -234,9 +241,9 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 
 	const sortOptions = document.querySelector("body > div > div.files > div > div.flex-r ul").children;
 	Array.from(sortOptions).forEach(el => {
-		let value = el.dataset.value;
+		const value = el.dataset.value;
 		el.onclick = e => {
-			let column = value;
+			const column = value;
 			let direction = sortDirection;
 			if (column === sortKey || direction === -1) { // Change direction if same option. Force back to 1 if changing direction column
 				direction = direction * -1;
@@ -294,7 +301,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 					Object.keys(obj.attrs).forEach(attr => {
 						el.setAttribute(attr, obj.attrs[attr]);
 					});
-					if (obj.type == 'checkbox' && selected[fileStats.filename]) {
+					if (obj.type == 'checkbox' && selected[fileStats.filename] !== undefined) {
 						el.checked = true;
 					}
 				}
