@@ -73,20 +73,50 @@ function getListOfFiles(directoryPath, callback) {
 }
 
 exports.setupFiles = function (app) {
-	const basePath = path.resolve(__dirname + "/../../users") + "/"; // Turns relative path to absolute path. Express relative path is malicious
+	const basePath = path.resolve(__dirname + "/../../") + "/"; // Turns relative path to absolute path. Express relative path is malicious
+	const usersPath = basePath + "users/";
 
-	app.post('/files', (req, res) => {
-		const directoryPath = basePath + req.body.user + "/"; // Gets directory my user
+	app.post('/getfiles', (req, res) => {
+		const directoryPath = usersPath + req.body.path + "/"; // Gets directory of user
 		
 		getListOfFiles(directoryPath, (err, fileList) => {
-			if (err) res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
-			res.end(JSON.stringify(fileList));
+			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
+			res.end(JSON.stringify({ success: true, data: fileList }));
+		});
+	});
+
+	app.post('/login', (req, res) => {
+		const username = req.body.username;
+		const pwd = req.body.password;
+		const users = require(basePath + "users.json");
+		if (users[username] === undefined || users[username].pwd !== pwd) {
+			res.sendFile(basePath + "gui/public/index.html");
+			return null;
+		}
+		res.sendFile(basePath + "gui/public/home.html");
+	});
+
+	app.post('/createfile', (req, res) => {
+		const path = usersPath + req.body.path + "/";
+		const filename = path + req.body.filename;
+		fs.writeFile(filename, '', (err) => {
+			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
+			res.end(JSON.stringify({ success: true, data: filename.split('/').pop() }));
 		});
 	});
 	
+	app.post('/createfolder', (req, res) => {
+		const path = usersPath + req.body.path + "/";
+		const filename = path + req.body.filename;
+		fs.mkdir(filename, (err) => {
+			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
+			res.end(JSON.stringify({ success: true, data: filename.split('/').pop() }));
+		});
+	});
+
 	app.get('/download*', (req, res) => {
 		const type = req.query.type;
-		const filePath = basePath + decodeURIComponent(req.query.path);
+		const filePath = usersPath + decodeURIComponent(req.query.path);
 
 		if (type === "file") {
 			const filename = filePath.split('/').pop();

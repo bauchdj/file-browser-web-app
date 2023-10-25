@@ -1,10 +1,7 @@
 const userDirectory = "james";
 let currentPath = userDirectory;
 const selected = {};
-
-function fileNameExists(file) {
-	return false;
-}
+let filesHash = {};
 
 function createPopUp(type, options) {
 	const isFileGiven = (options.file !== undefined);
@@ -50,7 +47,7 @@ function createPopUp(type, options) {
 		body.appendChild(input);
 		okBtn.onclick = (event) => {
 			const filename = input.value;
-			if (filename === undefined || filename === '' || fileNameExists(filename)) {
+			if (filename === undefined || filename === '' || filesHash[filename] !== undefined) {
 				const div = document.createElement('div');
 				div.textContent = "Name already exists, or no name entered";
 				header.appendChild(div);
@@ -73,7 +70,13 @@ function createPopUp(type, options) {
 	}
 	if (type === "message") {
 		body.textContent = options.message;
-		makeOkBtn();
+		const okBtn = makeOkBtn();
+		if (options.callback) {
+			okBtn.onclick = (event) => {
+				divFillScreenBackground.remove();
+				options.callback();
+			};
+		}
 	}
 
 	divContainer.appendChild(header);
@@ -87,9 +90,12 @@ function createTextFile(event) {
 	const title = 'Create file';
 	const message = 'Type filename';
 	const cb = (filename) => {
-		// ajax call to create file
-		console.log("Created file: " + filename);
-		createPopUp("message", { title: "Created file", message: `New file: ${filename}` });
+		ajaxPost('/createfile', { path: currentPath, filename: filename }, (filename) => {
+			console.log("Created file: " + filename);
+			createPopUp("message", { title: "Created file", message: `New file: ${filename}`, callback: () => { 
+				ajaxPost('/getfiles', { path: currentPath }, (data) => { addFilesToTable(data); });
+			} });
+		});
 	}
 	createPopUp("input", { title: title, message: message, callback: cb });
 }
@@ -98,9 +104,12 @@ function createFolder(event) {
 	const title = 'Create folder';
 	const message = 'Type folder name';
 	const cb = (filename) => {
-		// ajax call to create new folder
-		console.log("Created folder: " + filename);
-		createPopUp("message", { title: "Created folder", message: `New folder: ${filename}` });
+		ajaxPost('/createfolder', { path: currentPath, filename: filename }, (filename) => {
+			console.log("Created folder: " + filename);
+			createPopUp("message", { title: "Created folder", message: `New folder: ${filename}`, callback: () => { 
+				ajaxPost('/getfiles', { path: currentPath }, (data) => { addFilesToTable(data); });
+			} });
+		});
 	}
 	createPopUp("input", { title: title, message: message, callback: cb });
 }
@@ -252,7 +261,7 @@ function openDirectory(path) {
 	currentPath = path;
 	updateInputPathText(path);
 	updateDirectoryButtons(path);
-	ajaxPostFileListRequest(path);
+	ajaxPost('/getfiles', { path: path }, (data) => { addFilesToTable(data); });
 }
 
 function openFile(path) {
@@ -370,6 +379,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 			tableRow.appendChild(tableData);
 		});
 		newTableBody.appendChild(tableRow);
+		filesHash[fileStats.filename] = fileStats;
 	});
 
 	const table = document.querySelector("body > div > div.files > table");
@@ -377,22 +387,32 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 	table.appendChild(newTableBody);
 }
 
-function ajaxPostFileListRequest(path) {
+function ajaxPost(route, data, callback, onerror) {
 	$.ajax({
-		url: '/files',
+		url: route,
 		method: 'POST',
 		dataType: 'json',
-		data: { user: path },
-		success: function(data) {
-			if (data.error) return console.error(data.error);
-			addFilesToTable(data);
+		data: data,
+		success: (rsp) => {
+			if (rsp.error || !rsp.success) return onerror ? onerror(rsp.error) : console.error(rsp.error);
+			callback(rsp.data);
 		},
-		error: function() {
-			console.error("Couldn't get files");
+		error: function(err) {
+			console.error(err);
 		}
 	});
 }
 
+function ajaxHandler(type) {
+	const types = {
+		filesRequest: () => { ajaxPost('/getfiles', { user: userDirectory }, (data) => { addFilesToTable(data); }) },
+		createFile: (callback) => { ajaxPost(callback) },
+	}	
+	if (types[type] !== undefined) {
+		return types[type];
+	}
+}
+
 $(document).ready(function() {
-	ajaxPostFileListRequest(userDirectory);
+	ajaxPost('/getfiles', { path: userDirectory }, (data) => { addFilesToTable(data); });
 });

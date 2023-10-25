@@ -9,13 +9,17 @@ app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:500
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
 
 // Text to display for the service name
-const serviceName = process.argv.length > 3 ? process.argv[3] : 'website';
+const serviceName = process.argv.length > 3 ? process.argv[3] : 'file-browser-web-app';
 
 // Serve up the static content
 app.use(express.static(__dirname + '/public'));
 
+//app.get('/', (req, res) => {
+//	res.sendFile(__dirname + '/public/index.html');
+//});
+
 // Provide the version of the application
-app.get('/config', (_req, res) => {
+app.get('/config', (req, res) => {
 	res.send({ version: '20231018.1456.54', name: serviceName });
 });
 
