@@ -403,16 +403,6 @@ function ajaxPost(route, data, callback, onerror) {
 	});
 }
 
-function ajaxHandler(type) {
-	const types = {
-		filesRequest: () => { ajaxPost('/getfiles', { user: userDirectory }, (data) => { addFilesToTable(data); }) },
-		createFile: (callback) => { ajaxPost(callback) },
-	}	
-	if (types[type] !== undefined) {
-		return types[type];
-	}
-}
-
 $(document).ready(function() {
 	ajaxPost('/getfiles', { path: userDirectory }, (data) => { addFilesToTable(data); });
 });

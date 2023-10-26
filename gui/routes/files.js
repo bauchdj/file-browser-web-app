@@ -78,7 +78,6 @@ exports.setupFiles = function (app) {
 
 	app.post('/getfiles', (req, res) => {
 		const directoryPath = usersPath + req.body.path + "/"; // Gets directory of user
-		
 		getListOfFiles(directoryPath, (err, fileList) => {
 			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
 			res.end(JSON.stringify({ success: true, data: fileList }));
