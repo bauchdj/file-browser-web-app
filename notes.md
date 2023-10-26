@@ -1063,11 +1063,13 @@ petRegex.test(text);
 
 ### [JS Modules](https://github.com/webprogramming260/.github/blob/main/profile/javascript/modules/modules.md)
 
-### [DOM](https://github.com/webprogramming260/.github/blob/main/profile/javascript/dom/dom.md)
+### [JS DOM](https://github.com/webprogramming260/.github/blob/main/profile/javascript/dom/dom.md)
 
-### [Local Storage](https://github.com/webprogramming260/.github/blob/main/profile/javascript/localStorage/localStorage.md)
+### [JS Local Storage](https://github.com/webprogramming260/.github/blob/main/profile/javascript/localStorage/localStorage.md)
 
+### [JS Promises](https://github.com/webprogramming260/.github/blob/main/profile/javascript/promises/promises.md)
 
+### [JS async / await](https://github.com/webprogramming260/.github/blob/main/profile/javascript/asyncAwait/asyncAwait.md)
 
 
 ### Caddy
