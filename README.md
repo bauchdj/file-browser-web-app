@@ -40,23 +40,23 @@ If you're like me, you have photos, videos and files you want to access and shar
 
 # CSS deliverable
 
-- **Header, footer, and main content body** - 
-- **Navigation elements** - 
+- **Header, footer, and main content body** - Bootstrapped
+- **Navigation elements** - Bootstrapped
 - **Responsive to window resizing** - My app looks great on all window sizes and devices
 - **Application elements** - Used good contrast and whitespace
 - **Application text content** - Consistent fonts
-- **Application images** - 
+- **Application images** - Good sizes and placeholders
 
 # JavaScript deliverable
 
 - **login** - When you press enter or the login button it takes you to your root folder.
-- **database** - 
-- **WebSocket** - 
-- **application logic** -
+- **database** - Localstorage and JSON file
+- **WebSocket** - Temporary clickable Connected button
+- **application logic** - The prompts for the frontend are complete
 
 # Service deliverable
 
-- **Node.js/Express HTTP service** - 
+- **Node.js/Express HTTP service** - Setup to take routes I need so far
 - **Static middleware for frontend** - 
 - **Calls to third party endpoints** - Serve up icon based on file type.
 - **Backend service endpoints** - 
