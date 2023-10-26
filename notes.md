@@ -1065,6 +1065,11 @@ petRegex.test(text);
 
 ### [DOM](https://github.com/webprogramming260/.github/blob/main/profile/javascript/dom/dom.md)
 
+### [Local Storage](https://github.com/webprogramming260/.github/blob/main/profile/javascript/localStorage/localStorage.md)
+
+
+
+
 ### Caddy
 - Routes traffic from 443 to specified ports based on subdomain
 - Automatically creates domain certificates useing LetsEncrypt / certbot
