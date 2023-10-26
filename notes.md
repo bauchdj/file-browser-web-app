@@ -9,7 +9,8 @@
 - Add "sub folder" search check box
   - back end placeholder
   - front end search function
-   - only adds files that match input
+    - only adds files that match input
+    - resets and uses filesHash to addFiles
   - How to display searched files
   - Exit search results button in top left
 - Move to & Copy to & Symbolic link (only 1 file tho)
