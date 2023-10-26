@@ -52,7 +52,7 @@ If you're like me, you have photos, videos and files you want to access and shar
 - **login** - When you press enter or the login button it takes you to your root folder.
 - **database** - Localstorage and JSON file
 - **WebSocket** - Temporary clickable Connected button
-- **application logic** - The prompts for the frontend are complete
+- **application logic** - Sorting by each column, there are pop ups for the different options
 
 # Service deliverable
 
