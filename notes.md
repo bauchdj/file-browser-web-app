@@ -1071,6 +1071,10 @@ petRegex.test(text);
 
 ### [JS async / await](https://github.com/webprogramming260/.github/blob/main/profile/javascript/asyncAwait/asyncAwait.md)
 
+### [Debuggin JS](https://github.com/webprogramming260/.github/blob/main/profile/javascript/debuggingJavascript/debuggingJavascript.md)
+
+### [Simon JS](https://github.com/webprogramming260/.github/blob/main/profile/simon/simonJavascript/simonJavascript.md)
+
 
 ### Caddy
 - Routes traffic from 443 to specified ports based on subdomain
