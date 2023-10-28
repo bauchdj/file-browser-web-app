@@ -95,6 +95,8 @@ The management of the Internet is controlled by two major organizations. The Int
 
 ## Hypertext Markup Language (HTML)
 
+`<!DOCTYPE html>`
+
 “I just had to take the hypertext idea and connect it to the TCP and DNS ideas and—ta-da!—the World Wide Web.”
 — Tim Berners-Lee, (**Source**: _Answers for Young People_)
 
