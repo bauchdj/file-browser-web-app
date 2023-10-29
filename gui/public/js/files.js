@@ -1,5 +1,4 @@
-const userDirectory = "james";
-let currentPath = userDirectory;
+let currentPath = localStorage.getItem('user');
 const selected = {};
 let filesHash = {};
 
@@ -84,6 +83,28 @@ function createPopUp(type, options) {
 	divContainer.appendChild(footer);
 	divFillScreenBackground.appendChild(divContainer);
 	document.body.appendChild(divFillScreenBackground);
+}
+
+function search(event) {
+	function createRegExPattern(input) {
+		try {
+			const pattern = input.replace(/(^\/)|(\/[a-z]*$)/g, '');
+			const flags = input.match(/[^/]+$/)[0];
+			const regex = new RegExp(pattern, flags);
+			return regex;
+		} catch (err) {
+			return new RegExp(input);
+		}
+	}
+
+	const input = event.srcElement[0].value;
+	if (input !== undefined && input !== '') {
+		const regex = createRegExPattern(input);
+		console.log(regex);
+		const filteredFiles = Object.values(filesHash).filter((fileStats) => { return regex.test(fileStats.filename); });
+		// Function sets dropdowns display to none adds button as first child. That buttons has onclick callback that sets display to flex again && addFilesToTable(Object.values(filesHash)) && removes itself
+		addFilesToTable(filteredFiles);
+	}
 }
 
 function createTextFile(event) {
@@ -404,5 +425,5 @@ function ajaxPost(route, data, callback, onerror) {
 }
 
 $(document).ready(function() {
-	ajaxPost('/getfiles', { path: userDirectory }, (data) => { addFilesToTable(data); });
+	ajaxPost('/getfiles', { path: currentPath }, (data) => { addFilesToTable(data); });
 });

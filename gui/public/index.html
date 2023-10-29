@@ -21,7 +21,7 @@
 			</nav>
 		</header>
 			<div>
-				<form action="login" method="post">
+				<form action="login" method="post" onsubmit="localStorage.setItem('user', this.parentNode.querySelector('input').value)">
 					<legend>Login</legend>
 					<div class="mb-3">
 						<input type="text" class="form-control" name="username" placeholder="Username" required>
