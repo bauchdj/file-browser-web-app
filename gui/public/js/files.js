@@ -38,8 +38,8 @@ function createPopUp(type, options) {
 	}
 
 	if (type === "input") {
-		const okBtn = makeOkBtn(options.title);
 		makeCancelBtn();
+		const okBtn = makeOkBtn(options.title);
 		const input = document.createElement("input");
 		input.placeholder = options.message;
 		input.style = "width: 100%;";
@@ -60,8 +60,8 @@ function createPopUp(type, options) {
 		body.textContent = options.message;
 		const btnOneText = options.optionOne ? options.optionOne : options.title;
 		const btnTwoText = options.optionTwo ? options.optionTwo : "Cancel";
+		const cancelBtn = makeCancelBtn(btnTwoText);
 		const okBtn = makeOkBtn(btnOneText);
-		makeCancelBtn(btnTwoText);
 		okBtn.onclick = (event) => {
 			divFillScreenBackground.remove();
 			options.callback();
