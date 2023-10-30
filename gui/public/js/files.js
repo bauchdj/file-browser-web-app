@@ -137,6 +137,23 @@ function createFolder(event) {
 	createPopUp("input", { title: title, message: message, callback: cb });
 }
 
+function downloadURLInput(event) {
+	const title = 'Download from URL';
+	const message = 'Enter URL to download file or folder to current directory';
+	const cb = (url) => {
+		// Need to add /downloadURL to backend and handle the url and filename that is used for downloaded file
+		console.log('Will make ajax for downloading file / folder');
+		return true;
+		ajaxPost('/downloadURL', { path: currentPath, url: url }, (filename) => {
+			console.log("Downloaded: " + filename);
+			createPopUp("message", { title: "Downloaded from URL", message: `New file: ${filename}`, callback: () => { 
+				ajaxPost('/getfiles', { path: currentPath }, (data) => { addFilesToTable(data); });
+			} });
+		});
+	}
+	createPopUp("input", { title: title, message: message, callback: cb });
+}
+
 function downloadFile(file) {
 	const path = currentPath + "/" + file;
 	const a = document.createElement('a');
