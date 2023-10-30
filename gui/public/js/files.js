@@ -86,7 +86,9 @@ function createPopUp(type, options) {
 }
 
 function search(event) {
-	function createRegExPattern(input) {
+	const input = event.srcElement[0].value;
+	if (input === undefined || input === '') return false;
+	const regex = ((input) => {
 		try {
 			const pattern = input.replace(/(^\/)|(\/[a-z]*$)/g, '');
 			const flags = input.match(/[^/]+$/)[0];
@@ -95,14 +97,14 @@ function search(event) {
 		} catch (err) {
 			return new RegExp(input);
 		}
-	}
+	})(input);
+	const filteredFiles = Object.values(filesHash).filter((fileStats) => { return regex.test(fileStats.filename); });
+	// Function sets dropdowns display to none adds button as first child. That buttons has onclick callback that sets display to flex again && addFilesToTable(Object.values(filesHash)) && removes itself
 
-	const input = event.srcElement[0].value;
-	if (input !== undefined && input !== '') {
-		const regex = createRegExPattern(input);
-		console.log(regex);
-		const filteredFiles = Object.values(filesHash).filter((fileStats) => { return regex.test(fileStats.filename); });
-		// Function sets dropdowns display to none adds button as first child. That buttons has onclick callback that sets display to flex again && addFilesToTable(Object.values(filesHash)) && removes itself
+	if (document.querySelector('#subfolder-search').checked) {
+		// ajax call for all files that match regex
+		console.log('Backend subfolder search')
+	} else {
 		addFilesToTable(filteredFiles);
 	}
 }
