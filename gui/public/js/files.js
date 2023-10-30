@@ -19,32 +19,32 @@ function createPopUp(type, options) {
 	const footer = document.createElement("div");
 	footer.className = "right-x p-1";
 
-	function makeOkBtn(text = "Ok") {
-		const okBtn = document.createElement("button");
-		okBtn.className = "btn btn-primary margin-sides";
-		okBtn.textContent = text;
-		okBtn.onclick = () => divFillScreenBackground.remove();
-		footer.appendChild(okBtn);
-		return okBtn;
+	function makePrimaryBtn(text = "Ok") {
+		const primaryBtn = document.createElement("button");
+		primaryBtn.className = "btn btn-primary margin-sides";
+		primaryBtn.textContent = text;
+		primaryBtn.onclick = () => divFillScreenBackground.remove();
+		footer.appendChild(primaryBtn);
+		return primaryBtn;
 	}
 
-	function makeCancelBtn(text = "Cancel") {
-		const cancelBtn = document.createElement("button");
-		cancelBtn.className = "btn btn-secondary";
-		cancelBtn.textContent = "Cancel";
-		cancelBtn.onclick = () => divFillScreenBackground.remove();
-		footer.appendChild(cancelBtn);
-		return cancelBtn;
+	function makeSecondaryBtn(text = "Cancel") {
+		const secondaryBtn = document.createElement("button");
+		secondaryBtn.className = "btn btn-secondary";
+		secondaryBtn.textContent = "Cancel";
+		secondaryBtn.onclick = () => divFillScreenBackground.remove();
+		footer.appendChild(secondaryBtn);
+		return secondaryBtn;
 	}
 
 	if (type === "input") {
-		makeCancelBtn();
-		const okBtn = makeOkBtn(options.title);
+		makeSecondaryBtn();
+		const primaryBtn = makePrimaryBtn(options.title);
 		const input = document.createElement("input");
 		input.placeholder = options.message;
 		input.style = "width: 100%;";
 		body.appendChild(input);
-		okBtn.onclick = (event) => {
+		primaryBtn.onclick = (event) => {
 			const filename = input.value;
 			if (filename === undefined || filename === '' || filesHash[filename] !== undefined) {
 				const div = document.createElement('div');
@@ -58,20 +58,20 @@ function createPopUp(type, options) {
 	}
 	if (type === "options") {
 		body.textContent = options.message;
-		const btnOneText = options.optionOne ? options.optionOne : options.title;
-		const btnTwoText = options.optionTwo ? options.optionTwo : "Cancel";
-		const cancelBtn = makeCancelBtn(btnTwoText);
-		const okBtn = makeOkBtn(btnOneText);
-		okBtn.onclick = (event) => {
-			divFillScreenBackground.remove();
-			options.callback();
-		};
+		makeSecondaryBtn();
+		options.btns.primary.forEach((item) => {
+			const btn = makePrimaryBtn(item.text);
+			btn.onclick = (event) => {
+				divFillScreenBackground.remove();
+				options.callback(event);
+			};
+		});
 	}
 	if (type === "message") {
 		body.textContent = options.message;
-		const okBtn = makeOkBtn();
+		const primaryBtn = makePrimaryBtn();
 		if (options.callback) {
-			okBtn.onclick = (event) => {
+			primaryBtn.onclick = (event) => {
 				divFillScreenBackground.remove();
 				options.callback();
 			};
@@ -161,11 +161,9 @@ function downloadFile(file) {
 	a.click();
 }
 
-function downloadFolder(file) {
+function downloadZip(filesList) {
 	const path = currentPath + "/" + file;
-	const a = document.createElement('a');
-	a.href = `/download?type=zip&path=${encodeURIComponent(path)}`;
-	a.click();
+	console.log("Downloading zip:", filesList, "at path", path);
 }
 
 function download(event) {
@@ -175,19 +173,28 @@ function download(event) {
 	if (numSelected === 1 && !includesFolder) {
 		const filename = Object.keys(selected)[0];
 		const message = `Would you like to download this file?`;
-		const cb = () => {
-			downloadFile(filename);
+		const btns = {
+			primary: [
+				{ text: "Zip", callback: (event) => downloadZip([filename]) },
+				{ text: "Raw file", callback: (event) => downloadFile(filename) },
+			]
+		}
+		const cb = (filename) => {
 			createPopUp("message", { title: "Downloading file", message: `Currently downloading: ${filename}` });
 		};
-		createPopUp("options", { title: title, message: message, file: filename, callback: cb });
+		createPopUp("options", { title: title, message: message, btns: btns, file: filename, callback: cb });
 	} else if (numSelected === 1 && includesFolder) {
 		const filename = Object.keys(selected)[0];
 		const message = `Would you like to download this folder?`;
-		const cb = () => {
-			// downloadFolder(foldername);
-			createPopUp("message", { title: "Downloading folder", message: `Currently downloading: ${filename}` });
+		const btns = {
+			primary: [
+				{ text: "Zip", callback: (event) => downloadZip([filename]) },
+			]
+		}
+		const cb = (filename) => {
+			createPopUp("message", { title: "Downloading folder", message: `Currently downloading zip of folder: ${filename}` });
 		};
-		createPopUp("options", { title: title, message: message, file: filename, callback: cb });
+		createPopUp("options", { title: title, message: message, btns: btns, file: filename, callback: cb });
 	} else if (numSelected > 1 && includesFolder) {
 		const cb = () => {
 			console.log("Download " + numSelected + ". True for Folders or Folder && files(s)");
