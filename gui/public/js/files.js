@@ -45,27 +45,22 @@ function createPopUp(type, options) {
 
 		makeSecondaryBtn();
 		const primaryBtn = makePrimaryBtn(options.title);
-		const checkForFile = () => {
-			const filename = input.value;
-			if (filename === undefined || filename === '' || filesHash[filename] !== undefined) {
-				const div = document.createElement('div');
-				div.textContent = "Name already exists, or no name entered";
-				header.appendChild(div);
-				return true;
-			}
-			return false;
-		};
-		const baseFunc = (event) => {
-			const value = input.value;
-			divFillScreenBackground.remove();
-			options.callback(value);
-		};
 		//const cb = (event) => {
 		primaryBtn.onclick = (event) => {
-			if (options.inputType === "filename" && checkForFile()) {
-				return false;
+			const value = input.value;
+			const isValue = (value === undefined || value === '');
+			const isFilename = options.inputType === "filename";
+			const fileExist = (isFilename && filesHash[value] !== undefined);
+			if (!isValue && !fileExist) {
+				divFillScreenBackground.remove();
+				options.callback(value);
+				return;
 			}
-			baseFunc(event);
+			const div = document.createElement('div');
+			console.log(options.inputType === "filename");
+			const text = fileExist ? "Name already exists, or no name entered" : "No name entered";
+			div.textContent = text;
+			header.appendChild(div);
 		};
 	}
 	if (type === "options") {
