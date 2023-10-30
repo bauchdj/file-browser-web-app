@@ -19,11 +19,13 @@ function createPopUp(type, options) {
 	const footer = document.createElement("div");
 	footer.className = "right-x p-1";
 
-	function makePrimaryBtn(text = "Ok") {
+	function makePrimaryBtn(text = "Ok", callback) {
 		const primaryBtn = document.createElement("button");
 		primaryBtn.className = "btn btn-primary margin-sides";
 		primaryBtn.textContent = text;
-		primaryBtn.onclick = () => divFillScreenBackground.remove();
+		primaryBtn.onclick = (event) => { // default to removing pop up
+			callback ? callback(event) : divFillScreenBackground.remove();
+		};
 		footer.appendChild(primaryBtn);
 		return primaryBtn;
 	}
@@ -44,9 +46,7 @@ function createPopUp(type, options) {
 		body.appendChild(input);
 
 		makeSecondaryBtn();
-		const primaryBtn = makePrimaryBtn(options.title);
-		//const cb = (event) => {
-		primaryBtn.onclick = (event) => {
+		makePrimaryBtn(options.title, (event) => {
 			const value = input.value;
 			const isValue = (value === undefined || value === '');
 			const isFilename = options.inputType === "filename";
@@ -61,27 +61,27 @@ function createPopUp(type, options) {
 			const text = fileExist ? "Name already exists, or no name entered" : "No name entered";
 			div.textContent = text;
 			header.appendChild(div);
-		};
+		});
 	}
 	if (type === "options") {
 		body.textContent = options.message;
 		makeSecondaryBtn();
 		options.btns.primary.forEach((item) => {
-			const btn = makePrimaryBtn(item.text);
-			btn.onclick = (event) => {
+			makePrimaryBtn(item.text, (event) => {
 				divFillScreenBackground.remove();
 				options.callback(event);
-			};
+			});
 		});
 	}
 	if (type === "message") {
 		body.textContent = options.message;
-		const primaryBtn = makePrimaryBtn();
 		if (options.callback) {
-			primaryBtn.onclick = (event) => {
+			makePrimaryBtn("Ok", (event) => {
 				divFillScreenBackground.remove();
-				options.callback();
-			};
+				options.callback(event);
+			});
+		} else {
+			makePrimaryBtn();
 		}
 	}
 
