@@ -38,22 +38,34 @@ function createPopUp(type, options) {
 	}
 
 	if (type === "input") {
-		makeSecondaryBtn();
-		const primaryBtn = makePrimaryBtn(options.title);
 		const input = document.createElement("input");
 		input.placeholder = options.message;
 		input.style = "width: 100%;";
 		body.appendChild(input);
-		primaryBtn.onclick = (event) => {
+
+		makeSecondaryBtn();
+		const primaryBtn = makePrimaryBtn(options.title);
+		const checkForFile = () => {
 			const filename = input.value;
 			if (filename === undefined || filename === '' || filesHash[filename] !== undefined) {
 				const div = document.createElement('div');
 				div.textContent = "Name already exists, or no name entered";
 				header.appendChild(div);
-			} else {
-				divFillScreenBackground.remove();
-				options.callback(filename);
+				return true;
 			}
+			return false;
+		};
+		const baseFunc = (event) => {
+			const value = input.value;
+			divFillScreenBackground.remove();
+			options.callback(value);
+		};
+		//const cb = (event) => {
+		primaryBtn.onclick = (event) => {
+			if (options.inputType === "filename" && checkForFile()) {
+				return false;
+			}
+			baseFunc(event);
 		};
 	}
 	if (type === "options") {
@@ -120,7 +132,7 @@ function createTextFile(event) {
 			} });
 		});
 	}
-	createPopUp("input", { title: title, message: message, callback: cb });
+	createPopUp("input", { title: title, message: message, inputType: "filename", callback: cb });
 }
 
 function createFolder(event) {
@@ -134,10 +146,10 @@ function createFolder(event) {
 			} });
 		});
 	}
-	createPopUp("input", { title: title, message: message, callback: cb });
+	createPopUp("input", { title: title, message: message, inputType: "filename", callback: cb });
 }
 
-function downloadURLInput(event) {
+function downloadURL(event) {
 	const title = 'Download from URL';
 	const message = 'Enter URL to download file or folder to current directory';
 	const cb = (url) => {
@@ -151,7 +163,7 @@ function downloadURLInput(event) {
 			} });
 		});
 	}
-	createPopUp("input", { title: title, message: message, callback: cb });
+	createPopUp("input", { title: title, message: message, inputType: "url", callback: cb });
 }
 
 function downloadFile(file) {
@@ -227,7 +239,7 @@ function rename(event) {
 			console.log(`Renamed "${filename}" to "${newFilename}"`);
 			createPopUp("message", { title: "Renamed file or folder", message: `Renamed "${filename}" to "${newFilename}"` });
 		};
-		createPopUp("input", { title: title, message: message, file: filename, callback: cb });
+		createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: cb });
 	} else {
 		const message = (numSelected === 0 ) ? "Nothing is selected silly. Select one to rename." : "You can only select one. You tried to rename " + numSelected + ".";
 		createPopUp("message", { title: title, message: message });
@@ -244,7 +256,7 @@ function createLink(event) {
 			console.log(`Created link: "${linkName}"`);
 			createPopUp("message", { title: "Created Sharable Link", message: `Created link: ${linkName}` });
 		};
-		createPopUp("input", { title: title, message: message, callback: cb });
+		createPopUp("input", { title: title, message: message, inputType: "filename", callback: cb });
 	} else {
 		const message = "Nothing is selected silly. Select files to share.";
 		createPopUp("message", { title: title, message: message });
