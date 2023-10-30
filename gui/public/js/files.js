@@ -69,6 +69,7 @@ function createPopUp(type, options) {
 		options.btns.primary.forEach((item) => {
 			makePrimaryBtn(item.text, (event) => {
 				divFillScreenBackground.remove();
+				item.callback(event);
 				options.callback(event);
 			});
 		});
@@ -186,7 +187,7 @@ function download(event) {
 				{ text: "Raw file", callback: (event) => downloadFile(filename) },
 			]
 		}
-		const cb = (filename) => {
+		const cb = (event) => {
 			createPopUp("message", { title: "Downloading file", message: `Currently downloading: ${filename}` });
 		};
 		createPopUp("options", { title: title, message: message, btns: btns, file: filename, callback: cb });
@@ -352,7 +353,7 @@ function sortArrOfObj(arr, key, direction = 1) {
 
 function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey="filename") {
 	const numFiles = fileList.length;
-	document.querySelector("#file-count").textContent = "File Count: " + numFiles;
+	document.querySelector("#file-count").textContent = "File count: " + numFiles;
 
 	document.querySelector("#" + lastSortKey).classList.remove('selected');
 	document.querySelector("#" + sortKey).classList.add('selected');
