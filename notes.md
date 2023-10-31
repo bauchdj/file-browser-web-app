@@ -6,17 +6,7 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
-- Add "sub folder" search check box
-  - back end placeholder
-  - front end search function
-    - only adds files that match input
-    - resets and uses filesHash to addFiles
-  - How to display searched files
-  - Exit search results button in top left
-- Move to & Copy to & Symbolic link (only 1 file tho)
-  - Navigation and confirm button top left
-  - 
-- URL to download input pop up
+- Selected, using new path key to accurately determine what files are selected
 
 ## Questions
 - Selected being cleared when used? I don't think so
