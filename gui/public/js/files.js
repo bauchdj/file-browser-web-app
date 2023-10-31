@@ -254,7 +254,6 @@ function createLink(event) {
 function pathNavBtn(text, callback) {
 	Object.keys(selected).forEach((key) => removeFromSelected(key));
 	const div = document.createElement("div");
-	div.id = "dropdown-action-btn";
 	const btn = document.createElement("button");
 	btn.className = "btn btn-primary";
 	btn.textContent = text;
