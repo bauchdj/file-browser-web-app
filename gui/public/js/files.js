@@ -2,32 +2,7 @@ let currentPath = localStorage.getItem('user');
 const selected = {};
 let filesHash = {};
 
-function search(event) {
-	const input = event.srcElement[0].value;
-	if (input === undefined || input === '') return false;
-	const regex = ((input) => {
-		try {
-			const pattern = input.replace(/(^\/)|(\/[a-z]*$)/g, '');
-			const flags = input.match(/[^/]+$/)[0];
-			const regex = new RegExp(pattern, flags);
-			return regex;
-		} catch (err) {
-			return new RegExp(input);
-		}
-	})(input);
-	const filteredFiles = Object.values(filesHash).filter((fileStats) => regex.test(fileStats.filename));
-	// Function sets dropdowns display to none adds button as first child. That buttons has onclick callback that sets display to flex again && addFilesToTable(Object.values(filesHash)) && removes itself
-
-	if (document.querySelector("#subfolder-search").checked) {
-		// ajax call for all files that match regex
-		console.log("Backend subfolder search")
-	} else {
-		addFilesToTable(filteredFiles);
-	}
-}
-
 function createPopUp(type, options) {
-	const isFileGiven = (options.file !== undefined);
 	const divFillScreenBackground = document.createElement("div");
 	divFillScreenBackground.className = "fill-screen center-y center-x black-transparent";
 	const divContainer = document.createElement("div");
@@ -35,6 +10,7 @@ function createPopUp(type, options) {
 	divContainer.className = "popupContainer p-2";
 	divContainer.onclick = (event) => { event.stopPropagation(); };
 	const header = document.createElement("div");
+	const isFileGiven = (options.file !== undefined);
 	const headerText = isFileGiven ? options.title + " - " + options.file : options.title;
 	header.innerHTML = `<b>${headerText}</b>`;
 	header.className = "p-1";
@@ -124,48 +100,46 @@ function createPopUp(type, options) {
 
 function createTextFile(event) {
 	const title = "Create file";
-	const message = 'Type filename';
-	const cb = (filename) => {
+	const message = 'Type filename';	
+	createPopUp("input", { title: title, message: message, inputType: "filename", callback: (filename) => {
 		ajaxPost('/createfile', { path: currentPath, filename: filename }, (filename) => {
-			console.log("Created file: " + filename);
-			createPopUp("message", { title: "Created file", message: `New file: ${filename}`, callback: () => { 
-				ajaxPost('/getfiles', { path: currentPath }, (data) => { addFilesToTable(data); });
+			const message = `New file: "${filename}"`;
+			console.log(message);
+			createPopUp("message", { title: "Created file", message: message, callback: () => { 
+				ajaxPost('/getfiles', { path: currentPath }, (data) => addFilesToTable(data));
 			}});
 		});
-	}
-	createPopUp("input", { title: title, message: message, inputType: "filename", callback: cb });
+	}});
 }
 
 function createFolder(event) {
 	const title = 'Create folder';
 	const message = 'Type folder name';
-	const cb = (filename) => {
+	createPopUp("input", { title: title, message: message, inputType: "filename", callback: (filename) => {
 		ajaxPost('/createfolder', { path: currentPath, filename: filename }, (filename) => {
-			console.log("Created folder: " + filename);
-			createPopUp("message", { title: "Created folder", message: `New folder: ${filename}`, callback: () => { 
-				ajaxPost('/getfiles', { path: currentPath }, (data) => { addFilesToTable(data); });
+			const message = `New folder: "${filename}"`;
+			console.log(message);
+			createPopUp("message", { title: "Created folder", message: message, callback: () => { 
+				ajaxPost('/getfiles', { path: currentPath }, (data) => addFilesToTable(data));
 			} });
 		});
-	}
-	createPopUp("input", { title: title, message: message, inputType: "filename", callback: cb });
+	}});
 }
 
 function downloadURL(event) {
 	const title = 'Download from URL';
 	const message = 'Enter URL to download file or folder to current directory';
-	const cb = (url) => {
+	createPopUp("input", { title: title, message: message, inputType: "url", callback: (url) => {
+		console.log('Will make ajax for downloading file / folder to server. Could be dangerous');
 		// Need to add /downloadURL to backend and handle the url and filename that is used for downloaded file
-		console.log('Will make ajax for downloading file / folder');
-		/*
 		ajaxPost('/downloadURL', { path: currentPath, url: url }, (filename) => {
-			console.log("Downloaded: " + filename);
-			createPopUp("message", { title: "Downloaded from URL", message: `New file: ${filename}`, callback: () => { 
-				ajaxPost('/getfiles', { path: currentPath }, (data) => { addFilesToTable(data); });
+			const message = `Downloaded: "${filename}" from "${url}"`;
+			console.log(message);
+			createPopUp("message", { title: "Downloaded from URL", message: message, callback: () => { 
+				ajaxPost('/getfiles', { path: currentPath }, (data) => addFilesToTable(data));
 			} });
 		});
-		*/
-	}
-	createPopUp("input", { title: title, message: message, inputType: "url", callback: cb });
+	}});
 }
 
 function downloadFile(file) {
@@ -196,7 +170,7 @@ function download(event) {
 			]
 		}
 		const cb = (event) => {
-			createPopUp("message", { title: "Downloading file", message: `Currently downloading: ${filename}` });
+			createPopUp("message", { title: "Downloading file", message: `Currently downloading: "${filename}"` });
 		};
 		createPopUp("options", { title: title, message: message, btns: btns, file: filename, callback: cb });
 	} else if (numSelected === 1 && includesFolder) {
@@ -208,7 +182,7 @@ function download(event) {
 			]
 		}
 		const cb = (event) => {
-			createPopUp("message", { title: "Downloading folder", message: `Currently downloading zip of folder: ${filename}` });
+			createPopUp("message", { title: "Downloading folder", message: `Currently downloading zip of folder: "${filename}"` });
 		};
 		createPopUp("options", { title: title, message: message, btns: btns, file: filename, callback: cb });
 	} else if (numSelected > 1 && includesFolder) {
@@ -235,43 +209,52 @@ function download(event) {
 function rename(event) {
 	const numSelected = Object.keys(selected).length;
 	const title = "Rename";
-	if (numSelected === 1) {
-		const filename = Object.keys(selected)[0];
-		const message = "Type new name";
-		const cb = (newFilename) => {
-			// ajax call to rename ${filename} to ${newFilename} (look at symbolic link ajax callback setup)
-			console.log(`Renamed "${filename}" to "${newFilename}"`);
-			createPopUp("message", { title: "Renamed file or folder", message: `Renamed "${filename}" to "${newFilename}"` });
-		};
-		createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: cb });
-	} else {
+	if (numSelected !== 1) {
 		const message = (numSelected === 0 ) ? "Nothing is selected silly. Select one to rename." : "You can only select one. You tried to rename " + numSelected + ".";
 		createPopUp("message", { title: title, message: message });
+		return;
 	}
+	const filename = Object.keys(selected)[0];
+	const message = "Type new name";
+	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: (newFilename) => {
+		console.log(`Renamed "${filename}" to "${newFilename}"`);
+		/*
+		ajaxPost('/rename', { path: path, filename: filename }, () => {
+			const message = `Renamed: "${filename}" to "${newFilename}"`;
+			console.log(message);
+			createPopUp("message", { title: "Renamed", message: message, file: filename, callback: () => {
+				ajaxPost('/getfiles', { path: currentPath }, (data) => addFilesToTable(data));
+			}});
+		});
+		*/
+	}});
 }
 
 function createLink(event) {
 	const numSelected = Object.keys(selected).length;
 	const title = "Create Shareable Link";
-	if (numSelected === 1) {
-		const message = "Type link name";
-		const cb = (linkName) => {
-			//ajax call to create shared files link
-			console.log(`Created link: "${linkName}"`);
-			createPopUp("message", { title: "Created Sharable Link", message: `Created link: ${linkName}` });
-		};
-		createPopUp("input", { title: title, message: message, inputType: "filename", callback: cb });
-	} else {
-		const message = "Nothing is selected silly. Select files to share.";
-		createPopUp("message", { title: title, message: message });
+	if (numSelected === 0) {
+		createPopUp("message", { title: title, message: "Nothing is selected silly. Select files to share." });
 	}
+	const message = "Type link name";
+	createPopUp("input", { title: title, message: message, inputType: "filename", callback: (linkName) => {
+		console.log(`Created link: "${linkName}"`);
+		/*
+		ajaxPost('/move', { files: filesMap, newPath: newPath }, () => {
+			const message = `Created link: "${linkName}"`;
+			console.log(message);
+			createPopUp("message", { title: "Created Sharable Link", message: message, callback () => {
+				ajaxPost('/getfiles', { path: currentPath }, (data) => addFilesToTable(data));
+			}});
+		});
+		*/
+	}});
 }
 
 function pathNavBtn(text, callback) {
 	Object.keys(selected).forEach((key) => removeFromSelected(key));
 	const div = document.createElement("div");
 	div.id = "dropdown-action-btn";
-	div.style.margin = "0 0 0.3rem 0";
 	const btn = document.createElement("button");
 	btn.className = "btn btn-primary";
 	btn.textContent = text;
@@ -287,61 +270,140 @@ function pathNavBtn(text, callback) {
 	parent.insertBefore(div, parent.children[0]);
 }
 
+function search(event) {
+	const el = event.srcElement[0];
+	const input = el.value;
+	if (input === undefined || input === '') return false;
+	const regex = ((input) => {
+		try {
+			const pattern = input.replace(/(^\/)|(\/[a-z]*$)/g, '');
+			const flags = input.match(/[^/]+$/)[0];
+			const regex = new RegExp(pattern, flags);
+			return regex;
+		} catch (err) {
+			return new RegExp(input);
+		}
+	})(input);
+	const filteredFiles = Object.values(filesHash).filter((fileStats) => regex.test(fileStats.filename));
+	pathNavBtn("Clear search results", (path) => {
+		el.value = '';
+		addFilesToTable(Object.values(filesHash))
+	});
+
+	if (document.querySelector("#subfolder-search").checked) {
+		// ajax call for all files that match regex
+		console.log("Backend subfolder search")
+	} else {
+		addFilesToTable(filteredFiles);
+	}
+}
+
+function findDuplicates(array) {
+	const uniqueValues = new Set();
+	const duplicates = [];
+	for (const item of array) {
+		uniqueValues.has(item) ? duplicates.push(item) : uniqueValues.add(item);
+	}
+	return duplicates;
+}
+
+function isDuplicates(files, title) {
+	const dupsFiles = findDuplicates(files);
+	const dupsDir = findDuplicates(Object.keys(filesHash));
+	const inFiles = dupsFiles.length !== 0;
+	const inDir = dupsDir.length !== 0;
+	if (!inFiles && !inDir) return false;
+	let message = "Duplicates in:\n";
+	if (inFiles) {
+		message += `Selected files: "${dupsFiles.join(', ')}"\n`;
+	}
+	if (!inFiles && inDir) {
+		message += `Directory: "${dupsDir.join(', ')}"`;
+	}
+	console.log(message);
+	createPopUp("message", { title: `${title} failed - Duplicates`, message: message });
+	return true;
+}
+
 function move(event) {
 	const numSelected = Object.keys(selected).length;
 	const title = "Move";
-	if (numSelected > 0) {
-		const path = currentPath + "/";
-		const files = Object.keys(selected);
-		pathNavBtn(title, (newPath) => {
-			// ajax call to move ${filename} to ${newFilename}
-			console.log(`Moving "${files.join(' ')}" to ${newPath}`);
-			createPopUp("message", { title: `Moving select to ${newPath}`, message: files.join('\n') });
-		});
-	} else {
+	if (numSelected === 0) {	
 		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
+		return;
 	}
+	const filenames = Object.keys(selected);
+	const message = `Confirm move of "${filenames.join(', ')}"`;
+	pathNavBtn(title, (newPath) => {
+		// Check if any of the files names exist in newPath && if any of selected have same name (between different directories)
+		if (isDuplicates(filenames, title)) return;
+		createPopUp("message", { title: title, message: message, callback: () => {
+			console.log(`Request backend to move ${filenames.join(', ')} to "${newPath}"`);
+			/*
+			ajaxPost('/move', { files: filesMap, newPath: newPath }, () => {
+				const message = `Moved "${filenames.join(', ')}" to "${newPath}"`;
+				console.log(message);
+				createPopUp("message", { title: "Moved files", message: message, callback: () => { 
+					ajaxPost('/getfiles', { path: currentPath }, (data) => addFilesToTable(data));
+				}});
+			});
+			*/
+		}});
+	});
 }
 
 function copy(event) {
 	const numSelected = Object.keys(selected).length;
 	const title = "Copy";
-	if (numSelected > 0) {
-		const path = currentPath + "/";
-		const files = Object.keys(selected);
-		pathNavBtn(title, (newPath) => {
-			// ajax call to move ${filename} to ${newFilename}
-			console.log(`Moving "${files.join(' ')}" to ${newPath}`);
-			createPopUp("message", { title: `Moving select to ${newPath}`, message: files.join('\n') });
-		});
-	} else {
-		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
+	if (numSelected === 0) {	
+		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to copy." });
+		return;
 	}
+	const filesMap = selected;
+	const filenames = Object.keys(selected);
+	const message = `Confirm copy of "${filenames.join(', ')}"`;
+	pathNavBtn(title, (newPath) => {
+		if (isDuplicates(filenames, title)) return;
+		createPopUp("message", { title: title, message: message, callback: () => {
+			console.log(`Request backend to copy "${filenames.join(', ')}" to "${newPath}"`);
+			/*
+			ajaxPost('/copy', { files: filesMap, newPath: newPath }, () => {
+				const message = `Copied "${filenames.join(', ')}" to "${newPath}"`;
+				console.log(message);
+				createPopUp("message", { title: "Copied files", message: message, callback: () => { 
+					ajaxPost('/getfiles', { path: currentPath }, (data) => addFilesToTable(data));
+				}});
+			});
+			*/
+		}});
+	});
 }
 
 function symbolicLink(event) {
 	const numSelected = Object.keys(selected).length;
 	const title = "Symbolic Link";
-	if (numSelected === 1) {
-		const path = currentPath + "/";
-		const filename = Object.keys(selected)[0];
-		pathNavBtn(title, (newPath) => {
-			createPopUp("input", { title: title, message: "Type name of link", file: filename, inputType: "filename", callback: (linkName) => {
-				console.log("Request to create symbolic link " + filename + " " + linkName, `Path: ${path}, newPath: ${newPath}`);
-				/*
-				ajaxPost('/symbolicLink', { path: path, newPath: newPath, filename: filename, linkName: linkName }, (linkName) => {
-					console.log(`Symbollically linked: "${filename}" "${linkName}"`);
-					createPopUp("message", { title: "Created symbolic link", message: `Symbollically linked: "${filename}" to "${linkName}"`, callback: () => { 
-						ajaxPost('/getfiles', { path: currentPath }, (data) => { addFilesToTable(data); });
-					}});
-				});
-				*/
-			}});
-		});
-	} else {
+	if (numSelected !== 1) {
 		const message = (numSelected === 0 ) ? "Nothing is selected silly. Select one to symbolically link." : "You can only select one. You tried to link " + numSelected + ".";
 		createPopUp("message", { title: title, message: message });
+		return;
 	}
+	const path = currentPath + "/";
+	const filename = Object.keys(selected)[0];	
+	const message = "Type name of link";
+	pathNavBtn(title, (newPath) => {
+		createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: (linkName) => {
+			console.log("Request to create symbolic link " + filename + " " + linkName, `Path: ${path}, newPath: ${newPath}`);
+			/*
+			ajaxPost('/symbolicLink', { path: path, newPath: newPath, filename: filename, linkName: linkName }, (linkName) => {
+				const message = `Symbollically linked: "${filename}" to "${linkName}"`;
+				console.log(message);
+				createPopUp("message", { title: "Created symbolic link", message: message, callback: () => {
+					ajaxPost('/getfiles', { path: currentPath }, (data) => addFilesToTable(data));
+				}});
+			});
+			*/
+		}});
+	});
 }
 
 function removeFromSelected(key) {
@@ -398,15 +460,11 @@ function updateInputPathText(path) {
 }
 
 function openDirectory(path) {
-	Array.from(document.querySelector("body > div > div.files > table > thead > tr").children).forEach(el => { // Remove selected class from each sort option
-		el.classList.remove('selected');
-	});
-
 	path = path.replace(/\/$/, '');
 	currentPath = path;
 	updateInputPathText(path);
 	updateDirectoryBtns(path);
-	ajaxPost('/getfiles', { path: path }, (data) => { addFilesToTable(data); });
+	ajaxPost('/getfiles', { path: path }, (data) => addFilesToTable(data));
 }
 
 function openFile(path) {
@@ -442,12 +500,10 @@ function sortArrOfObj(arr, key, direction = 1) {
 }
 
 function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey="filename") {
-	// Object.keys(selected).forEach((key) => removeFromSelected(key));
-
-	const numFiles = fileList.length;
-	document.querySelector("#file-count").textContent = "File count: " + numFiles;
-
-	document.querySelector("#" + lastSortKey).classList.remove('selected');
+	const row = document.querySelector("body > div > div.files > table > thead > tr");
+	const columns = Array.from(row.children)
+	columns.forEach(el => el.classList.remove('selected'));
+	//document.querySelector("#" + lastSortKey).classList.remove('selected');
 	document.querySelector("#" + sortKey).classList.add('selected');
 
 	sortArrOfObj(fileList, sortKey, sortDirection);
@@ -470,6 +526,9 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		document.querySelector("#" + value).onclick = el.onclick; // Sets column onclick to sort option onclick
 	});
 
+	const numFiles = fileList.length;
+	document.querySelector("#file-count").textContent = "File count: " + numFiles;
+
 	const tableBody = document.querySelector("body > div > div.files > table > tbody.table-group-divider");
 	const newTableBody = document.createElement("tbody");
 	newTableBody.className = "table-group-divider";
@@ -480,12 +539,12 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		const creationDate = utcToCurrentTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
 		const els = [
-			{ el: 'input', type: 'checkbox', className: 'checkbox', onclick: (event) => { addToSelected(event.target) }, attrs: { filename: fileStats.filename, fileType: fileType } },
+			{ el: 'input', type: 'checkbox', className: 'checkbox', onclick: (event) => addToSelected(event.target), attrs: { filename: fileStats.filename, fileType: fileType } },
 			{ el: 'img', src: 'images/file-browser-icon.png', style: 'width:2.5rem' },
 			{ text: fileStats.filename },
 			{ text: modifiedDate },
 			{ text: creationDate },
-			{ text:  fileStats.sizeInBytes },
+			{ text: fileStats.sizeInBytes },
 			{ text: fileType },
 		];
 
@@ -551,5 +610,5 @@ function ajaxPost(route, data, callback, onerror) {
 }
 
 $(document).ready(function() {
-	ajaxPost('/getfiles', { path: currentPath }, (data) => { addFilesToTable(data); });
+	ajaxPost('/getfiles', { path: currentPath }, (data) => addFilesToTable(data));
 });
