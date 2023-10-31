@@ -2,6 +2,30 @@ let currentPath = localStorage.getItem('user');
 const selected = {};
 let filesHash = {};
 
+function search(event) {
+	const input = event.srcElement[0].value;
+	if (input === undefined || input === '') return false;
+	const regex = ((input) => {
+		try {
+			const pattern = input.replace(/(^\/)|(\/[a-z]*$)/g, '');
+			const flags = input.match(/[^/]+$/)[0];
+			const regex = new RegExp(pattern, flags);
+			return regex;
+		} catch (err) {
+			return new RegExp(input);
+		}
+	})(input);
+	const filteredFiles = Object.values(filesHash).filter((fileStats) => regex.test(fileStats.filename));
+	// Function sets dropdowns display to none adds button as first child. That buttons has onclick callback that sets display to flex again && addFilesToTable(Object.values(filesHash)) && removes itself
+
+	if (document.querySelector("#subfolder-search").checked) {
+		// ajax call for all files that match regex
+		console.log("Backend subfolder search")
+	} else {
+		addFilesToTable(filteredFiles);
+	}
+}
+
 function createPopUp(type, options) {
 	const isFileGiven = (options.file !== undefined);
 	const divFillScreenBackground = document.createElement("div");
@@ -40,9 +64,14 @@ function createPopUp(type, options) {
 	}
 
 	if (type === "input") {
+		const hiddenDiv = document.createElement("div");
+		hiddenDiv.style = "height: 0; visibility: hidden;"
+		hiddenDiv.ariaHidden = "true";
+		hiddenDiv.textContent = options.message + "__";
 		const input = document.createElement("input");
 		input.placeholder = options.message;
 		input.style = "width: 100%;";
+		body.appendChild(hiddenDiv);
 		body.appendChild(input);
 
 		makeSecondaryBtn();
@@ -58,7 +87,7 @@ function createPopUp(type, options) {
 			}
 			const div = document.createElement('div');
 			console.log(options.inputType === "filename");
-			const text = fileExist ? "Name already exists, or no name entered" : "No name entered";
+			const text = fileExist ? "Name already exists" : "No name entered";
 			div.textContent = text;
 			header.appendChild(div);
 		});
@@ -93,39 +122,15 @@ function createPopUp(type, options) {
 	document.body.appendChild(divFillScreenBackground);
 }
 
-function search(event) {
-	const input = event.srcElement[0].value;
-	if (input === undefined || input === '') return false;
-	const regex = ((input) => {
-		try {
-			const pattern = input.replace(/(^\/)|(\/[a-z]*$)/g, '');
-			const flags = input.match(/[^/]+$/)[0];
-			const regex = new RegExp(pattern, flags);
-			return regex;
-		} catch (err) {
-			return new RegExp(input);
-		}
-	})(input);
-	const filteredFiles = Object.values(filesHash).filter((fileStats) => { return regex.test(fileStats.filename); });
-	// Function sets dropdowns display to none adds button as first child. That buttons has onclick callback that sets display to flex again && addFilesToTable(Object.values(filesHash)) && removes itself
-
-	if (document.querySelector('#subfolder-search').checked) {
-		// ajax call for all files that match regex
-		console.log('Backend subfolder search')
-	} else {
-		addFilesToTable(filteredFiles);
-	}
-}
-
 function createTextFile(event) {
-	const title = 'Create file';
+	const title = "Create file";
 	const message = 'Type filename';
 	const cb = (filename) => {
 		ajaxPost('/createfile', { path: currentPath, filename: filename }, (filename) => {
 			console.log("Created file: " + filename);
 			createPopUp("message", { title: "Created file", message: `New file: ${filename}`, callback: () => { 
 				ajaxPost('/getfiles', { path: currentPath }, (data) => { addFilesToTable(data); });
-			} });
+			}});
 		});
 	}
 	createPopUp("input", { title: title, message: message, inputType: "filename", callback: cb });
@@ -151,13 +156,14 @@ function downloadURL(event) {
 	const cb = (url) => {
 		// Need to add /downloadURL to backend and handle the url and filename that is used for downloaded file
 		console.log('Will make ajax for downloading file / folder');
-		return true;
+		/*
 		ajaxPost('/downloadURL', { path: currentPath, url: url }, (filename) => {
 			console.log("Downloaded: " + filename);
 			createPopUp("message", { title: "Downloaded from URL", message: `New file: ${filename}`, callback: () => { 
 				ajaxPost('/getfiles', { path: currentPath }, (data) => { addFilesToTable(data); });
 			} });
 		});
+		*/
 	}
 	createPopUp("input", { title: title, message: message, inputType: "url", callback: cb });
 }
@@ -170,13 +176,15 @@ function downloadFile(file) {
 }
 
 function downloadZip(filesList) {
-	const path = currentPath + "/" + file;
+	const path = currentPath + "/";
 	console.log("Downloading zip:", filesList, "at path", path);
 }
 
 function download(event) {
 	const numSelected = Object.keys(selected).length;
-	const includesFolder = Object.values(selected).includes("Folder");
+	//const includesFolder = Object.values(selected).includes("Folder");
+	// selected = { filename: { fileType: "Folder", el: obj } }
+	const includesFolder = Object.values(selected).some((value) => Object.values(value).includes("Folder"));
 	const title = "Download";
 	if (numSelected === 1 && !includesFolder) {
 		const filename = Object.keys(selected)[0];
@@ -199,7 +207,7 @@ function download(event) {
 				{ text: "Zip", callback: (event) => downloadZip([filename]) },
 			]
 		}
-		const cb = (filename) => {
+		const cb = (event) => {
 			createPopUp("message", { title: "Downloading folder", message: `Currently downloading zip of folder: ${filename}` });
 		};
 		createPopUp("options", { title: title, message: message, btns: btns, file: filename, callback: cb });
@@ -217,7 +225,7 @@ function download(event) {
 		cb();
 	} else {
 		const cb = () => {
-			console.log("Nothing selected");
+			console.log("Nothing is selected silly. Select something to download.");
 			createPopUp("message", { title: "Attempted to Download", message: "Nothing selected" });
 		};
 		cb();
@@ -231,7 +239,7 @@ function rename(event) {
 		const filename = Object.keys(selected)[0];
 		const message = "Type new name";
 		const cb = (newFilename) => {
-			// ajax call to rename ${filename} to ${newFilename}
+			// ajax call to rename ${filename} to ${newFilename} (look at symbolic link ajax callback setup)
 			console.log(`Renamed "${filename}" to "${newFilename}"`);
 			createPopUp("message", { title: "Renamed file or folder", message: `Renamed "${filename}" to "${newFilename}"` });
 		};
@@ -259,10 +267,92 @@ function createLink(event) {
 	}
 }
 
+function pathNavBtn(text, callback) {
+	Object.keys(selected).forEach((key) => removeFromSelected(key));
+	const div = document.createElement("div");
+	div.id = "dropdown-action-btn";
+	div.style.margin = "0 0 0.3rem 0";
+	const btn = document.createElement("button");
+	btn.className = "btn btn-primary";
+	btn.textContent = text;
+	const displayValue = window.getComputedStyle(document.querySelector("#dropdowns")).getPropertyValue('display');;
+	btn.onclick = (event) => {
+		document.querySelector("#dropdowns").style.display = displayValue;
+		div.remove();
+		callback(currentPath + "/");
+	};
+	div.appendChild(btn);
+	document.querySelector("#dropdowns").style.display = "none";
+	const parent = document.querySelector("body > div > div.files > div > div.flex-r");
+	parent.insertBefore(div, parent.children[0]);
+}
+
+function move(event) {
+	const numSelected = Object.keys(selected).length;
+	const title = "Move";
+	if (numSelected > 0) {
+		const path = currentPath + "/";
+		const files = Object.keys(selected);
+		pathNavBtn(title, (newPath) => {
+			// ajax call to move ${filename} to ${newFilename}
+			console.log(`Moving "${files.join(' ')}" to ${newPath}`);
+			createPopUp("message", { title: `Moving select to ${newPath}`, message: files.join('\n') });
+		});
+	} else {
+		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
+	}
+}
+
+function copy(event) {
+	const numSelected = Object.keys(selected).length;
+	const title = "Copy";
+	if (numSelected > 0) {
+		const path = currentPath + "/";
+		const files = Object.keys(selected);
+		pathNavBtn(title, (newPath) => {
+			// ajax call to move ${filename} to ${newFilename}
+			console.log(`Moving "${files.join(' ')}" to ${newPath}`);
+			createPopUp("message", { title: `Moving select to ${newPath}`, message: files.join('\n') });
+		});
+	} else {
+		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
+	}
+}
+
+function symbolicLink(event) {
+	const numSelected = Object.keys(selected).length;
+	const title = "Symbolic Link";
+	if (numSelected === 1) {
+		const path = currentPath + "/";
+		const filename = Object.keys(selected)[0];
+		pathNavBtn(title, (newPath) => {
+			createPopUp("input", { title: title, message: "Type name of link", file: filename, inputType: "filename", callback: (linkName) => {
+				console.log("Request to create symbolic link " + filename + " " + linkName, `Path: ${path}, newPath: ${newPath}`);
+				/*
+				ajaxPost('/symbolicLink', { path: path, newPath: newPath, filename: filename, linkName: linkName }, (linkName) => {
+					console.log(`Symbollically linked: "${filename}" "${linkName}"`);
+					createPopUp("message", { title: "Created symbolic link", message: `Symbollically linked: "${filename}" to "${linkName}"`, callback: () => { 
+						ajaxPost('/getfiles', { path: currentPath }, (data) => { addFilesToTable(data); });
+					}});
+				});
+				*/
+			}});
+		});
+	} else {
+		const message = (numSelected === 0 ) ? "Nothing is selected silly. Select one to symbolically link." : "You can only select one. You tried to link " + numSelected + ".";
+		createPopUp("message", { title: title, message: message });
+	}
+}
+
+function removeFromSelected(key) {
+	selected[key].el.checked = false;
+	delete selected[key];
+}
+
 function addToSelected(el) {
 	let key = el.getAttribute("filename");
-	let value = el.getAttribute("fileType");
-	selected[key] === undefined ? selected[key] = value : (delete selected[key]);
+	let value = { fileType: el.getAttribute("fileType"), el: el, path: currentPath };
+	selected[key] === undefined ? selected[key] = value : delete selected[key];
 }
 
 function addAllSelected(el) {
@@ -274,7 +364,7 @@ function addAllSelected(el) {
 	});
 }
 
-function updateDirectoryButtons(path) {
+function updateDirectoryBtns(path) {
 	const container = document.querySelector("body > div > div.files > div > div.flex-r > div:last-child");
 	const newContainer = $(container.outerHTML);
 	newContainer.empty();
@@ -315,7 +405,7 @@ function openDirectory(path) {
 	path = path.replace(/\/$/, '');
 	currentPath = path;
 	updateInputPathText(path);
-	updateDirectoryButtons(path);
+	updateDirectoryBtns(path);
 	ajaxPost('/getfiles', { path: path }, (data) => { addFilesToTable(data); });
 }
 
@@ -352,6 +442,8 @@ function sortArrOfObj(arr, key, direction = 1) {
 }
 
 function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey="filename") {
+	// Object.keys(selected).forEach((key) => removeFromSelected(key));
+
 	const numFiles = fileList.length;
 	document.querySelector("#file-count").textContent = "File count: " + numFiles;
 
