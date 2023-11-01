@@ -1080,6 +1080,21 @@ petRegex.test(text);
 
 ### [Simon JS](https://github.com/webprogramming260/.github/blob/main/profile/simon/simonJavascript/simonJavascript.md)
 
+### [URL](https://github.com/webprogramming260/.github/blob/main/profile/webServices/url/url.md)
+
+### [Ports](https://github.com/webprogramming260/.github/blob/main/profile/webServices/ports/ports.md)
+
+### [HTTP](https://github.com/webprogramming260/.github/blob/main/profile/webServices/http/http.md)
+
+### [SOP and CORS](https://github.com/webprogramming260/.github/blob/main/profile/webServices/cors/cors.md)
+
+### [Fetch](https://github.com/webprogramming260/.github/blob/main/profile/webServices/fetch/fetch.md)
+
+### [Service Design Diagram](https://github.com/webprogramming260/.github/blob/main/profile/webServices/design/design.md)
+
+### [Node.js](https://github.com/webprogramming260/.github/blob/main/profile/webServices/node/node.md)
+
+### [Express](https://github.com/webprogramming260/.github/blob/main/profile/webServices/express/express.md)
 
 ### Caddy
 - Routes traffic from 443 to specified ports based on subdomain
