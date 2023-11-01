@@ -62,7 +62,6 @@ function createPopUp(type, options) {
 				return;
 			}
 			const div = document.createElement('div');
-			console.log(options.inputType === "filename");
 			const text = fileExist ? "Name already exists" : "No name entered";
 			div.textContent = text;
 			header.appendChild(div);
@@ -237,7 +236,7 @@ function createLink(event) {
 		createPopUp("message", { title: title, message: "Nothing is selected silly. Select files to share." });
 	}
 	const message = "Type link name";
-	createPopUp("input", { title: title, message: message, inputType: "filename", callback: (linkName) => {
+	createPopUp("input", { title: title, message: message, inputType: "link", callback: (linkName) => {
 		console.log(`Created link: "${linkName}"`);
 		/*
 		ajaxPost('/move', { files: filesMap, newPath: newPath }, () => {
@@ -413,6 +412,7 @@ function removeFromSelected(key) {
 function addToSelected(el) {
 	let key = el.getAttribute("filename");
 	let value = { fileType: el.getAttribute("fileType"), el: el, path: currentPath };
+	// Need to restructure selected by grouping by path
 	selected[key] === undefined ? selected[key] = value : delete selected[key];
 }
 
