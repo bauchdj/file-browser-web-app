@@ -8,11 +8,11 @@
 ## To do's:
 Class Selected: to handle all files currently selected
 
-- Methods:
+Methods:
   - Find duplicates based on path + filename OR just filename
   - Length of files. All files, and by path
 
-- Structure:
+Structure:
   - paths:
     - filname:
       - fileType, el (needs to be updated when re-drawn switching dirs)
