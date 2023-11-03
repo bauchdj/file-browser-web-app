@@ -2,6 +2,93 @@ let currentPath = localStorage.getItem('user');
 const selected = {};
 let filesHash = {};
 
+function createSelection(path) {
+	const rc = {
+		path: path,
+		items: {},
+	};
+
+	rc.click = (el) => {
+		const filename = el.getAttribute("filename");
+		const fileType = el.getAttribute("fileType");
+		if (!rc.items[filename]) {
+			rc.items[filename] = { fileType: fileType, el: el };
+		} else {
+			delete rc.items[filename];
+		}
+	};
+
+	rc.clear = () => {
+		for (const key in rc.items) {
+			rc.items[key].el.checked = false;
+		}
+		rc.items = {};
+	};
+
+	rc.filename = () => Object.keys(rc.items)[0];
+
+	rc.length = () => Object.values(rc.items).length;
+
+	rc.includesFolder = () => {
+		for (const key in rc.items) {
+			console.log(rc.items[key].fileType);
+			if (rc.items[key].fileType === 'Folder') return true;
+		}
+		return false;
+	};
+
+	return rc;
+}
+
+function selectionClass() {
+	const rc = { paths: {}, current: null };
+
+	rc.add = (path) => {
+		if (!rc.paths[path]) {
+			rc.paths[path] = createSelection(path);
+		}
+		rc.current = rc.paths[path];
+	};
+
+	rc.clear = () => {
+		for (const path in rc.paths) {
+			rc.paths[path].clear();
+		}
+	};
+
+	rc.length = () => {
+		let length = 0;
+		for (const path in rc.paths) {
+			length += rc.paths[path].length();
+		}
+		return length;
+	};
+
+	rc.onlyFiles = () => {
+		for (const path in rc.paths) {
+			if (rc.paths[path].includesFolder()) return false;
+		}
+		return true;
+	};
+
+	rc.files = () => paths;
+
+	return rc;
+};
+
+const selectionHash = selectionClass();
+selectionHash.add(currentPath);
+
+function selectAll(el) {
+	const checkboxes = Array.from(document.querySelectorAll('.checkbox'));
+	checkboxes.forEach(checkboxEl => {
+		if (checkboxEl.checked != el.checked) {
+			checkboxEl.checked = el.checked;
+			selectionHash.current.click(checkboxEl);
+		}
+	});
+}
+
 function createPopUp(type, options) {
 	const divFillScreenBackground = document.createElement("div");
 	divFillScreenBackground.className = "fill-screen center-y center-x black-transparent";
@@ -154,13 +241,12 @@ function downloadZip(filesList) {
 }
 
 function download(event) {
-	const numSelected = Object.keys(selected).length;
-	//const includesFolder = Object.values(selected).includes("Folder");
-	// selected = { filename: { fileType: "Folder", el: obj } }
-	const includesFolder = Object.values(selected).some((value) => Object.values(value).includes("Folder"));
+	const numSelected = selectionHash.length();
+	//const includesFolder = Object.values(selected).some((value) => Object.values(value).includes("Folder"));
+	const includesFolder = !selectionHash.onlyFiles();
 	const title = "Download";
 	if (numSelected === 1 && !includesFolder) {
-		const filename = Object.keys(selected)[0];
+		const filename = selectionHash.current.filename();
 		const message = `Would you like to download this file?`;
 		const btns = {
 			primary: [
@@ -168,22 +254,20 @@ function download(event) {
 				{ text: "Raw file", callback: (event) => downloadFile(filename) },
 			]
 		}
-		const cb = (event) => {
+		createPopUp("options", { title: title, message: message, btns: btns, file: filename, callback: (event) => {
 			createPopUp("message", { title: "Downloading file", message: `Currently downloading: "${filename}"` });
-		};
-		createPopUp("options", { title: title, message: message, btns: btns, file: filename, callback: cb });
+		}});
 	} else if (numSelected === 1 && includesFolder) {
-		const filename = Object.keys(selected)[0];
+		const filename = selectionHash.current.filename();
 		const message = `Would you like to download this folder?`;
 		const btns = {
 			primary: [
 				{ text: "Zip", callback: (event) => downloadZip([filename]) },
 			]
 		}
-		const cb = (event) => {
+		createPopUp("options", { title: title, message: message, btns: btns, file: filename, callback: (event) => {
 			createPopUp("message", { title: "Downloading folder", message: `Currently downloading zip of folder: "${filename}"` });
-		};
-		createPopUp("options", { title: title, message: message, btns: btns, file: filename, callback: cb });
+		}});
 	} else if (numSelected > 1 && includesFolder) {
 		const cb = () => {
 			console.log("Download " + numSelected + ". True for Folders or Folder && files(s)");
@@ -206,14 +290,15 @@ function download(event) {
 }
 
 function rename(event) {
-	const numSelected = Object.keys(selected).length;
+	//const numSelected = Object.keys(selected).length;
+	const numSelected = selectionHash.length();
 	const title = "Rename";
 	if (numSelected !== 1) {
 		const message = (numSelected === 0 ) ? "Nothing is selected silly. Select one to rename." : "You can only select one. You tried to rename " + numSelected + ".";
 		createPopUp("message", { title: title, message: message });
 		return;
 	}
-	const filename = Object.keys(selected)[0];
+	const filename = selectionHash.current.filename();
 	const message = "Type new name";
 	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: (newFilename) => {
 		console.log(`Renamed "${filename}" to "${newFilename}"`);
@@ -230,10 +315,11 @@ function rename(event) {
 }
 
 function createLink(event) {
-	const numSelected = Object.keys(selected).length;
+	//const numSelected = Object.keys(selected).length;
 	const title = "Create Shareable Link";
-	if (numSelected === 0) {
+	if (selectionHash.length() === 0) {
 		createPopUp("message", { title: title, message: "Nothing is selected silly. Select files to share." });
+		return;
 	}
 	const message = "Type link name";
 	createPopUp("input", { title: title, message: message, inputType: "link", callback: (linkName) => {
@@ -251,7 +337,7 @@ function createLink(event) {
 }
 
 function pathNavBtn(text, callback) {
-	Object.keys(selected).forEach((key) => removeFromSelected(key));
+	selectionHash.clear();
 	const div = document.createElement("div");
 	const btn = document.createElement("button");
 	btn.className = "btn btn-primary";
@@ -324,13 +410,13 @@ function isDuplicates(files, title) {
 }
 
 function move(event) {
-	const numSelected = Object.keys(selected).length;
+	//const numSelected = Object.keys(selected).length;
 	const title = "Move";
-	if (numSelected === 0) {	
+	if (selectionHash.length() === 0) {	
 		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
 		return;
 	}
-	const filenames = Object.keys(selected);
+	const filenames = selectionHash.files;
 	const message = `Confirm move of "${filenames.join(', ')}"`;
 	pathNavBtn(title, (newPath) => {
 		// Check if any of the files names exist in newPath && if any of selected have same name (between different directories)
@@ -351,14 +437,14 @@ function move(event) {
 }
 
 function copy(event) {
-	const numSelected = Object.keys(selected).length;
+	//const numSelected = Object.keys(selected).length;
 	const title = "Copy";
-	if (numSelected === 0) {	
+	if (selectionHash.length() === 0) {	
 		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to copy." });
 		return;
 	}
 	const filesMap = selected;
-	const filenames = Object.keys(selected);
+	const filenames = selectionHash.files;
 	const message = `Confirm copy of "${filenames.join(', ')}"`;
 	pathNavBtn(title, (newPath) => {
 		if (isDuplicates(filenames, title)) return;
@@ -378,15 +464,16 @@ function copy(event) {
 }
 
 function symbolicLink(event) {
-	const numSelected = Object.keys(selected).length;
+	//const numSelected = Object.keys(selected).length;
+	const numSelected = selectionHash.length();
 	const title = "Symbolic Link";
-	if (numSelected !== 1) {
+	if (selectionHash.length() != 1) { // Make it work with multiple, like move and copy
 		const message = (numSelected === 0 ) ? "Nothing is selected silly. Select one to symbolically link." : "You can only select one. You tried to link " + numSelected + ".";
 		createPopUp("message", { title: title, message: message });
 		return;
 	}
 	const path = currentPath + "/";
-	const filename = Object.keys(selected)[0];	
+	const filename = selectionHash.current.filename();
 	const message = "Type name of link";
 	pathNavBtn(title, (newPath) => {
 		createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: (linkName) => {
@@ -404,27 +491,6 @@ function symbolicLink(event) {
 	});
 }
 
-function removeFromSelected(key) {
-	selected[key].el.checked = false;
-	delete selected[key];
-}
-
-function addToSelected(el) {
-	let key = el.getAttribute("filename");
-	let value = { fileType: el.getAttribute("fileType"), el: el, path: currentPath };
-	// Need to restructure selected by grouping by path
-	selected[key] === undefined ? selected[key] = value : delete selected[key];
-}
-
-function addAllSelected(el) {
-	Array.from(document.querySelectorAll('.checkbox')).forEach(checkboxEl => {
-		if (checkboxEl.checked != el.checked) {
-			checkboxEl.checked = el.checked;
-			addToSelected(checkboxEl);
-		}
-	});
-}
-
 function updateDirectoryBtns(path) {
 	const container = document.querySelector("body > div > div.files > div > div.flex-r > div:last-child");
 	const newContainer = $(container.outerHTML);
@@ -439,7 +505,7 @@ function updateDirectoryBtns(path) {
 		steppingPath += elText + '/';
 		let jumpToPath = steppingPath;
 		button.onclick = function (event) {
-			openDirectory(jumpToPath);
+			changeDirectory(jumpToPath);
 		}
 		const div = document.createElement('div');
 		div.textContent = '/';
@@ -458,9 +524,10 @@ function updateInputPathText(path) {
 	input.value = path;
 }
 
-function openDirectory(path) {
+function changeDirectory(path) {
 	path = path.replace(/\/$/, '');
 	currentPath = path;
+	selectionHash.add(currentPath);
 	updateInputPathText(path);
 	updateDirectoryBtns(path);
 	ajaxPost('/getfiles', { path: path }, (data) => addFilesToTable(data));
@@ -498,7 +565,7 @@ function sortArrOfObj(arr, key, direction = 1) {
 	});
 }
 
-function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey="filename") {
+function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey = "filename") {
 	const row = document.querySelector("body > div > div.files > table > thead > tr");
 	const columns = Array.from(row.children)
 	columns.forEach(el => el.classList.remove('selected'));
@@ -538,7 +605,8 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		const creationDate = utcToCurrentTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
 		const els = [
-			{ el: 'input', type: 'checkbox', className: 'checkbox', onclick: (event) => addToSelected(event.target), attrs: { filename: fileStats.filename, fileType: fileType } },
+			//{ el: 'input', type: 'checkbox', className: 'checkbox', onclick: (event) => addToSelected(event.target), attrs: { filename: fileStats.filename, fileType: fileType } },
+			{ el: 'input', type: 'checkbox', className: 'checkbox', onclick: (event) => selectionHash.current.click(event.target), attrs: { filename: fileStats.filename, fileType: fileType } },
 			{ el: 'img', src: 'images/file-browser-icon.png', style: 'width:2.5rem' },
 			{ text: fileStats.filename },
 			{ text: modifiedDate },
@@ -559,7 +627,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 				tableData.textContent = obj.text;
 				if (obj.text === fileStats.filename) {
 					if (fileStats.isDirectory) {
-						setElOnclick(tableData, openDirectory);
+						setElOnclick(tableData, changeDirectory);
 					} else {
 						setElOnclick(tableData, openFile);
 					}
