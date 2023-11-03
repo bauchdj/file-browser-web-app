@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const fileRoutes = require('./routes/files.js');
+
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
