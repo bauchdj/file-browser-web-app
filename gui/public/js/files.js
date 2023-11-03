@@ -18,24 +18,29 @@ function createSelection(path) {
 		}
 	};
 
-	rc.clear = () => {
+	rc.forEach = (f) => {
 		for (const key in rc.items) {
-			rc.items[key].el.checked = false;
+			f(rc.items[key]);
 		}
+	};
+
+	rc.clear = () => {
+		rc.forEach((item) => {
+			item.el.checked = false;
+		});
 		rc.items = {};
+	};
+
+	rc.includesFolder = () => {
+		rc.forEach((item) => {
+			if (item.fileType === 'Folder') return true;
+		});
+		return false;
 	};
 
 	rc.filename = () => Object.keys(rc.items)[0];
 
 	rc.length = () => Object.values(rc.items).length;
-
-	rc.includesFolder = () => {
-		for (const key in rc.items) {
-			console.log(rc.items[key].fileType);
-			if (rc.items[key].fileType === 'Folder') return true;
-		}
-		return false;
-	};
 
 	return rc;
 }
@@ -56,22 +61,28 @@ function selectionClass() {
 		}
 	};
 
+	rc.forEach = (f) => {
+		for (const path in rc.paths) {
+			f(rc.paths[path]);
+		}
+	};
+
 	rc.length = () => {
 		let length = 0;
-		for (const path in rc.paths) {
-			length += rc.paths[path].length();
-		}
+		rc.forEach((selection) => {
+			length += selection.length();
+		});
 		return length;
 	};
 
 	rc.onlyFiles = () => {
-		for (const path in rc.paths) {
-			if (rc.paths[path].includesFolder()) return false;
-		}
+		rc.forEach((selection) => {
+			if (selection.includesFolder()) return false;
+		});
 		return true;
 	};
 
-	rc.files = () => paths;
+	rc.files = () => rc.paths;
 
 	return rc;
 };
