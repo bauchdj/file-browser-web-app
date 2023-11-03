@@ -6,6 +6,8 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
+- currentPath with or without trailing slash
+
 Class Selected: to handle all files currently selected
 
 Methods:
@@ -19,7 +21,7 @@ Structure:
 
 Class File Management: duplicates, logistics
 
-Duplicate name handler (based on duplicates at origin and/or destination)
+BACKEND Duplicate name handler (based on duplicates at origin and/or destination)
   - Creating: check if file exists at destination
   - Move, Copy, Symbolic link: origin (could be from multiple dirs, therefore possible duplicates) and destination (already exists there)
     - Filename prepend parent directory (or multiple parent directories) until full new name != other new filename
