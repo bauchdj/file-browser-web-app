@@ -207,6 +207,10 @@ function trash(event) {
 	createPopUp("message", { title: "Trash", message: "Confirm to enter trash" });
 }
 
+function deleteFiles(event) {
+	createPopUp("message", { title: "Delete", message: "Confirm to permenantely delete" });
+}
+
 function downloadURL(event) {
 	const title = 'Download directly to server';
 	const message = 'Enter URL to download file or folder to current directory';

@@ -7,6 +7,7 @@
 
 ## To do's:
 - Clear all selected button
+- Send each file separately for move, copy, etc
 
 Class Selected: to handle all files currently selected
 
