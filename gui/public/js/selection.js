@@ -3,6 +3,7 @@ function createSelection(path) {
 		path: path,
 		items: {},
 		allSelected: false,
+		nextIndex: 0,
 	};
 
 	rc.click = el => {
@@ -54,13 +55,26 @@ function createSelection(path) {
 
 	rc.isEmpty = () => rc.length() === 0;
 
+	rc.next = () => {
+		if (rc.nextIndex == rc.length()) {
+			rc.nextIndex = 0;
+			return;
+		};
+		const i = rc.nextIndex;
+		const name = rc.filenames()[i];
+		const file = rc.items[name];
+		rc.nextIndex++;
+		return name
+	};
+
 	return rc;
 }
 
 function selectionClass() {
 	const rc = {
 		paths: {}, 
-		current: null
+		current: null,
+		nextIndex: 0,
 	};
 
 	rc.add = path => {
@@ -138,6 +152,21 @@ function selectionClass() {
 	rc.isMultiple = () => rc.length() > 1;
 
 	rc.getPaths = () => Object.keys(rc.paths);
+
+	rc.next = () => {
+		if (rc.nextIndex === rc.getPaths().length) {
+			rc.nextIndex = 0;
+			return rc.next();
+		};
+		const i = rc.nextIndex;
+		const path = rc.getPaths()[i];
+		const file = rc.paths[path].next();
+		if (!file) {
+			rc.nextIndex++;
+			return rc.next();
+		}
+		return path + file;
+	};
 
 	return rc;
 };

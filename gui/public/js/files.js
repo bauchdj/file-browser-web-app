@@ -228,10 +228,14 @@ function downloadURL(event) {
 	}});
 }
 
-function downloadFile(path) {
-	const a = document.createElement('a');
-	a.href = `/download?type=file&path=${encodeURIComponent(path)}`;
-	a.click();
+function downloadFiles(files, num) {
+	while (num-- > 0) {
+		const path = selectionHash.next(files);
+		console.log(path);
+		const a = document.createElement('a');
+		a.href = `/download?type=file&path=${encodeURIComponent(path)}`;
+		a.click();
+	}
 }
 
 function downloadZip(files) {
@@ -250,21 +254,17 @@ function download(event) {
 		console.log("Nothing is selected silly. Select something to download.");
 		createPopUp("message", { title: "Attempted to Download", message: "Nothing selected" });
 		return;
-	} else if (numSelected === 1 && !includesFolder) {
-		const message = `Would you like to download this file?`;
-		const firstFile = selectionHash.first();
-		const singleFile = firstFile.path + firstFile.filename;
+	} else if (!includesFolder) {
+		const message = `How you like to download this file or files?`;
 		const btns = {
 			primary: [
 				{ text: "Zip", callback: event => downloadZip(files) },
-				{ text: "Raw file", callback: event => downloadFile(singleFile) },
+				{ text: "Raw file(s)", callback: event => downloadFiles(files, numSelected) },
 			]
 		}
-		createPopUp("options", { title: title, message: message, btns: btns, file: filenames, callback: event => {
-			createPopUp("message", { title: "Downloading file", message: `Currently preparing zip or downloading: "${filenames}"` });
+		createPopUp("options", { title: title, message: message, btns: btns, callback: event => {
+			createPopUp("message", { title: "Downloading file / files", message: `Currently preparing zip or downloading file / files: "${filenames.join(', ')}"` });
 		}});
-	} else if (!includesFolder) {
-		// Zip, Multi-download
 	} else {
 		const message = `Would you like to download all ${numSelected}: ${filenames.join(', ')}`;
 		const btns = {
