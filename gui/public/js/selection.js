@@ -2,6 +2,7 @@ function createSelection(path) {
 	const rc = {
 		path: path,
 		items: {},
+		allSelected: false,
 	};
 
 	rc.click = el => {

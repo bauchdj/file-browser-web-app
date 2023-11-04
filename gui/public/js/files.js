@@ -11,6 +11,7 @@ selectionHash.add(currentPath);
 function selectAll(el) {
 	const checkboxes = Array.from(document.querySelectorAll('.checkbox'));
 	checkboxes.forEach(checkboxEl => {
+		selectionHash.current.allSelected = el.checked;
 		if (checkboxEl.checked != el.checked) {
 			checkboxEl.checked = el.checked;
 			selectionHash.current.click(checkboxEl);
@@ -262,6 +263,8 @@ function download(event) {
 		createPopUp("options", { title: title, message: message, btns: btns, file: filenames, callback: event => {
 			createPopUp("message", { title: "Downloading file", message: `Currently preparing zip or downloading: "${filenames}"` });
 		}});
+	} else if (!includesFolder) {
+		// Zip, Multi-download
 	} else {
 		const message = `Would you like to download all ${numSelected}: ${filenames.join(', ')}`;
 		const btns = {
@@ -522,6 +525,9 @@ function updateDirectoryBtns(path) {
 function changeDirectory(path) {
 	currentPath = path;
 	selectionHash.add(currentPath);
+
+	const selectAllEl = document.querySelector("body > div > div.files > table > thead > tr > td > input[type=checkbox]")
+	selectAllEl.checked = selectionHash.current.allSelected;
 
 	const input = document.querySelector("body > div > div.files > div > div.flex-0-1 > input");
 	input.value = path;

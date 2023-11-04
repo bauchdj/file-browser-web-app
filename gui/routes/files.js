@@ -125,7 +125,7 @@ exports.setupFiles = function (app) {
 		} else if (type === "zip") {
 			const data = JSON.parse(req.query.data);
 			zip.makeZip(data, (zipFile, time) => {
-				const name = "filebrowser_" + new Date().utcToCurrentTime(time).replace(/ /g, "_").replace(/:/g, "-");
+				const name = "filebrowser_" + new Date().utcToCurrentTime(time).replace(/ /g, "_").replace(/:/g, "-") + ".zip";
 				res.setHeader('Content-Type', 'application/zip');
 				res.setHeader('Content-Disposition', `attachment; filename=${name}`);
 				res.sendFile(zipFile, { dotfiles: 'allow' });
