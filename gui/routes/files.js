@@ -1,7 +1,8 @@
 const fs = require('fs')
 const path = require('path');
 const async = require('async');
-const archiver = require('archiver');
+const zip = require('./zip.js');
+require('./utils.js');
 
 function getBasename(filename) {
 	const parts = filename.split('.');
@@ -77,7 +78,7 @@ exports.setupFiles = function (app) {
 	const usersPath = basePath + "users/";
 
 	app.post('/getfiles', (req, res) => {
-		const directoryPath = usersPath + req.body.path + "/"; // Gets directory of user
+		const directoryPath = usersPath + req.body.path; // Gets directory of user
 		getListOfFiles(directoryPath, (err, fileList) => {
 			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
 			res.end(JSON.stringify({ success: true, data: fileList }));
@@ -96,7 +97,7 @@ exports.setupFiles = function (app) {
 	});
 
 	app.post('/createfile', (req, res) => {
-		const path = usersPath + req.body.path + "/";
+		const path = usersPath + req.body.path;
 		const filename = path + req.body.filename;
 		fs.writeFile(filename, '', (err) => {
 			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
@@ -105,7 +106,7 @@ exports.setupFiles = function (app) {
 	});
 	
 	app.post('/createfolder', (req, res) => {
-		const path = usersPath + req.body.path + "/";
+		const path = usersPath + req.body.path;
 		const filename = path + req.body.filename;
 		fs.mkdir(filename, (err) => {
 			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
@@ -115,26 +116,19 @@ exports.setupFiles = function (app) {
 
 	app.get('/download*', (req, res) => {
 		const type = req.query.type;
-		const filePath = usersPath + decodeURIComponent(req.query.path);
-
 		if (type === "file") {
+			const filePath = usersPath + decodeURIComponent(req.query.path);
 			const filename = filePath.split('/').pop();
 			res.setHeader('Content-Type', 'application/force-download');
 			res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
 			res.sendFile(filePath, { dotfiles: 'allow' });
 		} else if (type === "zip") {
-			const filePath = '';
-			const output = fs.createWriteStream(filePath);
-			const archive = archiver('zip', { zlib: { level: 9 } });
-			archive.pipe(output);
-			// For each file add it to archive
-				archive.file('filePath/to/file1.txt', { name: 'file1.txt' });
-			archive.finalize();
-
-			output.on('close', () => {
+			const data = JSON.parse(req.query.data);
+			zip.makeZip(data, (zipFile, time) => {
+				const name = "filebrowser_" + new Date().utcToCurrentTime(time).replace(/ /g, "_").replace(/:/g, "-");
 				res.setHeader('Content-Type', 'application/zip');
-				res.setHeader('Content-Disposition', `attachment; filename=download.zip`);
-				res.sendFile(filePath, { dotfiles: 'allow' });
+				res.setHeader('Content-Disposition', `attachment; filename=${name}`);
+				res.sendFile(zipFile, { dotfiles: 'allow' });
 			});
 		}
 	});

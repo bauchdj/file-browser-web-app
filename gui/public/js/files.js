@@ -12,7 +12,7 @@ function createSelection(path) {
 		const filename = el.getAttribute("filename");
 		const fileType = el.getAttribute("fileType");
 		if (!rc.items[filename]) {
-			rc.items[filename] = { fileType: fileType, el: el };
+			rc.items[filename] = { filename: filename, fileType: fileType, el: el };
 		} else {
 			delete rc.items[filename];
 		}
@@ -20,7 +20,7 @@ function createSelection(path) {
 
 	rc.forEach = f => {
 		for (const key in rc.items) {
-			f(rc.items[key]);
+			f(rc.items[key], key);
 		}
 	};
 
@@ -32,14 +32,25 @@ function createSelection(path) {
 	};
 
 	rc.includesFolder = () => {
+		let b = false;
 		rc.forEach(item => {
-			if (item.fileType === 'Folder') return true;
+			if (!b && item.fileType === 'Folder') {
+				b = true;
+			}
 		});
-		return false;
+		return b;
 	};
 
 	rc.filenames = () => {
 		return Object.keys(rc.items)
+	};
+
+	rc.files = () => {
+		const obj = {};
+		rc.forEach((item, filename) => {
+			obj[filename] = item.fileType;
+		});
+		return obj;
 	};
 
 	rc.length = () => Object.values(rc.items).length;
@@ -78,11 +89,16 @@ function selectionClass() {
 	};
 
 	rc.onlyFiles = () => {
+		let b = true;
 		rc.forEach(selection => {
-			if (selection.includesFolder()) return false;
+			if (b && selection.includesFolder()) {
+				b = false;
+			}
 		});
-		return true;
+		return b;
 	};
+	
+	rc.getPaths = () => Object.keys(rc.paths);
 
 	rc.filenames = () => {
 		let files = [];
@@ -92,7 +108,22 @@ function selectionClass() {
 		return files;
 	};
 
-	rc.files = () => rc.paths;
+	rc.files = () => {
+		let obj = {};
+		rc.forEach(selection => {
+			obj[selection.path] = selection.files();
+		});
+		return obj;
+	};
+
+	rc.first = () => {
+		const obj = {};
+		obj.path = Object.keys(rc.paths)[0];
+		const files = rc.files();
+		obj.filename = Object.keys(files[obj.path])[0];
+		obj.fileType = files[obj.path][obj.filename];
+		return obj;
+	};
 
 	return rc;
 };
@@ -315,63 +346,51 @@ function downloadURL(event) {
 	}});
 }
 
-function downloadFile(file) {
-	const path = currentPath + file;
+function downloadFile(path) {
 	const a = document.createElement('a');
 	a.href = `/download?type=file&path=${encodeURIComponent(path)}`;
 	a.click();
 }
 
-function downloadZip(filesList) {
-	const path = currentPath;
-	console.log("Downloading zip:", filesList, "at path", path);
+function downloadZip(files) {
+	const a = document.createElement('a');
+	a.href = `/download?type=zip&data=${encodeURIComponent(JSON.stringify(files))}`;
+	a.click();
 }
 
 function download(event) {
 	const numSelected = selectionHash.length();
+	const title = "Download";
 	const includesFolder = !selectionHash.onlyFiles();
 	const files = selectionHash.files();
 	const filenames = selectionHash.filenames();
-	const title = "Download";
-	if (numSelected === 1 && !includesFolder) {
+	if (numSelected == 0) {
+		console.log("Nothing is selected silly. Select something to download.");
+		createPopUp("message", { title: "Attempted to Download", message: "Nothing selected" });
+		return;
+	} else if (numSelected === 1 && !includesFolder) {
 		const message = `Would you like to download this file?`;
+		const firstFile = selectionHash.first();
+		const singleFile = firstFile.path + firstFile.filename;
 		const btns = {
 			primary: [
-				{ text: "Zip", callback: event => downloadZip([files]) },
-				{ text: "Raw file", callback: event => downloadFile(files) },
+				{ text: "Zip", callback: event => downloadZip(files) },
+				{ text: "Raw file", callback: event => downloadFile(singleFile) },
 			]
 		}
 		createPopUp("options", { title: title, message: message, btns: btns, file: filenames, callback: event => {
-			createPopUp("message", { title: "Downloading file", message: `Currently downloading: "${filenames}"` });
+			createPopUp("message", { title: "Downloading file", message: `Currently preparing zip or downloading: "${filenames}"` });
 		}});
-	} else if (numSelected === 1 && includesFolder) {
-		const message = `Would you like to download this folder?`;
-		const btns = {
-			primary: [
-				{ text: "Zip", callback: event => downloadZip([files]) },
-			]
-		}
-		createPopUp("options", { title: title, message: message, btns: btns, file: filenames, callback: event => {
-			createPopUp("message", { title: "Downloading folder", message: `Currently downloading zip of folder: "${filenames}"` });
-		}});
-	} else if (numSelected > 1 && includesFolder) {
-		const cb = () => {
-			console.log("Download " + numSelected + ". True for Folders or Folder && files(s)");
-			createPopUp("message", { title: "Downloading folders / folder and file(s)", message: `Download ${numSelected}. Folders or Folder && files(s)` });
-		};
-		cb();
-	} else if (numSelected > 1 && !includesFolder) {
-		const cb = () => {
-			console.log("Download " + numSelected + " Files. No Folders.");
-			createPopUp("message", { title: "Downloading files", message: `Download ${numSelected} files. No Folders.` });
-		};
-		cb();
 	} else {
-		const cb = () => {
-			console.log("Nothing is selected silly. Select something to download.");
-			createPopUp("message", { title: "Attempted to Download", message: "Nothing selected" });
-		};
-		cb();
+		const message = `Would you like to download all ${numSelected}: ${filenames.join(', ')}`;
+		const btns = {
+			primary: [
+				{ text: "Zip", callback: event => downloadZip(files) },
+			]
+		}
+		createPopUp("options", { title: `${title} - ${numSelected} items`, message: message, btns: btns, callback: event => {
+			createPopUp("message", { title: "Downloading folder", message: `Currently preparing zip for download: "${filenames.join(', ')}"` });
+		}});
 	}
 }
 
@@ -598,7 +617,6 @@ function updateDirectoryBtns(path) {
 	let steppingPath = '';
 	const buttonList = path.split('/');
 	buttonList.pop();
-	console.log(path, buttonList);
 	buttonList.forEach(elText => {
 		const button = document.createElement('button');
 		button.textContent = elText;
@@ -634,13 +652,6 @@ function changeDirectory(path) {
 function openFile(path) {
 	const filename = path.split('/').slice(-2);
 	console.log('Tried to open ' + filename);
-}
-
-function utcToCurrentTime(utcTimeString) {
-	const utcDate = new Date(utcTimeString);
-	const localDate = new Date(utcDate.localTime());
-	const formattedLocalTime = localDate.toTimestamp();
-	return formattedLocalTime;
 }
 
 function sortArrOfObj(arr, key, direction = 1) {
@@ -699,8 +710,8 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 
 	fileList.forEach(fileStats => {
 		const fileType = fileStats.isDirectory ? "Folder" : fileStats.fileExtension;
-		const modifiedDate = utcToCurrentTime(fileStats.modifiedDate);
-		const creationDate = utcToCurrentTime(fileStats.creationDate);
+		const modifiedDate = new Date().utcToCurrentTime(fileStats.modifiedDate);
+		const creationDate = new Date().utcToCurrentTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
 		const els = [
 			//{ el: 'input', type: 'checkbox', className: 'checkbox', onclick: event => addToSelected(event.target), attrs: { filename: fileStats.filename, fileType: fileType } },

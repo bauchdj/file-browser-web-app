@@ -44,3 +44,11 @@ Date.prototype.localTime = function () {
 		return "";
 	}
 };
+
+Date.prototype.utcToCurrentTime = function (utcTimeString) {
+	const utcDate = new Date(utcTimeString);
+	const localDate = new Date(utcDate.localTime());
+	const formattedLocalTime = localDate.toTimestamp();
+	return formattedLocalTime;
+}
+
