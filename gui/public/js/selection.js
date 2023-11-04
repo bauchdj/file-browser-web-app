@@ -28,6 +28,14 @@ function createSelection(path) {
 		rc.items = {};
 	};
 
+	rc.files = () => {
+		const obj = {};
+		rc.forEach((item, filename) => {
+			obj[filename] = item.fileType;
+		});
+		return obj;
+	};
+
 	rc.includesFolder = () => {
 		let b = false;
 		rc.forEach(item => {
@@ -42,32 +50,35 @@ function createSelection(path) {
 
 	rc.includesFile = file => rc.filenames().includes(file);
 
-	rc.files = () => {
-		const obj = {};
-		rc.forEach((item, filename) => {
-			obj[filename] = item.fileType;
-		});
-		return obj;
-	};
-
 	rc.length = () => Object.values(rc.items).length;
+
+	rc.isEmpty = () => rc.length() === 0;
 
 	return rc;
 }
 
 function selectionClass() {
-	const rc = { paths: {}, current: null };
+	const rc = {
+		paths: {}, 
+		current: null
+	};
 
 	rc.add = path => {
 		if (!rc.paths[path]) {
 			rc.paths[path] = createSelection(path);
+		}
+		if (rc.current && rc.current.isEmpty()) {
+			delete rc.paths[rc.current.path];
 		}
 		rc.current = rc.paths[path];
 	};
 
 	rc.clear = () => {
 		for (const path in rc.paths) {
-			rc.paths[path].clear();
+			rc.current.clear();
+			if (rc.paths[path] != rc.current) {
+				delete rc.paths[path];
+			}
 		}
 	};
 
@@ -75,14 +86,6 @@ function selectionClass() {
 		for (const path in rc.paths) {
 			f(rc.paths[path]);
 		}
-	};
-
-	rc.length = () => {
-		let length = 0;
-		rc.forEach(selection => {
-			length += selection.length();
-		});
-		return length;
 	};
 
 	rc.onlyFiles = () => {
@@ -95,8 +98,6 @@ function selectionClass() {
 		return b;
 	};
 	
-	rc.getPaths = () => Object.keys(rc.paths);
-
 	rc.filenames = () => {
 		let files = [];
 		rc.forEach(selection => {
@@ -121,6 +122,22 @@ function selectionClass() {
 		obj.fileType = files[obj.path][obj.filename];
 		return obj;
 	};
+
+	rc.length = () => {
+		let length = 0;
+		rc.forEach(selection => {
+			length += selection.length();
+		});
+		return length;
+	};
+
+	rc.isEmpty = () => rc.length() === 0;
+
+	rc.isSingle = () => rc.length() === 1;
+
+	rc.isMultiple = () => rc.length() > 1;
+
+	rc.getPaths = () => Object.keys(rc.paths);
 
 	return rc;
 };
