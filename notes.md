@@ -6,7 +6,7 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
-- currentPath with or without trailing slash
+- Clear all selected button
 
 Class Selected: to handle all files currently selected
 
