@@ -52,16 +52,14 @@ function download(event) {
 }
 
 	/*
-	createPopUp("input", { title: title, message: message, inputType: "filename", callback: filename => {
-	createPopUp("input", { title: title, message: message, inputType: "url", callback: url => {
 	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: newFilename => {
 	createPopUp("input", { title: title, message: message, inputType: "link", callback: linkName => {
 	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: linkName => {
 	*/
 
-function input({ route, title, message, type, inputType, filename, cbTitle, cbMessage }) {
-	createPopUp("input", { title: title, message: message, file: filename, inputType: inputType, callback: value => {
-		ajaxPost(route, { path: currentPath, name: value , type: type }, postValue => {
+function input({ route, type, data, filename, inputType, title, message, cbTitle, cbMessage }) {
+	createPopUp("input", { title: title, message: message, filename: filename, inputType: inputType, callback: value => {
+		ajaxPost(route, { path: currentPath, type: type, data: data, name: value, }, postValue => {
 			const message = cbMessage({ value: value, postValue: postValue });
 			console.log(message);
 			createPopUp("message", { title: cbTitle({ value: value, postValue: postValue }), message: message, callback: () => { 
@@ -74,9 +72,9 @@ function input({ route, title, message, type, inputType, filename, cbTitle, cbMe
 function createTextFile(event) {
 	input({
 		route: '/create', 
+		type: "file",
 		title: "Create file",
 		message: "Type filename",
-		type: "file",
 		cbTitle: ({ value, postValue }) => "Created a file",
 		cbMessage: ({ value, postValue }) => `New file: "${postValue}"`,
 	});
@@ -85,9 +83,9 @@ function createTextFile(event) {
 function createFolder(event) {
 	input({
 		route: '/create', 
+		type: "folder",
 		title: "Create folder",
 		message: "Type folder name",
-		type: "folder",
 		cbTitle: ({ value, postValue }) => "Created a folder",
 		cbMessage: ({ value, postValue }) => `New file: "${postValue}"`,
 	});
@@ -98,9 +96,9 @@ function downloadURL(event) {
 	const message = "Enter URL to download file or folder to current directory";
 	input({
 		route: '/downloadURL',
+		type: "url",
 		title: title,
 		message: message,
-		type: "url",
 		cbTitle: ({ value, postValue }) => "Downloaded from URL",
 		cbMessage: ({ value, postValue }) => `Downloaded: "${postValue}" from "${value}"`,
 	});
@@ -116,6 +114,17 @@ function rename(event) {
 	}
 	const file = selectionHash.filenames()[0];
 	const message = "Type new name";
+	input({
+		route: '/rename',
+		data: selectionHash.files(),
+		filename: selectionHash.filenames[0],
+		inputType: "filename",
+		title: title,
+		message: message,
+		cbTitle: ({ value, postValue }) => "Rename",
+		cbMessage: `Renamed: "${this.file}" to "${postValue}"`;
+	});
+	/*
 	createPopUp("input", { title: title, message: message, file: file, inputType: "filename", callback: value => {
 		console.log(`Renamed "${file}" to "${value}"`);
 		ajaxPost('/rename', { path: currentPath, filename: filename }, () => {
@@ -126,6 +135,7 @@ function rename(event) {
 			}});
 		});
 	}});
+	*/
 }
 
 function createLink(event) {
