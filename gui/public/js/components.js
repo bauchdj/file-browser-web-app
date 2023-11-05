@@ -1,6 +1,7 @@
-function pathMenuBtn(text) {
+function pathMenuBtn(text, title) {
 	const btn = { 
 		button: text,
+		title: title,
 		"class": "btn btn-primary",
 		style: {
 			margin: "0 0.3rem 0 0",
@@ -9,9 +10,9 @@ function pathMenuBtn(text) {
 	return btn
 }
 
-function clearSelectedBtn(text, hash) {
+function clearSelectedBtn(hash) {
 	if (document.querySelector("#dropdowns").style.display === "none") return;
-	const btn = pathMenuBtn(text);
+	const btn = pathMenuBtn("Clear", "Click to clear all selected items");
 	btn.onclick = event => {
 		btn.el.remove();
 		hash.clear();
