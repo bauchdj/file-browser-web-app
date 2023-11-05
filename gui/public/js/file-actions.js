@@ -104,19 +104,6 @@ function downloadURL(event) {
 		cbTitle: ({ value, postValue }) => "Downloaded from URL",
 		cbMessage: ({ value, postValue }) => `Downloaded: "${postValue}" from "${value}"`,
 	});
-	/*
-	createPopUp("input", { title: title, message: message, type: "download", inputType: "url", callback: value => {
-		console.log('Will make ajax for downloading file / folder to server. Could be dangerous');
-		// Need to add /downloadURL to backend and handle the url and filename that is used for downloaded file
-		ajaxPost('/downloadURL', { path: currentPath, url: value }, postValue => {
-			const message = `Downloaded: "${postValue}" from "${value}"`;
-			console.log(message);
-			createPopUp("message", { title: "Downloaded from URL", message: message, callback: () => { 
-				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
-			} });
-		});
-	}});
-	*/
 }
 
 function rename(event) {

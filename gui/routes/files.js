@@ -171,7 +171,6 @@ exports.setupFiles = function (app) {
 
 					fws.on('error', err => onError(err));
 				} else {
-					console.log(response.statusCode, response.headers);
 					res.writeHead(response.statusCode, response.headers);
 					response.pipe(res);
 				}
@@ -180,6 +179,7 @@ exports.setupFiles = function (app) {
 			r.on('error', err => onError(err));
 			r.end();
 		}
+
 		redirect(url);
 	});
 
