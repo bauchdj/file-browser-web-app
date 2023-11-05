@@ -1,49 +1,3 @@
-	/*
-	createPopUp("input", { title: title, message: message, inputType: "filename", callback: filename => {
-	createPopUp("input", { title: title, message: message, inputType: "url", callback: url => {
-	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: newFilename => {
-	createPopUp("input", { title: title, message: message, inputType: "link", callback: linkName => {
-	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: linkName => {
-	*/
-
-function input(route, title, message, type, inputType, filename) {
-	createPopUp("input", { title: title, message: message, file: filename, inputType: inputType, callback: value => {
-		ajaxPost(route, { path: currentPath, filename: value }, postValue => {
-			const message = `New file: "${postValue}"`;
-			console.log(message);
-			createPopUp("message", { title: `Created ${type}`, message: message, callback: () => { 
-				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
-			}});
-		});
-	}});
-}
-
-function createTextFile(event) {
-	input('createFile', "Create file", "Type filename", "file");
-}
-
-function createFolder(event) {
-	input('/createfolder', "Create folder", "Type folder name", "folder");
-}
-
-function downloadURL(event) {
-	const title = 'Download directly to server';
-	const message = 'Enter URL to download file or folder to current directory';
-	createPopUp("input", { title: title, message: message, inputType: "url", callback: url => {
-		console.log('Will make ajax for downloading file / folder to server. Could be dangerous');
-		// Need to add /downloadURL to backend and handle the url and filename that is used for downloaded file
-		/*
-		ajaxPost('/downloadURL', { path: currentPath, url: url }, filename => {
-			const message = `Downloaded: "${filename}" from "${url}"`;
-			console.log(message);
-			createPopUp("message", { title: "Downloaded from URL", message: message, callback: () => { 
-				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
-			} });
-		});
-		*/
-	}});
-}
-
 function downloadFiles(files, num) {
 	let time = 0;
 	while (num-- > 0) {
@@ -97,6 +51,74 @@ function download(event) {
 	}
 }
 
+	/*
+	createPopUp("input", { title: title, message: message, inputType: "filename", callback: filename => {
+	createPopUp("input", { title: title, message: message, inputType: "url", callback: url => {
+	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: newFilename => {
+	createPopUp("input", { title: title, message: message, inputType: "link", callback: linkName => {
+	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: linkName => {
+	*/
+
+function input({ route, title, message, type, inputType, filename, cbTitle, cbMessage }) {
+	createPopUp("input", { title: title, message: message, file: filename, inputType: inputType, callback: value => {
+		ajaxPost(route, { path: currentPath, name: value , type: type }, postValue => {
+			const message = cbMessage({ value: value, postValue: postValue });
+			console.log(message);
+			createPopUp("message", { title: cbTitle({ value: value, postValue: postValue }), message: message, callback: () => { 
+				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
+			}});
+		});
+	}});
+}
+
+function createTextFile(event) {
+	input({
+		route: '/create', 
+		title: "Create file",
+		message: "Type filename",
+		type: "file",
+		cbTitle: ({ value, postValue }) => "Created a file",
+		cbMessage: ({ value, postValue }) => `New file: "${postValue}"`,
+	});
+}
+
+function createFolder(event) {
+	input({
+		route: '/create', 
+		title: "Create folder",
+		message: "Type folder name",
+		type: "folder",
+		cbTitle: ({ value, postValue }) => "Created a folder",
+		cbMessage: ({ value, postValue }) => `New file: "${postValue}"`,
+	});
+}
+
+function downloadURL(event) {
+	const title = "Download directly to server";
+	const message = "Enter URL to download file or folder to current directory";
+	input({
+		route: '/downloadURL',
+		title: title,
+		message: message,
+		type: "url",
+		cbTitle: ({ value, postValue }) => "Downloaded from URL",
+		cbMessage: ({ value, postValue }) => `Downloaded: "${postValue}" from "${value}"`,
+	});
+	/*
+	createPopUp("input", { title: title, message: message, type: "download", inputType: "url", callback: value => {
+		console.log('Will make ajax for downloading file / folder to server. Could be dangerous');
+		// Need to add /downloadURL to backend and handle the url and filename that is used for downloaded file
+		ajaxPost('/downloadURL', { path: currentPath, url: value }, postValue => {
+			const message = `Downloaded: "${postValue}" from "${value}"`;
+			console.log(message);
+			createPopUp("message", { title: "Downloaded from URL", message: message, callback: () => { 
+				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
+			} });
+		});
+	}});
+	*/
+}
+
 function rename(event) {
 	const numSelected = selectionHash.length();
 	const title = "Rename";
@@ -105,19 +127,17 @@ function rename(event) {
 		createPopUp("message", { title: title, message: message });
 		return;
 	}
-	const file = selectionHash.files();
+	const file = selectionHash.filenames()[0];
 	const message = "Type new name";
-	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: newFilename => {
-		console.log(`Renamed "${filename}" to "${newFilename}"`);
-		/*
-		ajaxPost('/rename', { path: path, filename: filename }, () => {
+	createPopUp("input", { title: title, message: message, file: file, inputType: "filename", callback: value => {
+		console.log(`Renamed "${file}" to "${value}"`);
+		ajaxPost('/rename', { path: currentPath, filename: filename }, () => {
 			const message = `Renamed: "${filename}" to "${newFilename}"`;
 			console.log(message);
 			createPopUp("message", { title: "Renamed", message: message, file: filename, callback: () => {
 				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
 			}});
 		});
-		*/
 	}});
 }
 
@@ -132,15 +152,13 @@ function createLink(event) {
 	const message = "Type link name";
 	createPopUp("input", { title: title, message: message, inputType: "link", callback: linkName => {
 		console.log(`Created link: "${linkName}"`);
-		/*
 		ajaxPost('/createLink', { files: files }, () => {
 			const message = `Created link: "${linkName}"`;
 			console.log(message);
-			createPopUp("message", { title: "Created Sharable Link", message: message, callback () => {
+			createPopUp("message", { title: "Created Sharable Link", message: message, callback: () => {
 				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
 			}});
 		});
-		*/
 	}});
 }
 

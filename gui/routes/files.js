@@ -1,4 +1,5 @@
-const fs = require('fs')
+const https = require('https');
+const fs = require('fs-extra');
 const path = require('path');
 const async = require('async');
 const zip = require('./zip.js');
@@ -96,22 +97,94 @@ exports.setupFiles = function (app) {
 		res.sendFile(basePath + "gui/public/home.html");
 	});
 
-	app.post('/createfile', (req, res) => {
+	app.post('/create', (req, res) => {
+		const type = req.body.type;
+		const isFile = type === "file";
 		const path = usersPath + req.body.path;
-		const filename = path + req.body.filename;
-		fs.writeFile(filename, '', (err) => {
+		const name = req.body.name;
+		const filePath = path + name + (isFile ? ".txt" : '');
+		const cb = (err) => {
 			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
-			res.end(JSON.stringify({ success: true, data: filename.split('/').pop() }));
-		});
+			res.end(JSON.stringify({ success: true, data: name }));
+		}
+		if (isFile) {
+			fs.writeFile(filePath, '', cb);
+		} else {
+			fs.mkdir(filePath, cb);
+		}
 	});
-	
-	app.post('/createfolder', (req, res) => {
-		const path = usersPath + req.body.path;
-		const filename = path + req.body.filename;
-		fs.mkdir(filename, (err) => {
-			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
-			res.end(JSON.stringify({ success: true, data: filename.split('/').pop() }));
-		});
+
+	app.post('/downloadURL', (req, res) => {
+		const onError = err => {
+			console.log(err);
+			res.end(JSON.stringify({ error: 'FROM BACKEND\n' + err.toString() }));
+		};
+
+		const url = new URL(req.body.name);
+
+		const options = {
+			method: 'GET',
+			hostname: url.hostname,
+			path: url.pathname + url.search,
+			headers: {
+				host: url.hostname,
+				authority: url.hostname,
+			}
+		};
+
+		function getName(response) {
+			const contentDisposition = response.headers['content-disposition'];
+			if (contentDisposition) {
+				const regexp = /filename=\"(.*)\"/gi;
+				const match = regexp.exec(contentDisposition);
+				if (match) {
+					return match[1];
+				}
+			}
+			const date = new Date();
+			const time = date.getTime();
+			const contentType = response.headers['content-type'];
+			const fileType = "." + contentType.split(';')[0].split('/').pop();
+			const name = "server-download-" + date.utcToCurrentTime(time).replace(/ /g, "_").replace(/:/g, "-") + fileType;
+			return name;
+		}
+
+		function redirect(url) {
+			const r = https.request(options, response => {
+				if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
+					redirect(response.headers.location);
+					request.abort();
+					return;
+				}
+				if (response.statusCode === 200) {
+					const name = getName(response);
+					const path = req.body.path;
+					const filePath = usersPath + path + name;
+
+					const fws = fs.createWriteStream(filePath);
+					response.pipe(fws);
+
+					fws.on('finish', () => {
+						console.log('Downloaded:', filePath);
+						res.end(JSON.stringify({ success: true, data: name }));
+					});
+
+					fws.on('error', err => onError(err));
+				} else {
+					console.log(response.statusCode, response.headers);
+					res.writeHead(response.statusCode, response.headers);
+					response.pipe(res);
+				}
+			});
+
+			r.on('error', err => onError(err));
+			r.end();
+		}
+		redirect(url);
+	});
+
+	app.post('/delete', (req, res) => {
+		return;
 	});
 
 	app.get('/download*', (req, res) => {

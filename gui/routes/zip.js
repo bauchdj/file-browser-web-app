@@ -1,15 +1,15 @@
-const archiver = require('archiver');
+const fs = require('fs-extra');
 const path = require('path');
-const fs = require('fs');
+const archiver = require('archiver');
 const basePath = path.resolve(__dirname + "/../../") + "/"; // Turns relative path to absolute path. Express relative path is malicious
 const usersPath = basePath + "users/";
 
 exports.makeZip = function (data, callback) {
 	const time = new Date().getTime();
 	const filePath = "/tmp/filebrowser_" + time + ".zip";
-	const output = fs.createWriteStream(filePath);
+	const fws = fs.createWriteStream(filePath);
 	const archive = archiver('zip', { zlib: { level: 9 } });
-	archive.pipe(output);
+	archive.pipe(fws);
 	for (const path in data) {
 		for (const file in data[path]) {
 			const filePath = usersPath + path + file;
@@ -23,7 +23,7 @@ exports.makeZip = function (data, callback) {
 
 	archive.finalize();
 
-	output.on('close', () => {
+	fws.on('close', () => {
 		callback(filePath, time);
 	});
 }

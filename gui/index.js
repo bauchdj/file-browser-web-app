@@ -16,10 +16,6 @@ const serviceName = process.argv.length > 3 ? process.argv[3] : 'file-browser-we
 // Serve up the static content
 app.use(express.static(__dirname + '/public'));
 
-//app.get('/', (req, res) => {
-//	res.sendFile(__dirname + '/public/index.html');
-//});
-
 // Provide the version of the application
 app.get('/config', (req, res) => {
 	res.send({ version: '20231018.1456.54', name: serviceName });
