@@ -65,9 +65,9 @@ For example, you could do the following:
 { div: "Hi There", "class": "someClass", "data role": "someRole" }
 ```
 
-> Note: class is a keyword in JavaScript so you have to quote it.
+**Note:** class is a keyword in JavaScript so you have to quote it.
 
-> What is "data role"? I don’t know, must be some Angular thing where the Angular code looks for elements having that attribute. Regardless, it will simply get transferred from the JS object to DOM object.
+What is "data role"? I don’t know, must be some Angular thing where the Angular code looks for elements having that attribute. Regardless, it will simply get transferred from the JS object to DOM object.
 
 ## CSS or Styles
 
