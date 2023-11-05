@@ -75,7 +75,8 @@ function createPopUp(type, options) {
 			button: text,
 			"class": "btn btn-primary margin-sides",
 			onclick: event => { // default to removing pop up
-				callback ? callback(event) : divFill.remove();
+				if(type !== "input") divFill.el.remove();
+				if(callback) callback(event);
 			},
 		}
 		footer.children.push(primaryBtn);
@@ -85,7 +86,7 @@ function createPopUp(type, options) {
 		const secondaryBtn = {
 			button: "Cancel",
 			"class": "btn btn-secondary",
-			onclick: () => divFill.remove(),
+			onclick: () => divFill.el.remove(),
 		}
 		footer.children.push(secondaryBtn);
 	}
@@ -106,10 +107,10 @@ function createPopUp(type, options) {
 
 		makeSecondaryBtn();
 		makePrimaryBtn(options.title, event => {
-			const value = input.value;
+			const value = input.el.value;
 			const noValue = (value === undefined || value === '');
 			if (!noValue) {
-				divFill.remove();
+				divFill.el.remove();
 				options.callback(value);
 				return;
 			}
@@ -121,7 +122,6 @@ function createPopUp(type, options) {
 		makeSecondaryBtn();
 		options.btns.primary.forEach(item => {
 			makePrimaryBtn(item.text, event => {
-				divFill.remove();
 				item.callback(event);
 				options.callback(event);
 			});
@@ -131,7 +131,6 @@ function createPopUp(type, options) {
 		body.div = options.message;
 		if (options.callback) {
 			makePrimaryBtn("Ok", event => {
-				divFill.remove();
 				options.callback(event);
 			});
 		} else {

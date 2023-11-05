@@ -1,7 +1,15 @@
-function action(title, message, type, route) {
+	/*
 	createPopUp("input", { title: title, message: message, inputType: "filename", callback: filename => {
-		ajaxPost(route, { path: currentPath, filename: filename }, filename => {
-			const message = `New file: "${filename}"`;
+	createPopUp("input", { title: title, message: message, inputType: "url", callback: url => {
+	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: newFilename => {
+	createPopUp("input", { title: title, message: message, inputType: "link", callback: linkName => {
+	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: linkName => {
+	*/
+
+function input(route, title, message, type, inputType, filename) {
+	createPopUp("input", { title: title, message: message, file: filename, inputType: inputType, callback: value => {
+		ajaxPost(route, { path: currentPath, filename: value }, postValue => {
+			const message = `New file: "${postValue}"`;
 			console.log(message);
 			createPopUp("message", { title: `Created ${type}`, message: message, callback: () => { 
 				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
@@ -11,11 +19,11 @@ function action(title, message, type, route) {
 }
 
 function createTextFile(event) {
-	action("Create file", "Type filename", "file", 'createFile');
+	input('createFile', "Create file", "Type filename", "file");
 }
 
 function createFolder(event) {
-	action("Create folder", "Type folder name", "folder", '/createfolder');
+	input('/createfolder', "Create folder", "Type folder name", "folder");
 }
 
 function downloadURL(event) {
@@ -24,6 +32,7 @@ function downloadURL(event) {
 	createPopUp("input", { title: title, message: message, inputType: "url", callback: url => {
 		console.log('Will make ajax for downloading file / folder to server. Could be dangerous');
 		// Need to add /downloadURL to backend and handle the url and filename that is used for downloaded file
+		/*
 		ajaxPost('/downloadURL', { path: currentPath, url: url }, filename => {
 			const message = `Downloaded: "${filename}" from "${url}"`;
 			console.log(message);
@@ -31,6 +40,7 @@ function downloadURL(event) {
 				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
 			} });
 		});
+		*/
 	}});
 }
 
