@@ -75,7 +75,7 @@ The HTML style attribute is a list of properties. So, in JS it is simply a neste
 
 ```js
 {
-div: "Hi There",
+	div: "Hi There",
 	style: {
 		color:'#ff0000',
 		backgroundColor:'#00ff00' // could use "background-color" as the property name
