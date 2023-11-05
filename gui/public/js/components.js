@@ -1,5 +1,5 @@
-function pathMenuBtn(text, title) {
-	const btn = { 
+function pathActionBtn(text, title) {
+	const btn = {
 		button: text,
 		title: title,
 		"class": "btn btn-primary",
@@ -7,12 +7,12 @@ function pathMenuBtn(text, title) {
 			margin: "0 0.3rem 0 0",
 		},
 	}
-	return btn
+	return btn;
 }
 
 function clearSelectedBtn(hash) {
 	if (document.querySelector("#dropdowns").style.display === "none") return;
-	const btn = pathMenuBtn("Clear", "Click to clear all selected items");
+	const btn = pathActionBtn("Clear", "Click to clear all selected items");
 	btn.onclick = event => {
 		btn.el.remove();
 		hash.clear();
@@ -26,7 +26,7 @@ function pathNavBtn(text, hash, callback) {
 	hash.current.onLastClick();
 	const dropdowns = document.querySelector("#dropdowns");
 	const displayValue = window.getComputedStyle(dropdowns).getPropertyValue('display');;
-	const btn = pathMenuBtn(text);
+	const btn = pathActionBtn(text);
 	btn.onclick = event => {
 		document.querySelector("#dropdowns").style.display = displayValue;
 		btn.el.remove();
@@ -37,98 +37,101 @@ function pathNavBtn(text, hash, callback) {
 	jsl.dom.add(parent, btn, parent.children[0]);
 }
 
-function selectAll(el) {
-    const checkboxes = Array.from(document.querySelectorAll('.checkbox'));
-    checkboxes.forEach(checkboxEl => {
-        selectionHash.current.allSelected = el.checked;
-        if (checkboxEl.checked != el.checked) {
-            checkboxEl.checked = el.checked;
-            selectionHash.current.click(checkboxEl);
-        }
-    });
-}
-
 function createPopUp(type, options) {
-	const divFillScreenBackground = document.createElement("div");
-	divFillScreenBackground.className = "fill-screen center-y center-x black-transparent";
-	const divContainer = document.createElement("div");
-	divFillScreenBackground.onclick = function (event) { this.remove(); };
-	divContainer.className = "popupContainer p-2";
-	divContainer.onclick = event => { event.stopPropagation(); };
-	const header = document.createElement("div");
+	const divFill = {
+		div: '',
+		"class": "fill-screen center-y center-x black-transparent",
+		onclick: function (event) { this.el.remove(); },
+		children: [],
+	}
+	const divContainer = {
+		div: '',
+		"class": "popupContainer p-2",
+		onclick: event => event.stopPropagation(),
+		children: [],
+	}
+	divFill.children.push(divContainer);
 	const isFileGiven = (options.file !== undefined);
 	const headerText = isFileGiven ? options.title + " - " + options.file : options.title;
-	header.innerHTML = `<b>${headerText}</b>`;
-	header.className = "p-1";
-	const body = document.createElement("div");
-	body.className = "p-1";
-	const footer = document.createElement("div");
-	footer.className = "right-x p-1";
+	const header = {
+		div: headerText,
+		"class": "p-1",
+		innerHTML: `<b>${headerText}</b>`,
+	}
+	const body = {
+		div: '',
+		"class": "p-1",
+		children: [],
+	}
+	const footer = {
+		div: '',
+		"class": "right-x p-1",
+		children: [],
+	}
+	divContainer.children.push(header, body, footer);
 
 	function makePrimaryBtn(text = "Ok", callback) {
-		const primaryBtn = document.createElement("button");
-		primaryBtn.className = "btn btn-primary margin-sides";
-		primaryBtn.textContent = text;
-		primaryBtn.onclick = event => { // default to removing pop up
-			callback ? callback(event) : divFillScreenBackground.remove();
-		};
-		footer.appendChild(primaryBtn);
-		return primaryBtn;
+		const primaryBtn = {
+			button: text,
+			"class": "btn btn-primary margin-sides",
+			onclick: event => { // default to removing pop up
+				callback ? callback(event) : divFill.remove();
+			},
+		}
+		footer.children.push(primaryBtn);
 	}
 
 	function makeSecondaryBtn(text = "Cancel") {
-		const secondaryBtn = document.createElement("button");
-		secondaryBtn.className = "btn btn-secondary";
-		secondaryBtn.textContent = "Cancel";
-		secondaryBtn.onclick = () => divFillScreenBackground.remove();
-		footer.appendChild(secondaryBtn);
-		return secondaryBtn;
+		const secondaryBtn = {
+			button: "Cancel",
+			"class": "btn btn-secondary",
+			onclick: () => divFill.remove(),
+		}
+		footer.children.push(secondaryBtn);
 	}
 
 	if (type === "input") {
-		const hiddenDiv = document.createElement("div");
-		hiddenDiv.style = "height: 0; visibility: hidden;"
-		hiddenDiv.ariaHidden = "true";
-		hiddenDiv.textContent = options.message + "__";
-		const input = document.createElement("input");
-		input.placeholder = options.message;
-		input.style = "width: 100%;";
-		body.appendChild(hiddenDiv);
-		body.appendChild(input);
+		const hiddenDiv = {
+			div: options.message + "__",
+			style: { height: 0, visibility: "hidden" },
+			ariaHidden: "true",
+		}
+		const input = {
+			input: '',
+			placeholder: options.message,
+			style: { width: "100%" },
+		}
+
+		body.children.push(hiddenDiv, input);
 
 		makeSecondaryBtn();
 		makePrimaryBtn(options.title, event => {
 			const value = input.value;
-			const isValue = (value === undefined || value === '');
-			const isFilename = options.inputType === "filename";
-			const fileExist = (isFilename && filesHash[value] !== undefined);
-			if (!isValue && !fileExist) {
-				divFillScreenBackground.remove();
+			const noValue = (value === undefined || value === '');
+			if (!noValue) {
+				divFill.remove();
 				options.callback(value);
 				return;
 			}
-			const div = document.createElement('div');
-			const text = fileExist ? "Name already exists" : "No name entered";
-			div.textContent = text;
-			header.appendChild(div);
+			jsl.dom.add(header.el, { div: "Nothing entered" });
 		});
 	}
 	if (type === "options") {
-		body.textContent = options.message;
+		body.div = options.message;
 		makeSecondaryBtn();
 		options.btns.primary.forEach(item => {
 			makePrimaryBtn(item.text, event => {
-				divFillScreenBackground.remove();
+				divFill.remove();
 				item.callback(event);
 				options.callback(event);
 			});
 		});
 	}
 	if (type === "message") {
-		body.textContent = options.message;
+		body.div = options.message;
 		if (options.callback) {
 			makePrimaryBtn("Ok", event => {
-				divFillScreenBackground.remove();
+				divFill.remove();
 				options.callback(event);
 			});
 		} else {
@@ -136,10 +139,6 @@ function createPopUp(type, options) {
 		}
 	}
 
-	divContainer.appendChild(header);
-	divContainer.appendChild(body);
-	divContainer.appendChild(footer);
-	divFillScreenBackground.appendChild(divContainer);
-	document.body.appendChild(divFillScreenBackground);
+	jsl.dom.add(document.body, divFill);
 }
 

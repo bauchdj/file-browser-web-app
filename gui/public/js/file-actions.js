@@ -1,29 +1,21 @@
-function createTextFile(event) {
-	const title = "Create file";
-	const message = 'Type filename';	
+function action(title, message, type, route) {
 	createPopUp("input", { title: title, message: message, inputType: "filename", callback: filename => {
-		ajaxPost('/createfile', { path: currentPath, filename: filename }, filename => {
+		ajaxPost(route, { path: currentPath, filename: filename }, filename => {
 			const message = `New file: "${filename}"`;
 			console.log(message);
-			createPopUp("message", { title: "Created file", message: message, callback: () => { 
+			createPopUp("message", { title: `Created ${type}`, message: message, callback: () => { 
 				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
 			}});
 		});
 	}});
 }
 
+function createTextFile(event) {
+	action("Create file", "Type filename", "file", 'createFile');
+}
+
 function createFolder(event) {
-	const title = 'Create folder';
-	const message = 'Type folder name';
-	createPopUp("input", { title: title, message: message, inputType: "filename", callback: filename => {
-		ajaxPost('/createfolder', { path: currentPath, filename: filename }, filename => {
-			const message = `New folder: "${filename}"`;
-			console.log(message);
-			createPopUp("message", { title: "Created folder", message: message, callback: () => { 
-				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
-			} });
-		});
-	}});
+	action("Create folder", "Type folder name", "folder", '/createfolder');
 }
 
 function downloadURL(event) {
