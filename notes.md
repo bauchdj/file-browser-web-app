@@ -6,14 +6,10 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
-- Clear all selected button
 - Send each file separately for move, copy, etc
-
-Class Selected: to handle all files currently selected
 
 Methods:
   - Find duplicates based on path + filename OR just filename
-  - Length of files. All files, and by path
 
 Structure:
   - paths:
