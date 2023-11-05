@@ -2,7 +2,7 @@ let currentPath = localStorage.getItem('user') + "/";
 let filesHash = {};
 
 $(document).ready(function() {
-ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
+	ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
 });
 
 const selectionHash = selectionClass();
@@ -229,12 +229,15 @@ function downloadURL(event) {
 }
 
 function downloadFiles(files, num) {
+	let time = 0;
 	while (num-- > 0) {
 		const path = selectionHash.next(files);
-		console.log(path);
 		const a = document.createElement('a');
 		a.href = `/download?type=file&path=${encodeURIComponent(path)}`;
-		a.click();
+		setTimeout(() => {
+			a.click();
+		}, time);
+		time += 1000;
 	}
 }
 
@@ -325,7 +328,7 @@ function createLink(event) {
 	}});
 }
 
-function pathNavBtn(text, callback) {
+function pathNavBtnn(text, hash, callback) {
 	selectionHash.clear();
 	const div = document.createElement("div");
 	const btn = document.createElement("button");
@@ -358,7 +361,7 @@ function search(event) {
 		}
 	})(input);
 	const filteredFiles = Object.values(filesHash).filter(fileStats => regex.test(fileStats.filename));
-	pathNavBtn("Clear search results", path => {
+	pathNavBtn("Clear search results", selectionHash, path => {
 		el.value = '';
 		addFilesToTable(Object.values(filesHash))
 	});
@@ -406,7 +409,7 @@ function move(event) {
 	}
 	const files = selectionHash.files();
 	const filenames = selectionHash.filenames();
-	pathNavBtn(title, newPath => {
+	pathNavBtn(title, selectionHash, newPath => {
 		// Check if any of the files names exist in newPath && if any of selected have same name (between different directories)
 		const message = `Confirm move of "${filenames.join(', ')}"`;
 		createPopUp("message", { title: title, message: message, callback: () => {
@@ -432,7 +435,7 @@ function copy(event) {
 	}
 	const files = selectionHash.files();
 	const filenames = selectionHash.filenames();
-	pathNavBtn(title, newPath => {
+	pathNavBtn(title, selectionHash, newPath => {
 		const message = `Confirm copy of "${filenames.join(', ')}"`;
 		createPopUp("message", { title: title, message: message, callback: () => {
 			console.log(`Request backend to copy "${filenames.join(', ')}" to "${newPath}"`);
@@ -458,7 +461,7 @@ function symbolicLink(event) {
 	}
 	const files = selectionHash.files();
 	const filenames = selectionHash.filenames();
-	pathNavBtn(title, newPath => {
+	pathNavBtn(title, selectionHash, newPath => {
 		const message = `Confirm copy of "${filenames.join(', ')}"`;
 		createPopUp("message", { title: title, message: message, callback: () => {
 			console.log(`Request backend to copy "${filenames.join(', ')}" to "${newPath}"`);
@@ -475,7 +478,7 @@ function symbolicLink(event) {
 	});
 	if (selectionHash.length() == 1) { // Make it work with multiple, like move and copy
 		const file = selectionHash.files();
-		pathNavBtn(title, newPath => {
+		pathNavBtn(title, selectionHash, newPath => {
 			const message = "Type name of link";
 			createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: linkName => {
 				console.log("Request to create symbolic link " + filename + " " + linkName, `Path: ${path}, newPath: ${newPath}`);

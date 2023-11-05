@@ -8,11 +8,18 @@ function createSelection(path) {
 
 	rc.click = el => {
 		const filename = el.getAttribute("filename");
-		const fileType = el.getAttribute("fileType");
 		if (!rc.items[filename]) {
+			if (rc.hash.isEmpty()) {
+				rc.onLastClick = clearSelectedBtn("Clear selections", rc.hash);
+			}
+			const fileType = el.getAttribute("fileType");
 			rc.items[filename] = { filename: filename, fileType: fileType, el: el };
 		} else {
-			delete rc.items[filename];
+			if (rc.hash.isSingle() && rc.onLastClick) {
+				rc.onLastClick();
+			} else {
+				delete rc.items[filename];
+			}
 		}
 	};
 
@@ -85,6 +92,7 @@ function selectionClass() {
 			delete rc.paths[rc.current.path];
 		}
 		rc.current = rc.paths[path];
+		rc.current.hash = rc;
 	};
 
 	rc.clear = () => {
