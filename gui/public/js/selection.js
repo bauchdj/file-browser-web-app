@@ -179,3 +179,20 @@ function selectionClass() {
 
 	return rc;
 };
+
+let currentPath = localStorage.getItem('user') + "/";
+const filesHash = {};
+const selectionHash = selectionClass();
+selectionHash.add(currentPath);
+
+function selectAll(el) {
+	const checkboxes = Array.from(document.querySelectorAll('.checkbox'));
+	checkboxes.forEach(checkboxEl => {
+		selectionHash.current.allSelected = el.checked;
+		if (checkboxEl.checked != el.checked) {
+			checkboxEl.checked = el.checked;
+			selectionHash.current.click(checkboxEl);
+		}
+	});
+}
+
