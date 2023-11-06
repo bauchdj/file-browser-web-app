@@ -14,7 +14,7 @@ Date.prototype.localTime = function(utcTimeString, fileFormat) {
 
 		const dateFormat = new Intl.DateTimeFormat("en-US", options).format(date);
 
-		const time = fileFormat ? dateFormat.replace(/[#$%&*?$!@+|=:\s<>{}\/\\`'"]/g, "-") : dateFormat;
+		const time = fileFormat ? dateFormat.replace(',', '').replace(/[#$%&*?$!@+|=:\s<>{}\/\\`'"]/g, "-") : dateFormat;
 
 		return time
 	}
