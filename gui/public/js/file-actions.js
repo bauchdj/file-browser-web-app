@@ -7,7 +7,7 @@ function options({ numSelected, route, title, message, cbTitle, cbMessage }) {
 	const data = selectionHash.files();
 
 	createPopUp("options", { title: title, message: message, btns: { primary: [ { text: title } ] }, callback: event => {
-		ajaxPost(route, { data: data }, postValue => {
+		ajaxPost(route, { data: data, count: numSelected }, postValue => {
 			const message = cbMessage({ postValue: postValue });
 
 			console.log(message);
@@ -129,7 +129,7 @@ function input({ route, type, data, filename, inputType, title, message, cbTitle
 			selectionHash.clear();
 		}
 
-		ajaxPost(route, { path: currentPath, type: type, data: data, name: value, }, postValue => {
+		ajaxPost(route, { path: currentPath, type: type, data: data, name: value, count: 1 }, postValue => {
 			const message = cbMessage({ value: value, postValue: postValue });
 
 			console.log(message);
@@ -214,12 +214,19 @@ function createLink(event) {
 	});
 }
 
-function navAction({ route, data, title, message, cbTitle, cbMessage }) {
+function navAction({ numSelected, route, title, message, cbTitle, cbMessage }) {
+	if (numSelected === 0) {	
+		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
+		return;
+	}
+
+	const data = selectionHash.files();
+
 	pathNavBtn(title, selectionHash, value => {
 		createPopUp("message", { title: title, message: message({ value: value }), callback: () => {
 			selectionHash.clear();
 
-			ajaxPost(route, { data: data, path: value }, postValue => {
+			ajaxPost(route, { data: data, path: value, count: numSelected }, postValue => {
 				const message = cbMessage({ value: value, postValue: postValue });
 
 				console.log(message);
@@ -232,29 +239,11 @@ function navAction({ route, data, title, message, cbTitle, cbMessage }) {
 	});
 }
 
-function sourceToDestination({ numSelected, route, title, message, cbTitle, cbMessage }) {
-	if (numSelected === 0) {	
-		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
-		return;
-	}
-
-	const data = selectionHash.files();
-
-	navAction({
-		route: route,
-		data: data,
-		title: title,
-		message: message,
-		cbTitle: cbTitle,
-		cbMessage: cbMessage,
-	});
-}
-
 function move(event) {
 	const numSelected = selectionHash.length();
 	const filenames = selectionHash.filenames();
 
-	sourceToDestination({
+	navAction({
 		numSelected: numSelected,
 		route: '/rename',
 		title: "Move",
@@ -268,7 +257,7 @@ function copy(event) {
 	const numSelected = selectionHash.length();
 	const filenames = selectionHash.filenames();
 
-	sourceToDestination({
+	navAction({
 		numSelected: numSelected,
 		route: '/copy',
 		title: "Copy",
@@ -282,7 +271,7 @@ function trash(event) {
 	const numSelected = selectionHash.length();
 	const filenames = selectionHash.filenames();
 
-	sourceToDestination({
+	navAction({
 		numSelected: numSelected,
 		route: '/trash',
 		title: "Trash",

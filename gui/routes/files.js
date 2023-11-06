@@ -204,6 +204,7 @@ exports.fileRoutes = function (app) {
 	});
 
 	app.post('/rename', (req, res) => {
+		let count = req.body.count;
 		const data = req.body.data;
 		const name = req.body.name;
 		const results = { success: {}, error: {} };
@@ -218,17 +219,21 @@ exports.fileRoutes = function (app) {
 					if (err) {
 						results.error[source] = err.toString();
 					} else {
+						*/
 						results.success[source] = destination;
+						if (--count === 0) {
+							res.end(JSON.stringify({ success: true, data: results }));
+						}
+						/*
 					}
 				});
 				*/
 			}
 		}
-
-		res.end(JSON.stringify({ success: true, data: results }));
 	});
 
 	app.post('/copy', (req, res) => {
+		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
 
@@ -242,17 +247,21 @@ exports.fileRoutes = function (app) {
 					if (err) {
 						results.error[source] = err.toString();
 					} else {
+						*/
 						results.success[source] = destination;
+						if (--count === 0) {
+							res.end(JSON.stringify({ success: true, data: results }));
+						}
+						/*
 					}
 				});
 				*/
 			}
 		}
-
-		res.end(JSON.stringify({ success: true, data: results }));
 	});
 
 	app.post('/trash', (req, res) => {
+		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
 
@@ -272,18 +281,22 @@ exports.fileRoutes = function (app) {
 						if (err) {
 							results.error[source] = err.toString();
 						} else {
+							*/
 							results.success[source] = destination;
+							if (--count === 0) {
+								res.end(JSON.stringify({ success: true, data: results }));
+							}
+							/*
 						}
 					});
 					*/
 				}
 			}
-
-			res.end(JSON.stringify({ success: true, data: results }));
 		});
 	});
 
 	app.post('/delete', (req, res) => {
+		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
 
@@ -295,13 +308,13 @@ exports.fileRoutes = function (app) {
 						results.error[source] = err.toString();
 					} else {
 						results.success[source] = 'deleted';
+						if (--count === 0) {
+							res.end(JSON.stringify({ success: true, data: results }));
+						}
 					}
 				});
 			}
 		}
-
-		console.log(results.success); // This is not running last
-		res.end(JSON.stringify({ success: true, data: results }));
 	});
 
 	app.post('/symlink', (req, res) => {
@@ -309,6 +322,7 @@ exports.fileRoutes = function (app) {
 	});
 
 	app.post('/createLink', (req, res) => {
+		let count = req.body.count;
 		const data = req.body.data;
 		const name = req.body.name;
 		const linksPath = usersPath + ".shared/";
@@ -325,14 +339,17 @@ exports.fileRoutes = function (app) {
 					if (err) {
 						results.error[source] = err.toString();
 					} else {
+						*/ 
 						results.success[source] = destination;
+						if (--count === 0) {
+							res.end(JSON.stringify({ success: true, data: results }));
+						}
+						/*
 					}
 				});
 				*/
 			}
 		}
-
-		res.end(JSON.stringify({ success: true, data: results }));
 	});
 
 	app.get('/download*', (req, res) => {
