@@ -27,7 +27,7 @@ function clearSelectedBtn(hash) {
 }
 
 function pathNavBtn(text, hash, callback) {
-	hash.current.onLastClick();
+	hash.clear();
 
 	const dropdowns = document.querySelector("#dropdowns");
 	const displayValue = window.getComputedStyle(dropdowns).getPropertyValue('display');;
@@ -144,8 +144,12 @@ function createPopUp(type, options) {
 
 		options.btns.primary.forEach(item => {
 			makePrimaryBtn(item.text, event => {
-				item.callback(event);
-				options.callback(event);
+				if (item.callback) { 
+					item.callback(event);
+				}
+				if (options.callback) {
+					options.callback(event);
+				}
 			});
 		});
 	}

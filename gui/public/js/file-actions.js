@@ -1,3 +1,38 @@
+function options({ numSelected, route, title, message, cbTitle, cbMessage }) {
+	if (numSelected === 0) {	
+		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
+		return;
+	}
+
+	const data = selectionHash.files();
+
+	createPopUp("options", { title: title, message: message, btns: { primary: [ { text: title } ] }, callback: event => {
+		ajaxPost(route, { data: data }, postValue => {
+			const message = cbMessage({ postValue: postValue });
+
+			console.log(message);
+
+			createPopUp("message", { title: cbTitle({ postValue: postValue }), message: message, callback: () => { 
+				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
+			}});
+		});
+	}});
+}
+
+function del(event) {
+	const numSelected = selectionHash.length();
+	const filenames = selectionHash.filenames();
+
+	options({
+		numSelected: numSelected,
+		route: '/delete',
+		title: "Delete",
+		message: `Confirm permanent deletion of ${numSelected}. Files include: "${filenames.join(', ')}"`,
+		cbTitle: ({ value, postValue }) => "Deleted files",
+		cbMessage: ({ value, postValue }) => `Deleted "${filenames.join(', ')}"`,
+	});
+}
+
 function search(event) {
 	const el = event.srcElement[0];
 	const input = el.value;
@@ -90,7 +125,9 @@ function download(event) {
 
 function input({ route, type, data, filename, inputType, title, message, cbTitle, cbMessage }) {
 	createPopUp("input", { title: title, message: message, filename: filename, inputType: inputType, callback: value => {
-		selectionHash.clear();
+		if (selectionHash.clear) {
+			selectionHash.clear();
+		}
 
 		ajaxPost(route, { path: currentPath, type: type, data: data, name: value, }, postValue => {
 			const message = cbMessage({ value: value, postValue: postValue });
@@ -151,7 +188,7 @@ function rename(event) {
 	input({
 		route: '/rename',
 		data: selectionHash.files(),
-		filename: selectionHash.filenames[0],
+		filename: selectionHash.filenames()[0],
 		inputType: "filename",
 		title: title,
 		message: message,
@@ -177,26 +214,17 @@ function createLink(event) {
 	});
 }
 
-function move(event) {
-	const title = "Move";
-
-	if (selectionHash.length() === 0) {	
-		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
-		return;
-	}
-
-	const files = selectionHash.files();
-	const filenames = selectionHash.filenames();
-
+function navAction({ route, data, title, message, cbTitle, cbMessage }) {
 	pathNavBtn(title, selectionHash, value => {
-		// Check if any of the files names exist in newPath && if any of selected have same name (between different directories)
-		const message = `Confirm move of "${filenames.join(', ')}"`;
-		createPopUp("message", { title: title, message: message, callback: () => {
-			console.log(`Request backend to move ${filenames.join(', ')} to "${value}"`);
-			ajaxPost('/rename', { data: files, path: value }, () => {
-				const message = `Moved "${filenames.join(', ')}" to "${value}"`;
+		createPopUp("message", { title: title, message: message({ value: value }), callback: () => {
+			selectionHash.clear();
+
+			ajaxPost(route, { data: data, path: value }, postValue => {
+				const message = cbMessage({ value: value, postValue: postValue });
+
 				console.log(message);
-				createPopUp("message", { title: "Moved files", message: message, callback: () => { 
+
+				createPopUp("message", { title: cbTitle({ value: value, postValue: postValue }), message: message, callback: () => { 
 					ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
 				}});
 			});
@@ -204,28 +232,63 @@ function move(event) {
 	});
 }
 
-function copy(event) {
-	const title = "Copy";
-	if (selectionHash.length() === 0) {	
-		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to copy." });
+function sourceToDestination({ numSelected, route, title, message, cbTitle, cbMessage }) {
+	if (numSelected === 0) {	
+		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
 		return;
 	}
-	const files = selectionHash.files();
+
+	const data = selectionHash.files();
+
+	navAction({
+		route: route,
+		data: data,
+		title: title,
+		message: message,
+		cbTitle: cbTitle,
+		cbMessage: cbMessage,
+	});
+}
+
+function move(event) {
+	const numSelected = selectionHash.length();
 	const filenames = selectionHash.filenames();
-	pathNavBtn(title, selectionHash, newPath => {
-		const message = `Confirm copy of "${filenames.join(', ')}"`;
-		createPopUp("message", { title: title, message: message, callback: () => {
-			console.log(`Request backend to copy "${filenames.join(', ')}" to "${newPath}"`);
-			/*
-			ajaxPost('/copy', { files: files, newPath: newPath }, () => {
-				const message = `Copied "${filenames.join(', ')}" to "${newPath}"`;
-				console.log(message);
-				createPopUp("message", { title: "Copied files", message: message, callback: () => { 
-					ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
-				}});
-			});
-			*/
-		}});
+
+	sourceToDestination({
+		numSelected: numSelected,
+		route: '/rename',
+		title: "Move",
+		message: ({ value }) => `Confirm move of ${numSelected} to "${value}". Files include: "${filenames.join(', ')}"`,
+		cbTitle: ({ value, postValue }) => "Moved files",
+		cbMessage: ({ value, postValue }) => `Moved "${filenames.join(', ')}" to "${value}"`,
+	});
+}
+
+function copy(event) {
+	const numSelected = selectionHash.length();
+	const filenames = selectionHash.filenames();
+
+	sourceToDestination({
+		numSelected: numSelected,
+		route: '/copy',
+		title: "Copy",
+		message: ({ value }) => `Confirm copy of ${numSelected} to "${value}". Files include: "${filenames.join(', ')}"`,
+		cbTitle: ({ value, postValue }) => "Copied files",
+		cbMessage: ({ value, postValue }) => `Copied "${filenames.join(', ')}" to "${value}"`,
+	});
+}
+
+function trash(event) {
+	const numSelected = selectionHash.length();
+	const filenames = selectionHash.filenames();
+
+	sourceToDestination({
+		numSelected: numSelected,
+		route: '/trash',
+		title: "Trash",
+		message: ({ value }) => `Confirm trashing of ${numSelected}. Files include: "${filenames.join(', ')}"`,
+		cbTitle: ({ value, postValue }) => "Trashed files",
+		cbMessage: ({ value, postValue }) => `Trashed "${filenames.join(', ')}"`,
 	});
 }
 
@@ -271,14 +334,6 @@ function symbolicLink(event) {
 			}});
 		});
 	}
-}
-
-function trash(event) {
-	createPopUp("message", { title: "Trash", message: "Confirm to enter trash" });
-}
-
-function del(event) {
-	createPopUp("message", { title: "Delete", message: "Confirm to permenantely delete" });
 }
 
 function upload(event) {

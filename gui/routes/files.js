@@ -154,7 +154,7 @@ exports.fileRoutes = function (app) {
 			const time = date.getTime();
 			const contentType = response.headers['content-type'];
 			const fileType = "." + contentType.split(';')[0].split('/').pop();
-			const name = "server-download-" + date.utcToCurrentTime(time).replace(/ /g, "_").replace(/:/g, "-") + fileType;
+			const name = "server-download-" + date.localTime(time, true) + fileType;
 
 			return name;
 		}
@@ -186,7 +186,6 @@ exports.fileRoutes = function (app) {
 					response.pipe(fws);
 
 					fws.on('finish', () => {
-						console.log('Downloaded:', filePath);
 						res.end(JSON.stringify({ success: true, data: name }));
 					});
 
@@ -207,21 +206,105 @@ exports.fileRoutes = function (app) {
 	app.post('/rename', (req, res) => {
 		const data = req.body.data;
 		const name = req.body.name;
+		const results = { success: {}, error: {} };
 
 		for (const path in data) {
 			for (const file in data[path]) {
 				const source = usersPath + path + file;
-				const destination = usersPath + req.body.path + (name ? name : file);
-				console.log(source, 'to', destination);
+				const destination = usersPath + req.body.path + (name ? name : file); // renames file to name if it exists
+				console.log('Rename', source, "to", destination);
 				/*
 				fs.rename(source, destination, err => {
-					if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
-					res.end(JSON.stringify({ success: true, data: name }));
+					if (err) {
+						results.error[source] = err.toString();
+					} else {
+						results.success[source] = destination;
+					}
 				});
 				*/
 			}
 		}
-		//res.end(JSON.stringify({ success: true, data: req.body.name }));
+
+		res.end(JSON.stringify({ success: true, data: results }));
+	});
+
+	app.post('/copy', (req, res) => {
+		const data = req.body.data;
+		const results = { success: {}, error: {} };
+
+		for (const path in data) {
+			for (const file in data[path]) {
+				const source = usersPath + path + file;
+				const destination = usersPath + req.body.path + file;
+				console.log('Copy', source, "to", destination);
+				/*
+				fs.copy(source, destination, err => {
+					if (err) {
+						results.error[source] = err.toString();
+					} else {
+						results.success[source] = destination;
+					}
+				});
+				*/
+			}
+		}
+
+		res.end(JSON.stringify({ success: true, data: results }));
+	});
+
+	app.post('/trash', (req, res) => {
+		const data = req.body.data;
+		const results = { success: {}, error: {} };
+
+		const timeDir = usersPath +  ".trash/" + new Date().localTime(time, true) + "/";
+		console.log(timeDir);
+		return;
+		fs.mkdir(timeDir, err => {
+			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
+
+			for (const path in data) {
+				for (const file in data[path]) {
+					const source = usersPath + path + file;
+					const destination =  timeDir + file;
+					console.log('Trashed', source);
+					/*
+					fs.rename(source, destination, err => {
+						if (err) {
+							results.error[source] = err.toString();
+						} else {
+							results.success[source] = destination;
+						}
+					});
+					*/
+				}
+			}
+
+			res.end(JSON.stringify({ success: true, data: results }));
+		});
+	});
+
+	app.post('/delete', (req, res) => {
+		const data = req.body.data;
+		const results = { success: {}, error: {} };
+
+		for (const path in data) {
+			for (const file in data[path]) {
+				const source = usersPath + path + file;
+				fs.remove(source, err => {
+					if (err) {
+						results.error[source] = err.toString();
+					} else {
+						results.success[source] = 'deleted';
+					}
+				});
+			}
+		}
+
+		console.log(results.success); // This is not running last
+		res.end(JSON.stringify({ success: true, data: results }));
+	});
+
+	app.post('/symlink', (req, res) => {
 		return;
 	});
 
@@ -229,18 +312,27 @@ exports.fileRoutes = function (app) {
 		const data = req.body.data;
 		const name = req.body.name;
 		const linksPath = usersPath + ".shared/";
-		const destination = linksPath + name;
+		const results = { success: {}, error: {} };
 
 		for (const path in data) {
 			for (const file in data[path]) {
 				const source = usersPath + path + file;
-				console.log(source, 'to', destination);
+				const destination = linksPath + name + "/" + file;
+				const type = data[path][file] === "Folder" ? "dir" : "file";
+				console.log("Create link", "of type:", type, "\n\tfrom:", source, "\n\tto:", destination);
+				/*
+				fs.symlink(source, destination, type, err => {
+					if (err) {
+						results.error[source] = err.toString();
+					} else {
+						results.success[source] = destination;
+					}
+				});
+				*/
 			}
 		}
-	});
 
-	app.post('/delete', (req, res) => {
-		return;
+		res.end(JSON.stringify({ success: true, data: results }));
 	});
 
 	app.get('/download*', (req, res) => {
@@ -254,7 +346,7 @@ exports.fileRoutes = function (app) {
 		} else if (type === "zip") {
 			const data = JSON.parse(req.query.data);
 			zip.makeZip(data, (zipFile, time) => {
-				const name = "filebrowser_" + new Date().utcToCurrentTime(time).replace(/ /g, "_").replace(/:/g, "-") + ".zip";
+				const name = "filebrowser_" + new Date().localTime(time, true) + ".zip";
 				res.setHeader('Content-Type', 'application/zip');
 				res.setHeader('Content-Disposition', `attachment; filename=${name}`);
 				res.sendFile(zipFile, { dotfiles: 'allow' });
