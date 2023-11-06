@@ -51,14 +51,9 @@ function download(event) {
 	}
 }
 
-	/*
-	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: newFilename => {
-	createPopUp("input", { title: title, message: message, inputType: "link", callback: linkName => {
-	createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: linkName => {
-	*/
-
 function input({ route, type, data, filename, inputType, title, message, cbTitle, cbMessage }) {
 	createPopUp("input", { title: title, message: message, filename: filename, inputType: inputType, callback: value => {
+		selectionHash.current.onLastClick(); // Need to make class structure to enable certain aspect on interconnectedness LOL
 		ajaxPost(route, { path: currentPath, type: type, data: data, name: value, }, postValue => {
 			const message = cbMessage({ value: value, postValue: postValue });
 			console.log(message);
@@ -104,6 +99,30 @@ function downloadURL(event) {
 	});
 }
 
+function move(event) {
+	const title = "Move";
+	if (selectionHash.length() === 0) {	
+		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
+		return;
+	}
+	const files = selectionHash.files();
+	const filenames = selectionHash.filenames();
+	pathNavBtn(title, selectionHash, newPath => {
+		// Check if any of the files names exist in newPath && if any of selected have same name (between different directories)
+		const message = `Confirm move of "${filenames.join(', ')}"`;
+		createPopUp("message", { title: title, message: message, callback: () => {
+			console.log(`Request backend to move ${filenames.join(', ')} to "${newPath}"`);
+			ajaxPost('/rename', { data: files, path: newPath }, () => {
+				const message = `Moved "${filenames.join(', ')}" to "${newPath}"`;
+				console.log(message);
+				createPopUp("message", { title: "Moved files", message: message, callback: () => { 
+					ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
+				}});
+			});
+		}});
+	});
+}
+
 function rename(event) {
 	const numSelected = selectionHash.length();
 	const title = "Rename";
@@ -122,20 +141,8 @@ function rename(event) {
 		title: title,
 		message: message,
 		cbTitle: ({ value, postValue }) => "Rename",
-		cbMessage: `Renamed: "${this.file}" to "${postValue}"`,
+		cbMessage: ({ value, postValue }) => `Renamed: "${this.file}" to "${postValue}"`,
 	});
-	/*
-	createPopUp("input", { title: title, message: message, file: file, inputType: "filename", callback: value => {
-		console.log(`Renamed "${file}" to "${value}"`);
-		ajaxPost('/rename', { path: currentPath, filename: filename }, () => {
-			const message = `Renamed: "${filename}" to "${newFilename}"`;
-			console.log(message);
-			createPopUp("message", { title: "Renamed", message: message, file: filename, callback: () => {
-				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
-			}});
-		});
-	}});
-	*/
 }
 
 function createLink(event) {
@@ -212,32 +219,6 @@ function isDuplicates(files, title) {
 	console.log(message);
 	createPopUp("message", { title: `${title} failed - Duplicates`, message: message });
 	return true;
-}
-
-function move(event) {
-	const title = "Move";
-	if (selectionHash.length() === 0) {	
-		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
-		return;
-	}
-	const files = selectionHash.files();
-	const filenames = selectionHash.filenames();
-	pathNavBtn(title, selectionHash, newPath => {
-		// Check if any of the files names exist in newPath && if any of selected have same name (between different directories)
-		const message = `Confirm move of "${filenames.join(', ')}"`;
-		createPopUp("message", { title: title, message: message, callback: () => {
-			console.log(`Request backend to move ${filenames.join(', ')} to "${newPath}"`);
-			/*
-			ajaxPost('/move', { files: files, newPath: newPath }, () => {
-				const message = `Moved "${filenames.join(', ')}" to "${newPath}"`;
-				console.log(message);
-				createPopUp("message", { title: "Moved files", message: message, callback: () => { 
-					ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
-				}});
-			});
-			*/
-		}});
-	});
 }
 
 function copy(event) {

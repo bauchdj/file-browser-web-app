@@ -21,7 +21,7 @@ app.get('/config', (req, res) => {
 	res.send({ version: '20231018.1456.54', name: serviceName });
 });
 
-fileRoutes.setupFiles(app);
+fileRoutes.fileRoutes(app);
 
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);

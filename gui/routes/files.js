@@ -24,6 +24,7 @@ function getDirectorySize(directoryPath, callback) {
 				callback(err, totalSize);
 			} else if (stats.isDirectory()) {
 				const files = fs.readdirSync(filePath);
+
 				async.each(files, (file, acb) => {
 					const subPath = path.join(filePath, file);
 					calculateSize(subPath, acb);
@@ -74,12 +75,13 @@ function getListOfFiles(directoryPath, callback) {
 	});
 }
 
-exports.setupFiles = function (app) {
+exports.fileRoutes = function (app) {
 	const basePath = path.resolve(__dirname + "/../../") + "/"; // Turns relative path to absolute path. Express relative path is malicious
 	const usersPath = basePath + "users/";
 
 	app.post('/getfiles', (req, res) => {
 		const directoryPath = usersPath + req.body.path; // Gets directory of user
+
 		getListOfFiles(directoryPath, (err, fileList) => {
 			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
 			res.end(JSON.stringify({ success: true, data: fileList }));
@@ -90,23 +92,28 @@ exports.setupFiles = function (app) {
 		const username = req.body.username;
 		const pwd = req.body.password;
 		const users = require(basePath + "users.json");
+
 		if (users[username] === undefined || users[username].pwd !== pwd) {
 			res.sendFile(basePath + "gui/public/index.html");
-			return null;
+			return;
 		}
+
 		res.sendFile(basePath + "gui/public/home.html");
 	});
 
 	app.post('/create', (req, res) => {
 		const type = req.body.type;
 		const isFile = type === "file";
+
 		const path = usersPath + req.body.path;
 		const name = req.body.name;
 		const filePath = path + name + (isFile ? ".txt" : '');
+
 		const cb = (err) => {
 			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
 			res.end(JSON.stringify({ success: true, data: name }));
 		}
+
 		if (isFile) {
 			fs.writeFile(filePath, '', cb);
 		} else {
@@ -134,6 +141,7 @@ exports.setupFiles = function (app) {
 
 		function getName(response) {
 			const contentDisposition = response.headers['content-disposition'];
+
 			if (contentDisposition) {
 				const regexp = /filename=\"(.*)\"/gi;
 				const match = regexp.exec(contentDisposition);
@@ -141,11 +149,13 @@ exports.setupFiles = function (app) {
 					return match[1];
 				}
 			}
+
 			const date = new Date();
 			const time = date.getTime();
 			const contentType = response.headers['content-type'];
 			const fileType = "." + contentType.split(';')[0].split('/').pop();
 			const name = "server-download-" + date.utcToCurrentTime(time).replace(/ /g, "_").replace(/:/g, "-") + fileType;
+
 			return name;
 		}
 
@@ -192,6 +202,26 @@ exports.setupFiles = function (app) {
 		}
 
 		redirect(url);
+	});
+
+	app.post('/rename', (req, res) => {
+		const data = req.body.data;
+		const name = req.body.name;
+		for (const path in data) {
+			for (const file in data[path]) {
+				const source = usersPath + path + file;
+				const destination = usersPath + req.body.path + (name ? name : file);
+				console.log(source, 'to', destination);
+				return;
+
+				fs.rename(source, destination, err => {
+					if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
+					res.end(JSON.stringify({ success: true, data: name }));
+				});
+			}
+		}
+		//res.end(JSON.stringify({ success: true, data: req.body.name }));
+		return;
 	});
 
 	app.post('/delete', (req, res) => {
