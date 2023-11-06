@@ -207,21 +207,36 @@ exports.fileRoutes = function (app) {
 	app.post('/rename', (req, res) => {
 		const data = req.body.data;
 		const name = req.body.name;
+
 		for (const path in data) {
 			for (const file in data[path]) {
 				const source = usersPath + path + file;
 				const destination = usersPath + req.body.path + (name ? name : file);
 				console.log(source, 'to', destination);
-				return;
-
+				/*
 				fs.rename(source, destination, err => {
 					if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
 					res.end(JSON.stringify({ success: true, data: name }));
 				});
+				*/
 			}
 		}
 		//res.end(JSON.stringify({ success: true, data: req.body.name }));
 		return;
+	});
+
+	app.post('/createLink', (req, res) => {
+		const data = req.body.data;
+		const name = req.body.name;
+		const linksPath = usersPath + ".shared/";
+		const destination = linksPath + name;
+
+		for (const path in data) {
+			for (const file in data[path]) {
+				const source = usersPath + path + file;
+				console.log(source, 'to', destination);
+			}
+		}
 	});
 
 	app.post('/delete', (req, res) => {

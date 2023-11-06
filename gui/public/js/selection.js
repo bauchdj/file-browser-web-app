@@ -10,13 +10,13 @@ function createSelection(path) {
 		const filename = el.getAttribute("filename");
 		if (!rc.items[filename]) {
 			if (rc.hash.isEmpty()) {
-				rc.onLastClick = clearSelectedBtn(rc.hash);
+				rc.hash.clear = clearSelectedBtn(rc.hash);
 			}
 			const fileType = el.getAttribute("fileType");
 			rc.items[filename] = { filename: filename, fileType: fileType, el: el };
 		} else {
-			if (rc.hash.isSingle() && rc.onLastClick) {
-				rc.onLastClick();
+			if (rc.hash.isSingle() && rc.hash.clear) {
+				rc.hash.clear();
 			} else {
 				delete rc.items[filename];
 			}
@@ -96,7 +96,7 @@ function selectionClass() {
 		rc.current.hash = rc;
 	};
 
-	rc.clear = () => {
+	rc.clearPaths = () => {
 		for (const path in rc.paths) {
 			rc.current.clear();
 			if (rc.paths[path] != rc.current) {

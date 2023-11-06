@@ -1,3 +1,35 @@
+function search(event) {
+	const el = event.srcElement[0];
+	const input = el.value;
+
+	if (input === undefined || input === '') return false;
+
+	const regex = (input => {
+		try {
+			const pattern = input.replace(/(^\/)|(\/[a-z]*$)/g, '');
+			const flags = input.match(/[^/]+$/)[0];
+			const regex = new RegExp(pattern, flags);
+			return regex;
+		} catch (err) {
+			return new RegExp(input);
+		}
+	})(input);
+
+	const filteredFiles = Object.values(filesHash).filter(fileStats => regex.test(fileStats.filename));
+
+	pathNavBtn("Clear search results", selectionHash, path => {
+		el.value = '';
+		addFilesToTable(Object.values(filesHash))
+	});
+
+	if (document.querySelector("#subfolder-search").checked) {
+		// ajax call for all files that match regex
+		console.log("Backend subfolder search")
+	} else {
+		addFilesToTable(filteredFiles);
+	}
+}
+
 function downloadFiles(files, num) {
 	let time = 0;
 	while (num-- > 0) {
@@ -23,28 +55,33 @@ function download(event) {
 	const includesFolder = !selectionHash.onlyFiles();
 	const files = selectionHash.files();
 	const filenames = selectionHash.filenames();
+
 	if (numSelected == 0) {
 		console.log("Nothing is selected silly. Select something to download.");
 		createPopUp("message", { title: "Attempted to Download", message: "Nothing selected" });
 		return;
 	} else if (!includesFolder) {
-		const message = `How you like to download this file or files?`;
+		const message = numSelected === 1 ? "How you like to download this file?" : `How would you like to download these ${numSelected} files: ${filenames.join(', ')}`;
+
 		const btns = {
 			primary: [
 				{ text: "Zip", callback: event => downloadZip(files) },
 				{ text: "Raw file(s)", callback: event => downloadFiles(files, numSelected) },
 			]
-		}
-		createPopUp("options", { title: title, message: message, btns: btns, callback: event => {
+		};
+
+		createPopUp("options", { title: title + (numSelected === 1 ? '' : ` - ${numSelected} files`), message: message, btns: btns, callback: event => {
 			createPopUp("message", { title: "Downloading file / files", message: `Currently preparing zip or downloading file / files: "${filenames.join(', ')}"` });
 		}});
 	} else {
 		const message = `Would you like to download all ${numSelected}: ${filenames.join(', ')}`;
+
 		const btns = {
 			primary: [
 				{ text: "Zip", callback: event => downloadZip(files) },
 			]
-		}
+		};
+
 		createPopUp("options", { title: `${title} - ${numSelected} items`, message: message, btns: btns, callback: event => {
 			createPopUp("message", { title: "Downloading folder", message: `Currently preparing zip for download: "${filenames.join(', ')}"` });
 		}});
@@ -53,10 +90,13 @@ function download(event) {
 
 function input({ route, type, data, filename, inputType, title, message, cbTitle, cbMessage }) {
 	createPopUp("input", { title: title, message: message, filename: filename, inputType: inputType, callback: value => {
-		selectionHash.current.onLastClick(); // Need to make class structure to enable certain aspect on interconnectedness LOL
+		selectionHash.clear();
+
 		ajaxPost(route, { path: currentPath, type: type, data: data, name: value, }, postValue => {
 			const message = cbMessage({ value: value, postValue: postValue });
+
 			console.log(message);
+
 			createPopUp("message", { title: cbTitle({ value: value, postValue: postValue }), message: message, callback: () => { 
 				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
 			}});
@@ -99,30 +139,6 @@ function downloadURL(event) {
 	});
 }
 
-function move(event) {
-	const title = "Move";
-	if (selectionHash.length() === 0) {	
-		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
-		return;
-	}
-	const files = selectionHash.files();
-	const filenames = selectionHash.filenames();
-	pathNavBtn(title, selectionHash, newPath => {
-		// Check if any of the files names exist in newPath && if any of selected have same name (between different directories)
-		const message = `Confirm move of "${filenames.join(', ')}"`;
-		createPopUp("message", { title: title, message: message, callback: () => {
-			console.log(`Request backend to move ${filenames.join(', ')} to "${newPath}"`);
-			ajaxPost('/rename', { data: files, path: newPath }, () => {
-				const message = `Moved "${filenames.join(', ')}" to "${newPath}"`;
-				console.log(message);
-				createPopUp("message", { title: "Moved files", message: message, callback: () => { 
-					ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
-				}});
-			});
-		}});
-	});
-}
-
 function rename(event) {
 	const numSelected = selectionHash.length();
 	const title = "Rename";
@@ -131,7 +147,6 @@ function rename(event) {
 		createPopUp("message", { title: title, message: message });
 		return;
 	}
-	const file = selectionHash.filenames()[0];
 	const message = "Type new name";
 	input({
 		route: '/rename',
@@ -151,74 +166,42 @@ function createLink(event) {
 		createPopUp("message", { title: title, message: "Nothing is selected silly. Select files to share." });
 		return;
 	}
+	const message = "Type link name";
+	input({
+		route: '/createLink',
+		data: selectionHash.files(),
+		title: title,
+		message: message,
+		cbTitle: ({ value, postValue }) => "Created sharable link",
+		cbMessage: ({ value, postValue }) => `Created link: "${value}"`,
+	});
+}
+
+function move(event) {
+	const title = "Move";
+
+	if (selectionHash.length() === 0) {	
+		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
+		return;
+	}
+
 	const files = selectionHash.files();
 	const filenames = selectionHash.filenames();
-	const message = "Type link name";
-	createPopUp("input", { title: title, message: message, inputType: "link", callback: linkName => {
-		console.log(`Created link: "${linkName}"`);
-		ajaxPost('/createLink', { files: files }, () => {
-			const message = `Created link: "${linkName}"`;
-			console.log(message);
-			createPopUp("message", { title: "Created Sharable Link", message: message, callback: () => {
-				ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
-			}});
-		});
-	}});
-}
 
-function search(event) {
-	const el = event.srcElement[0];
-	const input = el.value;
-	if (input === undefined || input === '') return false;
-	const regex = (input => {
-		try {
-			const pattern = input.replace(/(^\/)|(\/[a-z]*$)/g, '');
-			const flags = input.match(/[^/]+$/)[0];
-			const regex = new RegExp(pattern, flags);
-			return regex;
-		} catch (err) {
-			return new RegExp(input);
-		}
-	})(input);
-	const filteredFiles = Object.values(filesHash).filter(fileStats => regex.test(fileStats.filename));
-	pathNavBtn("Clear search results", selectionHash, path => {
-		el.value = '';
-		addFilesToTable(Object.values(filesHash))
+	pathNavBtn(title, selectionHash, value => {
+		// Check if any of the files names exist in newPath && if any of selected have same name (between different directories)
+		const message = `Confirm move of "${filenames.join(', ')}"`;
+		createPopUp("message", { title: title, message: message, callback: () => {
+			console.log(`Request backend to move ${filenames.join(', ')} to "${value}"`);
+			ajaxPost('/rename', { data: files, path: value }, () => {
+				const message = `Moved "${filenames.join(', ')}" to "${value}"`;
+				console.log(message);
+				createPopUp("message", { title: "Moved files", message: message, callback: () => { 
+					ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
+				}});
+			});
+		}});
 	});
-
-	if (document.querySelector("#subfolder-search").checked) {
-		// ajax call for all files that match regex
-		console.log("Backend subfolder search")
-	} else {
-		addFilesToTable(filteredFiles);
-	}
-}
-
-function findDuplicates(array) {
-	const uniqueValues = new Set();
-	const duplicates = [];
-	for (const item of array) {
-		uniqueValues.has(item) ? duplicates.push(item) : uniqueValues.add(item);
-	}
-	return duplicates;
-}
-
-function isDuplicates(files, title) {
-	const dupsFiles = findDuplicates(files);
-	const dupsDir = findDuplicates(Object.keys(filesHash));
-	const inFiles = dupsFiles.length !== 0;
-	const inDir = dupsDir.length !== 0;
-	if (!inFiles && !inDir) return false;
-	let message = "Duplicates in:\n";
-	if (inFiles) {
-		message += `Selected files: "${dupsFiles.join(', ')}"\n`;
-	}
-	if (!inFiles && inDir) {
-		message += `Directory: "${dupsDir.join(', ')}"`;
-	}
-	console.log(message);
-	createPopUp("message", { title: `${title} failed - Duplicates`, message: message });
-	return true;
 }
 
 function copy(event) {

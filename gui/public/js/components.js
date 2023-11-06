@@ -17,7 +17,7 @@ function clearSelectedBtn(hash) {
 	const btn = pathActionBtn("Clear", "Click to clear all selected items");
 	btn.onclick = event => {
 		btn.el.remove();
-		hash.clear();
+		hash.clearPaths();
 	};
 
 	const parent = document.querySelector("body > div > div.files > div > div.flex-r");
