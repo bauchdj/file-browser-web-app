@@ -122,7 +122,7 @@ function rename(event) {
 		title: title,
 		message: message,
 		cbTitle: ({ value, postValue }) => "Rename",
-		cbMessage: `Renamed: "${this.file}" to "${postValue}"`;
+		cbMessage: `Renamed: "${this.file}" to "${postValue}"`,
 	});
 	/*
 	createPopUp("input", { title: title, message: message, file: file, inputType: "filename", callback: value => {

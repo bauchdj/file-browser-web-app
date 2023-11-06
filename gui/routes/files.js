@@ -149,13 +149,24 @@ exports.setupFiles = function (app) {
 			return name;
 		}
 
+		let redirectCount = 0;
+		const redirectLimit = 10;
+
 		function redirect(url) {
 			const r = https.request(options, response => {
-				if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
+				if (redirectCount < redirectLimit && response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
+					redirectCount++;
 					redirect(response.headers.location);
-					request.abort();
+					r.abort();
 					return;
 				}
+
+				if (redirectCount == redirectLimit) {
+					res.writeHead(response.statusCode, response.headers);
+					response.pipe(res);
+					return;
+				}
+
 				if (response.statusCode === 200) {
 					const name = getName(response);
 					const path = req.body.path;
