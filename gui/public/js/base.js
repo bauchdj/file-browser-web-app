@@ -89,8 +89,8 @@ function sortArrayOfObjects(arr, key, direction = 1) {
 	if (key === "filename") {
 		const extMap = mapFiles(arr);
 
-		// Separate folders
-		const folders = extMap.folder;
+		// Separate folders, if folder exists
+		const folders = extMap.folder ? extMap.folder : [];
 		delete extMap.folder;
 
 		// Flatten map to list
@@ -115,8 +115,8 @@ function sortArrayOfObjects(arr, key, direction = 1) {
 			sortLowerCase(extMap[key]);
 		}
 
-		// Separate folders
-		const folders = extMap.folder;
+		// Separate folders, if folder exits
+		const folders = extMap.folder ? extMap.folder : [];
 		delete extMap.folder;
 
 		// Sort then flatten map to list
