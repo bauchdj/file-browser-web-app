@@ -7,7 +7,7 @@
 
 ## To do's:
 - Send each file separately for move, copy, etc
-- Upload
+- Upload [Html5 File Selector Forked Repo](https://github.com/tine20/html5-file-selector/blob/master/src/Html5FileSelector.js)
 - Home view
 - Shared view
 - Backend search
