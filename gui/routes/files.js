@@ -55,7 +55,7 @@ function getListOfFiles(directoryPath, callback) {
 					if (err) return callback(err);
 
 					isDirectory = fileStats.isDirectory();
-					fileExtension = isDirectory ? "" : path.extname(file);
+					fileExtension = isDirectory ? "" : path.extname(file).replace('.', '');
 
 					const fileInfo = {
 						filename: file,

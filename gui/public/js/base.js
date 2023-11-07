@@ -47,6 +47,43 @@ function changeDirectory(path) {
 }
 
 function sortArrOfObj(arr, key, direction = 1) {
+	const types = {};
+
+	arr.forEach(file => {
+		const fileType = file.isDirectory ? "folder" : file.fileExtension;
+
+		if (!types[fileType]) {
+			types[fileType] = [];
+		}
+
+		types[fileType].push(file);
+	});
+
+	console.log(types);
+
+	for (const type in types) {
+		types[type].sort();
+	}
+
+	function combineArr() {
+		let sorted = [];
+		const sortedKeys = Object.keys(types).sort();;
+
+		if (key === "filename") {
+			const folders = types.folder;
+			delete types.folder;
+			const files = sortedKeys.flatMap(key => types[key]);
+			sorted = folders.concat(files);
+		} else {
+			sorted = sortedKeys.flatMap(key => types[key]);
+		}
+		
+		return sorted;
+	}
+
+	const sortedFiles = combineArr();
+	return direction === 1 ? sortedFiles : sortedFiles.reverse();
+
 	arr.sort((a, b) => {
 		const valA = a[key];
 		const valB = b[key];
@@ -72,10 +109,12 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 	columns.forEach(el => el.classList.remove('selected'));
 	document.querySelector("#" + sortKey).classList.add('selected');
 
-	sortArrOfObj(fileList, sortKey, sortDirection);
-	if (sortKey === "filename") {
-		sortArrOfObj(fileList, "fileExtension", sortDirection);
-	}
+	console.log(fileList);
+	fileList = sortArrOfObj(fileList, sortKey, sortDirection);
+	console.log(fileList);
+	//if (sortKey === "filename") {
+	//	sortArrOfObj(fileList, "fileExtension", sortDirection);
+	//}
 
 	const sortOptions = document.querySelector("body > div > div.files > div > div.flex-r ul").children;
 	Array.from(sortOptions).forEach(el => {
@@ -99,8 +138,12 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 	const newTableBody = document.createElement("tbody");
 	newTableBody.className = "table-group-divider";
 
+	const fileTypes = {};
+
 	fileList.forEach(fileStats => {
+		console.log(fileStats);
 		const fileType = fileStats.isDirectory ? "Folder" : fileStats.fileExtension;
+
 		const modifiedDate = new Date().localTime(fileStats.modifiedDate);
 		const creationDate = new Date().localTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
@@ -122,6 +165,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 
 		els.forEach(obj => {
 			const tableData = document.createElement('td');
+
 			if (Object.keys(obj).length == 1 && obj.text) {
 				tableData.textContent = obj.text;
 				if (obj.text === fileStats.filename) {
@@ -146,13 +190,18 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 						el.checked = true;
 					}
 				}
+
 				tableData.appendChild(el);
 			}
+
 			tableRow.appendChild(tableData);
 		});
+
 		newTableBody.appendChild(tableRow);
 		filesHash[fileStats.filename] = fileStats;
 	});
+
+	console.log(fileTypes);
 
 	const table = document.querySelector("body > div > div.files > table");
 	table.removeChild(tableBody);
