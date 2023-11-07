@@ -88,21 +88,14 @@ function selectionClass() {
 		if (!rc.paths[path]) {
 			rc.paths[path] = createSelection(path);
 		}
+
 		const current = rc.paths[path];
 		if (rc.current && rc.current.isEmpty() && rc.current != current) {
 			delete rc.paths[rc.current.path];
 		}
+
 		rc.current = current;
 		rc.current.hash = rc;
-	};
-
-	rc.clearPaths = () => {
-		for (const path in rc.paths) {
-			rc.current.clear();
-			if (rc.paths[path] != rc.current) {
-				delete rc.paths[path];
-			}
-		}
 	};
 
 	rc.forEach = f => {
@@ -111,46 +104,66 @@ function selectionClass() {
 		}
 	};
 
+	rc.clearSelections = () => {
+		rc.current.clear();
+
+		rc.forEach(selection => {
+			if (selection != rc.current) {
+				delete selection;
+			}
+		});
+	};
+
 	rc.onlyFiles = () => {
 		let b = true;
+
 		rc.forEach(selection => {
 			if (b && selection.includesFolder()) {
 				b = false;
 			}
 		});
+
 		return b;
 	};
 	
 	rc.filenames = () => {
 		let files = [];
+
 		rc.forEach(selection => {
 			files = files.concat(selection.filenames());
 		});
+
 		return files;
 	};
 
 	rc.files = () => {
 		let obj = {};
+
 		rc.forEach(selection => {
 			obj[selection.path] = selection.files();
 		});
+
 		return obj;
 	};
 
 	rc.first = () => {
 		const obj = {};
 		obj.path = Object.keys(rc.paths)[0];
+
 		const files = rc.files();
 		obj.filename = Object.keys(files[obj.path])[0];
 		obj.fileType = files[obj.path][obj.filename];
+
 		return obj;
 	};
 
 	rc.length = () => {
 		let length = 0;
+
 		rc.forEach(selection => {
 			length += selection.length();
 		});
+
 		return length;
 	};
 
@@ -167,13 +180,16 @@ function selectionClass() {
 			rc.nextIndex = 0;
 			return rc.next();
 		};
+
 		const i = rc.nextIndex;
 		const path = rc.getPaths()[i];
 		const file = rc.paths[path].next();
+
 		if (!file) {
 			rc.nextIndex++;
 			return rc.next();
 		}
+
 		return path + file;
 	};
 
@@ -181,14 +197,18 @@ function selectionClass() {
 };
 
 let currentPath = localStorage.getItem('user') + "/";
+
 const filesHash = {};
+
 const selectionHash = selectionClass();
 selectionHash.add(currentPath);
 
 function selectAll(el) {
 	const checkboxes = Array.from(document.querySelectorAll('.checkbox'));
+
 	checkboxes.forEach(checkboxEl => {
 		selectionHash.current.allSelected = el.checked;
+
 		if (checkboxEl.checked != el.checked) {
 			checkboxEl.checked = el.checked;
 			selectionHash.current.click(checkboxEl);
