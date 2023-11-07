@@ -1,7 +1,8 @@
-const https = require('https');
+const async = require('async');
 const fs = require('fs-extra');
 const path = require('path');
-const async = require('async');
+const https = require('https');
+const multer = require('multer');
 const zip = require('./zip.js');
 require('./utils.js');
 
@@ -265,7 +266,7 @@ exports.fileRoutes = function (app) {
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
 
-		const timeDir = usersPath +  ".trash/" + new Date().localTime(time, true) + "/";
+		const timeDir = usersPath + ".trash/" + new Date().localTime(time, true) + "/";
 		console.log(timeDir);
 		return;
 		fs.mkdir(timeDir, err => {
@@ -274,7 +275,7 @@ exports.fileRoutes = function (app) {
 			for (const path in data) {
 				for (const file in data[path]) {
 					const source = usersPath + path + file;
-					const destination =  timeDir + file;
+					const destination = timeDir + file;
 					console.log('Trashed', source);
 					/*
 					fs.rename(source, destination, err => {
@@ -354,20 +355,39 @@ exports.fileRoutes = function (app) {
 
 	app.get('/download*', (req, res) => {
 		const type = req.query.type;
+
 		if (type === "file") {
 			const filePath = usersPath + decodeURIComponent(req.query.path);
 			const filename = filePath.split('/').pop();
+
 			res.setHeader('Content-Type', 'application/force-download');
 			res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
 			res.sendFile(filePath, { dotfiles: 'allow' });
 		} else if (type === "zip") {
 			const data = JSON.parse(req.query.data);
+
 			zip.makeZip(data, (zipFile, time) => {
 				const name = "filebrowser_" + new Date().localTime(time, true) + ".zip";
+
 				res.setHeader('Content-Type', 'application/zip');
 				res.setHeader('Content-Disposition', `attachment; filename=${name}`);
 				res.sendFile(zipFile, { dotfiles: 'allow' });
 			});
 		}
+	});
+
+	const storage = multer.diskStorage({
+		destination: function (req, file, cb) {
+			cb(null, usersPath + req.body.path);
+		},
+		filename: function (req, file, cb) {
+			cb(null, file.originalname);
+		}
+	});
+
+	const upload = multer({ storage: storage });
+
+	app.post('/upload', upload.array('files[]'), (req, res) => {
+		res.end(JSON.stringify({ success: true }));
 	});
 }

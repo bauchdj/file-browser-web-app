@@ -75,6 +75,10 @@ function createPopUp(type, options) {
 		children: [],
 	}
 
+	if (options.bodyChildren) {
+		body.children = options.bodyChildren;
+	}
+
 	const footer = {
 		div: '',
 		"class": "right-x p-1",

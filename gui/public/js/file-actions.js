@@ -326,60 +326,75 @@ function symbolicLink(event) {
 }
 
 function upload(event) {
-	event.preventDefault();
-	createPopUp("message", { title: "Upload", message: "Confirm upload of selected file(s) / folder(s)" });
+	const title = "Upload";
+	const message = "";//"Choose file or folder upload";
 
-	/*
-	<form id="uploadForm" enctype="multipart/form-data">
-		<input type="file" id="folderInput" webkitdirectory="" directory="" multiple />
-		<input type="submit" value="Upload and Zip Folder" />
-	</form>
-	const folderInput = document.getElementById("folderInput"); // Need input element for files list
+	const fileInput = {
+		tag: "input",
+		type: "file",
+		multiple: true,
+		onchange: event => console.log("Selected files"),
+	};
 
-	if (!folderInput.files.length) {
-		alert("Please select a folder to upload.");
-		return;
+	const folderInput = {
+		tag: "input",
+		type: "file",
+		webkitdirectory: true,
+		directory: true,
+		multiple: true,
+		onchange: event => console.log("Selected folder"),
+	};
+
+	function divText(text) {
+		const div = {
+			tag: "div",
+			text: text,
+			style: { alignSelf: "center", fontWeight: "bold" },
+		}
+
+		return div;
 	}
 
-	const zip = new JSZip();
-	let filesProcessed = 0;
+	const inputs = {
+		tag: "div",
+		"class": "flex-c",
+		children: [ divText("Files"), fileInput, divText("Folder"), folderInput ],
+	};
 
-	for (const folder of folderInput.files) {
-		const reader = new FileReader();
+	function sendFiles() {
+		const files = Array.from(fileInput.el.files).concat(Array.from(folderInput.el.files));
 
-		reader.onload = function (event) {
-			zip.file(folder.webkitRelativePath, event.target.result);
+		if (files.length === 0) return createPopUp("message", { title: title, message: "Nothing selected for upload" });
 
-			filesProcessed++;
+		const formData = new FormData();
 
-			if (filesProcessed === folderInput.files.length) {
-				const zip = new JSZip();
+		formData.append("path", currentPath);
 
-				// Add files to the zip object here (e.g., using zip.file())
-				zip.generateAsync({ type: "blob", mimeType: "application/zip" }, function (content) {
-					// 'content' is the generated zip content as a Blob
-					const formData = new FormData();
-					formData.append("zipFile", content, "folder.zip");
+		files.forEach(file => {
+			formData.append('files[]', file, file.webkitRelativePath || file.name);
+		});
 
-					$.ajax({
-						url: "/upload",
-						method: "POST",
-						data: formData, // formData
-						processData: false,
-						contentType: false,
-						success: function (response) {
-							console.log("Upload successful");
-						},
-						error: function (error) {
-							console.error("Upload failed: ", error);
-						},
-					});
-				});
+		for (let [key, value] of formData.entries()) {
+			console.log(key, value);
+		}
+
+		const xhr = new XMLHttpRequest();
+
+		xhr.open('POST', '/upload', true);
+
+		xhr.onload = function () {
+			if (xhr.status === 200) {
+				createPopUp("message", { title: "Upload completed", message: "Successfully uploaded selected files / folder", callback: () => {
+					ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
+				}});
+			} else {
+				createPopUp("message", { title: "Upload completed", message: "Upload error. Status: " + xhr.status });
 			}
 		};
 
-		reader.readAsArrayBuffer(folder);
-	}
-	*/
+		xhr.send(formData);
+	}	
+
+	createPopUp("options", { title: title, message: message, btns: { primary: [ { text: "Upload" } ] }, bodyChildren: [ inputs ], callback: event => sendFiles() });
 }
 
