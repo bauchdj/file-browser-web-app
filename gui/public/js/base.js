@@ -47,22 +47,13 @@ function changeDirectory(path) {
 }
 
 function sortArrayOfObjects(arr, key, direction = 1) {
-	const types = {};
+	function sortLowerCase(arr) {
+		arr.sort((a, b) => {
+			// Sort list of objects OR list of strings,	ints, floats
+			let valA = a[key] ? a[key] : a;
+			let valB = b[key] ? b[key] : b;
 
-	arr.forEach(file => {
-		const fileType = file.isDirectory ? "folder" : file.fileExtension;
-
-		if (!types[fileType]) {
-			types[fileType] = [];
-		}
-
-		types[fileType].push(file);
-	});
-
-	for (const type in types) {
-		types[type].sort((a, b) => {
-			let valA = a[key];
-			let valB = b[key];
+			if (valA === valB) return 0; // Short circuit if they're equal
 
 			if (valA.toLowerCase) {
 				valA = valA.toLowerCase();
@@ -71,31 +62,74 @@ function sortArrayOfObjects(arr, key, direction = 1) {
 				valB = valB.toLowerCase();
 			}
 
-			if (valA === valB) return 0; // Short circuit if they're equal
+			if (valA === valB) return 0; // Short circuit if equal after lower case
 			if (valA < valB) return -1 * direction;
 			if (valA > valB) return 1 * direction;
-
-			return 0;
 		});
+
+		return arr;
 	}
 
-	const sortedFiles = function() {
-		let sorted = [];
-		if (key === "filename") {
-			const folders = types.folder;
-			delete types.folder;
+	function mapFiles(arr) {
+		const map = {};
 
-			const sortedKeys = Object.keys(types).sort();;
-			const files = sortedKeys.flatMap(key => types[key]);
-			sorted = folders.concat(files);
-		} else {
-			sorted = sortedKeys.flatMap(key => types[key]);
-		}
+		arr.forEach(file => {
+			const fileType = file.isDirectory ? "folder" : file.fileExtension;
+
+			if (!map[fileType]) {
+				map[fileType] = [];
+			}
+
+			map[fileType].push(file);
+		});
+
+		return map;
+	}
+
+	if (key === "filename") {
+		const extMap = mapFiles(arr);
+
+		// Separate folders
+		const folders = extMap.folder;
+		delete extMap.folder;
+
+		// Flatten map to list
+		const keys = Object.keys(extMap);
+		const files = keys.flatMap(key => extMap[key]);
+
+		// Sort 
+		const sortedFolders = sortLowerCase(folders);
+		const sortedFiles = sortLowerCase(files);
+
+		// Combine sorted folders and sorted files
+		const sorted = sortedFolders.concat(sortedFiles);
 
 		return sorted;
-	}()
+	}
 
-	return sortedFiles;
+	if (key === "fileExtension") {
+		const extMap = mapFiles(arr);
+
+		// Sort each list in map
+		for (const key in extMap) {
+			sortLowerCase(extMap[key]);
+		}
+
+		// Separate folders
+		const folders = extMap.folder;
+		delete extMap.folder;
+
+		// Sort then flatten map to list
+		const sortedKeys = sortLowerCase(Object.keys(extMap));
+		const files = sortedKeys.flatMap(key => extMap[key]);
+
+		// Concat folders with files
+		const sorted = folders.concat(files);
+
+		return sorted;
+	}
+
+	return sortLowerCase(arr);
 }
 
 function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey = "filename") {
