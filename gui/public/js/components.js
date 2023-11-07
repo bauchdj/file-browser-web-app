@@ -26,9 +26,9 @@ function clearSelectedBtn(hash) {
 	return btn.onclick;
 }
 
-function pathNavBtn(text, hash, callback) {
-	if (hash.clear) {
-		hash.clear();
+function pathNavBtn(text, clearHash, callback) {
+	if (clearHash && selectionHash.clear) {
+		selectionHash.clear();
 	}
 
 	const dropdowns = document.querySelector("#dropdowns");

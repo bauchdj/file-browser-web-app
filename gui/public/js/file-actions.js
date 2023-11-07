@@ -52,7 +52,7 @@ function search(event) {
 
 	const filteredFiles = Object.values(filesHash).filter(fileStats => regex.test(fileStats.filename));
 
-	pathNavBtn("Clear search results", selectionHash, path => {
+	pathNavBtn("Clear search results", clearHash = false, path => {
 		el.value = '';
 		addFilesToTable(Object.values(filesHash))
 	});
@@ -222,7 +222,7 @@ function navAction({ numSelected, route, title, message, cbTitle, cbMessage }) {
 
 	const data = selectionHash.files();
 
-	pathNavBtn(title, selectionHash, value => {
+	pathNavBtn(title, clearHash = true, value => {
 		createPopUp("message", { title: title, message: message({ value: value }), callback: () => {
 			selectionHash.clear();
 
