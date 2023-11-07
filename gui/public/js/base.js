@@ -46,7 +46,7 @@ function changeDirectory(path) {
 	ajaxPost('/getfiles', { path: path }, data => addFilesToTable(data));
 }
 
-function sortArrOfObj(arr, key, direction = 1) {
+function sortArrayOfObjects(arr, key, direction = 1) {
 	const types = {};
 
 	arr.forEach(file => {
@@ -59,48 +59,43 @@ function sortArrOfObj(arr, key, direction = 1) {
 		types[fileType].push(file);
 	});
 
-	console.log(types);
-
 	for (const type in types) {
-		types[type].sort();
+		types[type].sort((a, b) => {
+			let valA = a[key];
+			let valB = b[key];
+
+			if (valA.toLowerCase) {
+				valA = valA.toLowerCase();
+			}
+			if (valB.toLowerCase) {
+				valB = valB.toLowerCase();
+			}
+
+			if (valA === valB) return 0; // Short circuit if they're equal
+			if (valA < valB) return -1 * direction;
+			if (valA > valB) return 1 * direction;
+
+			return 0;
+		});
 	}
 
-	function combineArr() {
+	const sortedFiles = function() {
 		let sorted = [];
-		const sortedKeys = Object.keys(types).sort();;
-
 		if (key === "filename") {
 			const folders = types.folder;
 			delete types.folder;
+
+			const sortedKeys = Object.keys(types).sort();;
 			const files = sortedKeys.flatMap(key => types[key]);
 			sorted = folders.concat(files);
 		} else {
 			sorted = sortedKeys.flatMap(key => types[key]);
 		}
-		
+
 		return sorted;
-	}
+	}()
 
-	const sortedFiles = combineArr();
-	return direction === 1 ? sortedFiles : sortedFiles.reverse();
-
-	arr.sort((a, b) => {
-		const valA = a[key];
-		const valB = b[key];
-		if (valA === valB) return 0; // Short circuit if they're equal
-		let firstBool;
-		let secondBool;
-		if (key === "fileExtension") { // Sort folders & empty extensions above everything else
-			firstBool = (valA === '' && valB !== '');
-			secondBool = (valA !== '' && valB === '');
-		} else {
-			firstBool = (valA < valB);
-			secondBool = (valA > valB);
-		}
-		if (firstBool) return -1 * direction;
-		if (secondBool) return 1 * direction;
-		return 0;
-	});
+	return sortedFiles;
 }
 
 function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey = "filename") {
@@ -109,11 +104,9 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 	columns.forEach(el => el.classList.remove('selected'));
 	document.querySelector("#" + sortKey).classList.add('selected');
 
-	console.log(fileList);
-	fileList = sortArrOfObj(fileList, sortKey, sortDirection);
-	console.log(fileList);
+	fileList = sortArrayOfObjects(fileList, sortKey, sortDirection);
 	//if (sortKey === "filename") {
-	//	sortArrOfObj(fileList, "fileExtension", sortDirection);
+	//	sortArrayOfObjects(fileList, "fileExtension", sortDirection);
 	//}
 
 	const sortOptions = document.querySelector("body > div > div.files > div > div.flex-r ul").children;
@@ -138,10 +131,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 	const newTableBody = document.createElement("tbody");
 	newTableBody.className = "table-group-divider";
 
-	const fileTypes = {};
-
 	fileList.forEach(fileStats => {
-		console.log(fileStats);
 		const fileType = fileStats.isDirectory ? "Folder" : fileStats.fileExtension;
 
 		const modifiedDate = new Date().localTime(fileStats.modifiedDate);
@@ -200,8 +190,6 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		newTableBody.appendChild(tableRow);
 		filesHash[fileStats.filename] = fileStats;
 	});
-
-	console.log(fileTypes);
 
 	const table = document.querySelector("body > div > div.files > table");
 	table.removeChild(tableBody);
