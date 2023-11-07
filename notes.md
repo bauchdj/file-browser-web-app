@@ -7,43 +7,18 @@
 
 ## To do's:
 - Send each file separately for move, copy, etc
-
-Methods:
-  - Find duplicates based on path + filename OR just filename
-
-Structure:
-  - paths:
-    - filname:
-      - fileType, el (needs to be updated when re-drawn switching dirs)
-
-Class File Management: duplicates, logistics
+- Upload [Html5 File Selector Forked Repo](https://github.com/tine20/html5-file-selector/blob/master/src/Html5FileSelector.js)
+- Home view
+- Shared view
+- Backend search
+- Custom path input function, backend handling
+- Create Link
+  - Add logic for different inputTypes in input btn component. Needs to check current links, prompt for different link if already exists
+- Class Actions: Create file / folder, Upload, URL download to server, Download, Rename, Create Link, Move, Copy, Symbollic link, Trash, Delete
 
 BACKEND Duplicate name handler (based on duplicates at origin and/or destination)
   - Creating: check if file exists at destination
-  - Move, Copy, Symbolic link: origin (could be from multiple dirs, therefore possible duplicates) and destination (already exists there)
-    - Filename prepend parent directory (or multiple parent directories) until full new name != other new filename
-
-Class Components: btns, etc 
-
-Class Actions: Create file / folder, Upload, URL download to server, Download, Rename, Create Link, Move, Copy, Symbollic link, Trash, Delete
-- Goes hand in hand with file management methods
-
-- Create Link
-  - Add logic for different inputTypes in input btn component. Needs to check current links, prompt for different link if already exists
-
-- Trash
-  - Create folder with name of time added
-
-## Questions
-- Selected being cleared when used? I don't think so
-
-## Ideas
-- Use localStorage for login placeholder
-- Navigation for move, download link, etc
-- Pop ups:
-  - Message (Ok)
-  - Rename (input, Ok, Cancel)
-  - Move, Copy, Download link (Ok, Cancel) then replace Sort By && Options with "Move/Copy/Download here" then show progress and when completed
+  - Check if source includes duplicates going to same destination
 
 ## CSS
 - All checked boxes show selected row (light gray theme)
