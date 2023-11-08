@@ -43,7 +43,7 @@ function changeDirectory(path) {
 	input.value = path;
 
 	updateDirectoryBtns(path);
-	ajaxPost('/getfiles', { path: path }, data => addFilesToTable(data));
+	getFiles();
 }
 
 function sortArrayOfObjects(arr, key, direction = 1) {
@@ -222,7 +222,9 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		});
 
 		newTableBody.appendChild(tableRow);
-		filesHash[fileStats.filename] = fileStats;
+		if (!filesHash[fileStats.filename]) {
+			filesHash[fileStats.filename] = fileStats;
+		}
 	});
 
 	const table = document.querySelector("body > div > div.files > table");
@@ -254,7 +256,14 @@ function openTrash(event) {
 	createPopUp("message", { title: "Trash", message: "Confirm to enter trash" });
 }
 
+function getFiles() {
+	ajaxPost('/getfiles', { path: currentPath }, data => {
+		filesHash = {};
+		addFilesToTable(data)
+	});
+}
+
 $(document).ready(function() {
-	ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
+	getFiles();
 });
 

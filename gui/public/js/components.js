@@ -1,4 +1,4 @@
-function pathActionBtn(text, title) {
+function pathActionBtn(text, title, onclick) {
 	const btn = {
 		button: text,
 		title: title,
@@ -6,44 +6,47 @@ function pathActionBtn(text, title) {
 		style: {
 			margin: "0 0.3rem 0 0",
 		},
+		onclick: onclick,
 	}
-
-	return btn;
-}
-
-function clearSelectedBtn(hash) {
-	if (document.querySelector("#dropdowns").style.display === "none") return;
-
-	const btn = pathActionBtn("Clear", "Click to clear all selected items");
-	btn.onclick = event => {
-		btn.el.remove();
-		hash.clearSelections();
-	};
 
 	const parent = document.querySelector("body > div > div.files > div > div.flex-r");
 	jsl.dom.add(parent, btn, parent.children[0]);
 
-	return btn.onclick;
+	return btn;
 }
 
-function pathNavBtn(text, clearHash, callback) {
-	if (clearHash && selectionHash.clear) {
+function clearSearchBtn(text, callback) {
+	console.log('clearSelectedBtn function');
+
+	const btn = pathActionBtn(text, onclick = event => {
+		btn.el.remove();
+		callback(currentPath);
+	});
+}
+
+function clearSelectedBtn(hash) {
+	const btn = pathActionBtn("Clear", "Click to clear all selected items", event => {
+		btn.el.remove();
+		hash.clearSelections();
+	});
+
+	return btn.el.onclick;
+}
+
+function pathNavBtn(text, callback) {
+	//if (selectionHash.clear) {
 		selectionHash.clear();
-	}
+	//}
 
 	const dropdowns = document.querySelector("#dropdowns");
 	const displayValue = window.getComputedStyle(dropdowns).getPropertyValue('display');;
 	dropdowns.style.display = "none";
 
-	const btn = pathActionBtn(text);
-	btn.onclick = event => {
+	const btn = pathActionBtn(text, "Click to perform file action", event => {
 		document.querySelector("#dropdowns").style.display = displayValue;
 		btn.el.remove();
 		callback(currentPath);
-	};
-
-	const parent = document.querySelector("body > div > div.files > div > div.flex-r");
-	jsl.dom.add(parent, btn, parent.children[0]);
+	});
 }
 
 function createPopUp(type, options) {

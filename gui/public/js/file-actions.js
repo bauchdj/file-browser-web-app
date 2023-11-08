@@ -33,11 +33,12 @@ function del(event) {
 	});
 }
 
-function search(event) {
-	const el = event.srcElement[0];
+function search(el) {
 	const input = el.value;
 
 	if (input === undefined || input === '') return false;
+
+	console.log('Input reveived');
 
 	const regex = (input => {
 		try {
@@ -52,13 +53,13 @@ function search(event) {
 
 	const filteredFiles = Object.values(filesHash).filter(fileStats => regex.test(fileStats.filename));
 
-	pathNavBtn("Clear search results", clearHash = false, path => {
+	clearSearchBtn("Clear search results", path => {
 		el.value = '';
 		addFilesToTable(Object.values(filesHash))
 	});
 
 	if (document.querySelector("#subfolder-search").checked) {
-		// ajax call for all files that match regex
+		// ajax call: req with regex, res adds file to table
 		console.log("Backend subfolder search")
 	} else {
 		addFilesToTable(filteredFiles);
@@ -222,7 +223,7 @@ function navAction({ numSelected, route, title, message, cbTitle, cbMessage }) {
 
 	const data = selectionHash.files();
 
-	pathNavBtn(title, clearHash = true, value => {
+	pathNavBtn(title, value => {
 		createPopUp("message", { title: title, message: message({ value: value }), callback: () => {
 			selectionHash.clear();
 

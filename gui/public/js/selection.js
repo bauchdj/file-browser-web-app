@@ -198,7 +198,7 @@ function selectionClass() {
 
 let currentPath = localStorage.getItem('user') + "/";
 
-const filesHash = {};
+let filesHash = {};
 
 const selectionHash = selectionClass();
 selectionHash.add(currentPath);

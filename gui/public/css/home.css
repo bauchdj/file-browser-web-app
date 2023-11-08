@@ -2,7 +2,7 @@
 	header > nav > .flex-fill {
 		flex: 0 !important;
 	}
-	header > nav > form {
+	header > nav > div.flex-r {
 		flex: 1;
 	}
 }

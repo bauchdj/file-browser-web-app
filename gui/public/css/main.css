@@ -14,7 +14,7 @@ footer {
 	padding: 0.5rem;
 }
 
-header > nav > form {
+header > nav > div.flex-r {
 	flex: 0.5;
 }
 
