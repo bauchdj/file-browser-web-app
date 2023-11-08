@@ -15,15 +15,6 @@ function pathActionBtn(text, title, onclick) {
 	return btn;
 }
 
-function clearSearchBtn(text, callback) {
-	console.log('clearSelectedBtn function');
-
-	const btn = pathActionBtn(text, onclick = event => {
-		btn.el.remove();
-		callback(currentPath);
-	});
-}
-
 function clearSelectedBtn(hash) {
 	const btn = pathActionBtn("Clear", "Click to clear all selected items", event => {
 		btn.el.remove();

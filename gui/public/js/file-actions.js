@@ -1,5 +1,5 @@
 function options({ numSelected, route, title, message, cbTitle, cbMessage }) {
-	if (numSelected === 0) {	
+	if (numSelected === 0) {
 		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
 		return;
 	}
@@ -33,12 +33,22 @@ function del(event) {
 	});
 }
 
-function search(el) {
+function search(event) {
+	const el = event.target;
 	const input = el.value;
 
-	if (input === undefined || input === '') return false;
+	if (input === undefined) return false;
 
-	console.log('Input reveived');
+	if (!document.querySelector("#clearSearchBtn")) {
+		const text = "Clear search results";
+		const title = "Clear search results reloading current directory";
+		const btn = pathActionBtn(text, title, event => {
+			btn.el.remove();
+			el.value = '';
+			addFilesToTable(Object.values(filesHash))
+		});
+		btn.el.setAttribute("id", "clearSearchBtn");
+	}
 
 	const regex = (input => {
 		try {
@@ -52,11 +62,6 @@ function search(el) {
 	})(input);
 
 	const filteredFiles = Object.values(filesHash).filter(fileStats => regex.test(fileStats.filename));
-
-	clearSearchBtn("Clear search results", path => {
-		el.value = '';
-		addFilesToTable(Object.values(filesHash))
-	});
 
 	if (document.querySelector("#subfolder-search").checked) {
 		// ajax call: req with regex, res adds file to table
@@ -216,7 +221,7 @@ function createLink(event) {
 }
 
 function navAction({ numSelected, route, title, message, cbTitle, cbMessage }) {
-	if (numSelected === 0) {	
+	if (numSelected === 0) {
 		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
 		return;
 	}
@@ -285,7 +290,7 @@ function trash(event) {
 function symbolicLink(event) {
 	const numSelected = selectionHash.length();
 	const title = "Symbolic Link";
-	if (selectionHash.length() === 0) {	
+	if (selectionHash.length() === 0) {
 		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to copy." });
 		return;
 	}
@@ -394,7 +399,7 @@ function upload(event) {
 		};
 
 		xhr.send(formData);
-	}	
+	}
 
 	createPopUp("options", { title: title, message: message, btns: { primary: [ { text: "Upload" } ] }, bodyChildren: [ inputs ], callback: event => sendFiles() });
 }
