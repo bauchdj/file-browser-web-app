@@ -12,9 +12,9 @@ Date.prototype.localTime = function(utcTimeString, fileFormat) {
 			hour12: false,
 		};
 
-		const dateFormat = new Intl.DateTimeFormat("en-US", options).format(date);
+		const dateFormat = new Intl.DateTimeFormat("en-US", options).format(date).replace(',', '');
 
-		const time = fileFormat ? dateFormat.replace(',', '').replace(/[#$%&*?$!@+|=:\s<>{}\/\\`'"]/g, "-") : dateFormat;
+		const time = fileFormat ? dateFormat.replace(/[#$%&*?$!@+|=:\s<>{}\/\\`'"]/g, "-") : dateFormat;
 
 		return time
 	}
