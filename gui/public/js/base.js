@@ -1,3 +1,12 @@
+function getJoke(event) {
+	const el = event.target;
+	const url = "https://api.chucknorris.io/jokes/random?category=dev";
+	fetch(url)
+		.then(res => res.json())
+		.then(out => createPopUp("message", { title: "Joke", message: out.value }))
+		.catch(err => console.error("No joke:", err));
+}
+
 function openFile(path) {
 	const filename = path.split('/').slice(-2);
 	console.log('Tried to open ' + filename);
