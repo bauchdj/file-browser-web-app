@@ -1,4 +1,6 @@
 ### Current Ideas List
+- [File extension to MIME JSON](https://gist.github.com/AshHeskes/6038140)
+- [MIME types to Font Awesome Icon](https://gist.github.com/colemanw/9c9a12aae16a4bfe2678de86b661d922?permalink_comment_id=2632557#gistcomment-2632557)
 
 - May need api for file type icons + technical name _(.py is python, etc)_
 - [How to get file format icon](https://cloudmersive.medium.com/how-to-get-a-file-format-icon-for-any-file-type-in-node-js-bc1ab0b0877c)
