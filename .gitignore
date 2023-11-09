@@ -1,5 +1,5 @@
 **/.DS_Store
-dbconfig.json
+db-config.json
 node_modules/
 package-lock.json
 users/
