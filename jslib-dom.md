@@ -10,7 +10,8 @@ Custom event handling seems to be integrated, allowing for actions to be attache
 ### DOM Element Extension:
 
 The jsl.dom.add function is designed to not only create and append elements but also to potentially extend them with additional properties or methods. This can be seen where the code checks for an el property and attaches various properties and functions to it.
-Conditional Execution:
+
+### Conditional Execution:
 
 The library includes condition checks, such as verifying if a property is a function before attempting to execute it, which suggests that it's designed to handle dynamic content where element properties can be functions that need to be evaluated at runtime.
 
@@ -29,7 +30,8 @@ The jsl.util.dumpStackTrace method indicates that the library provides a way to 
 ### Internationalization:
 
 The jsl.terms and jsl.cw suggest there's a rudimentary internationalization system in place to handle translations and language changes on the fly.
-Style and Positioning:
+
+### Style and Positioning:
 
 The library seems to handle the application of styles and the calculation of element positions, which is an essential part of creating a responsive and interactive user interface.
 
@@ -40,7 +42,8 @@ The presence of try-catch blocks and error handling routines suggests the librar
 ### Canvas Drawing:
 
 There are hints at canvas manipulation functions, such as jsl.dom.highlightCanvas, which could be used to draw shapes or visual highlights on a canvas element, potentially for graphical annotations.
-Dynamic Content Creation:
+
+### Dynamic Content Creation:
 
 The library appears to support dynamic content creation, including the ability to add text nodes, create various types of elements (images, links, options, etc.), and insert them into the DOM.
 The jsl library encapsulates a variety of tasks that would typically require verbose and repetitive code, offering a more declarative and object-oriented approach to handling complex DOM operations and user interactions. It seems tailored for applications that require a high degree of dynamic content manipulation and could be particularly useful in single-page applications (SPAs) or situations where the DOM structure is highly variable and dependent on user interactions or other real-time data sources.
