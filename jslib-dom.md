@@ -14,12 +14,12 @@ jsl.dom.add(parentNode, {
 	  },
 	text: "Hello, World!", // Text content for the element
 	children: [ // Nested children elements
-	{
-		tag: "span",
-		text: "Child element"
-		// ... other properties
-	}
-	// ... more children
+		{
+			tag: "span",
+			text: "Child element"
+			// ... other properties
+		}
+		// ... more children
 	]
 	// ... other properties
 });
