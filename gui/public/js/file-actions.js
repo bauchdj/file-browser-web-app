@@ -246,14 +246,14 @@ function createLink(event) {
 
 function navAction({ numSelected, route, title, message, cbTitle, cbMessage }) {
 	if (numSelected === 0) {
-		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to move." });
+		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something." });
 		return;
 	}
 
 	const data = selectionHash.files();
 
 	pathNavBtn(title, value => {
-		createPopUp("message", { title: title, message: message({ value: value }), callback: () => {
+		createPopUp("options", { title: title, message: message({ value: value }), btns: { primary: [ { text: title } ] }, callback: event => {
 			selectionHash.clear();
 
 			ajaxPost(route, { data: data, path: value, count: numSelected }, postValue => {
@@ -304,6 +304,9 @@ function symbolicLink(event) {
 		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to copy." });
 		return;
 	}
+
+	return;
+
 	const files = selectionHash.files();
 	const filenames = selectionHash.filenames();
 	pathNavBtn(title, selectionHash, newPath => {

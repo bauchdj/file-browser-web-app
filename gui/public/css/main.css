@@ -51,8 +51,9 @@ header > nav > a > img {
 }
 
 .fill-screen {
-	position: absolute;
+	position: fixed;
 	inset: 0px;
+	height: 100vh;
 }
 
 .center-x {
