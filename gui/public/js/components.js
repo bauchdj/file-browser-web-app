@@ -83,24 +83,50 @@ function createPopUp(type, options) {
 
 	divContainer.children.push(header, body, footer);
 
+	let handleKeyDown;
+
+	function removePopUp() {
+		divFill.el.remove();
+		if (handleKeyDown) {
+			document.removeEventListener('keydown', handleKeyDown);
+		}
+	}
+
 	function makePrimaryBtn(text = "Ok", callback) {
+		handleKeyDown = event => {
+			if (event.key === "Enter" || event.keyCode === 13) {
+				sharedAction(event);
+			}
+		}
+
+		const sharedAction = event => {
+			if(type !== "input") {
+				removePopUp();
+			}
+
+			if(callback) {
+				callback(event);
+			}
+		};
+
 		const primaryBtn = {
 			button: text,
 			"class": "btn btn-primary margin-sides",
-			onclick: event => { // default to removing pop up
-				if(type !== "input") divFill.el.remove();
-				if(callback) callback(event);
+			onclick: sharedAction,
+			onrender: el => {
+				document.addEventListener('keydown', handleKeyDown);
 			},
-		}
+		};
 
 		footer.children.push(primaryBtn);
+
 	}
 
 	function makeSecondaryBtn(text = "Cancel") {
 		const secondaryBtn = {
 			button: "Cancel",
 			"class": "btn btn-secondary",
-			onclick: () => divFill.el.remove(),
+			onclick: removePopUp,
 		}
 
 		footer.children.push(secondaryBtn);
@@ -117,6 +143,7 @@ function createPopUp(type, options) {
 			input: '',
 			placeholder: options.message,
 			style: { width: "100%" },
+			autofocus: '',
 		}
 
 		body.children.push(hiddenDiv, input);
@@ -125,15 +152,15 @@ function createPopUp(type, options) {
 
 		makePrimaryBtn(options.title, event => {
 			const value = input.el.value;
-			const isValue = !(value === undefined || value === '');
+			const isValueValid = !(value === undefined || value === '');
 
-			if (isValue) {
-				divFill.el.remove();
-				options.callback(value);
-				return;
+			if (!isValueValid) {
+				jsl.dom.add(header.el, { div: "Nothing entered" });
+				return; // Do not remove pop-up if input is invalid
 			}
 
-			jsl.dom.add(header.el, { div: "Nothing entered" });
+			removePopUp();
+			options.callback(value);
 		});
 	}
 
