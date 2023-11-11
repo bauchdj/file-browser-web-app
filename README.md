@@ -58,7 +58,7 @@ If you're like me, you have photos, videos and files you want to access and shar
 
 - **Node.js/Express HTTP service** - Customized index.js and other backend js file for file handling
 - **Static middleware for frontend** - Multer for file upload, archiver for zips, body-parser, cookie-parser
-- **Calls to third party endpoints** - Decided to simply and implement Chuck Noris joke api until I can choose a file conversion api subscription.
+- **Calls to third party endpoints** - Decided to simplify because of the due date and implement a dev Chuck Noris joke api button until I can choose a file conversion api subscription.
 - **Backend service endpoints** - Most express paths are done. Still lots of debugging to do. Creating folder, create file, upload folder or file, download file via URL, download, rename, move, copy, delete all work.
 - **Frontend calls service endpoints** - Front ajax calls to backend
 
