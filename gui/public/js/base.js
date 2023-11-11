@@ -175,19 +175,17 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 	newTableBody.className = "table-group-divider";
 
 	fileList.forEach(fileStats => {
-		const fileType = fileStats.isDirectory ? "Folder" : fileStats.fileExtension;
-
 		const modifiedDate = new Date().localTime(fileStats.modifiedDate);
 		const creationDate = new Date().localTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
 		const els = [
-			{ el: 'input', type: 'checkbox', className: 'checkbox', onclick: event => selectionHash.current.click(event.target), attrs: { filename: fileStats.filename, fileType: fileType } },
+			{ el: 'input', type: 'checkbox', className: 'checkbox', onclick: event => selectionHash.current.click(event.target), attrs: { filename: fileStats.filename, fileType: fileStats.fileExtension } },
 			{ el: 'img', src: 'images/file-browser-icon.png', style: 'width:2.5rem' },
 			{ text: fileStats.filename },
 			{ text: modifiedDate },
 			{ text: creationDate },
 			{ text: fileStats.sizeInBytes },
-			{ text: fileType },
+			{ text: fileStats.fileExtension },
 		];
 
 		function setElOnclick(el, func) {

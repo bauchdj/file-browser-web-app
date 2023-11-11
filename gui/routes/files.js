@@ -13,24 +13,31 @@ function getBasename(filename) {
 	return basename;
 }
 
-function getDirectorySize(directoryPath, callback) {
-	let totalSize = 0;
-
+function getSize(directoryPath, callback) {
 	function calculateSize(filePath, callback) {
-		fs.stat(filePath, (err, stats) => {
+		fs.lstat(filePath, (err, stats) => {
 			if (err) return callback(err);
 
-			if (stats.isFile()) {
-				totalSize += stats.size;
-				callback(err, totalSize);
+			if (stats.isSymbolicLink()) {
+				callback(null, 0);
+			} else if (stats.isFile()) {
+				callback(null, stats.size);
 			} else if (stats.isDirectory()) {
-				const files = fs.readdirSync(filePath);
+				fs.readdir(filePath, (err, files) => {
+					if (err) return callback(err);
 
-				async.each(files, (file, acb) => {
-					const subPath = path.join(filePath, file);
-					calculateSize(subPath, acb);
-				}, (err) => {
-					callback(err, totalSize);
+					let totalSize = 0;
+					async.each(files, (file, acb) => {
+						const subPath = path.join(filePath, file);
+						calculateSize(subPath, (err, size) => {
+							if (err) return acb(err);
+							totalSize += size;
+							acb();
+						});
+					}, err => {
+						if (err) return callback(err);
+						callback(null, totalSize);
+					});
 				});
 			}
 		});
@@ -48,14 +55,15 @@ function getListOfFiles(directoryPath, callback) {
 		async.each(files, (file, acb) => {
 			const filePath = path.join(directoryPath, file);
 
-			fs.stat(filePath, (err, fileStats) => {
+			fs.lstat(filePath, (err, fileStats) => {
 				if (err) return callback(err);
 
-				getDirectorySize(filePath, (err, size) => {
+				getSize(filePath, (err, size) => {
 					if (err) return callback(err);
 
-					isDirectory = fileStats.isDirectory();
-					fileExtension = isDirectory ? "" : path.extname(file).replace('.', '');
+					const isDirectory = fileStats.isDirectory();
+					const isSymbolicLink = fileStats.isSymbolicLink();
+					const fileExtension = (isDirectory ? "Folder" : (isSymbolicLink ? "Symlink" : path.extname(file).replace('.', '')));
 
 					const fileInfo = {
 						filename: file,
@@ -64,10 +72,11 @@ function getListOfFiles(directoryPath, callback) {
 						sizeInBytes: size,
 						fileExtension: fileExtension,
 						isDirectory: isDirectory,
+						isSymbolicLink: isSymbolicLink,
 					};
 
 					fileList.push(fileInfo);
-					acb(err);
+					acb();
 				});
 			});
 		}, (err) => {
