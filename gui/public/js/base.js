@@ -58,9 +58,9 @@ function changeDirectory(path) {
 function sortArrayOfObjects(arr, key, direction = 1) {
 	function sortLowerCase(arr) {
 		arr.sort((a, b) => {
-			// Sort list of objects OR list of strings,	ints, floats
-			let valA = a[key] ? a[key] : a;
-			let valB = b[key] ? b[key] : b;
+			// Sort list of objects OR list of strings, ints, floats
+			let valA = a[key] !== undefined ? a[key] : a;
+			let valB = b[key] !== undefined ? b[key] : b;
 
 			if (valA === valB) return 0; // Short circuit if they're equal
 
