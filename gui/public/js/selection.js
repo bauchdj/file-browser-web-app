@@ -12,9 +12,16 @@ function createSelection(path) {
 			if (rc.hash.isEmpty()) {
 				rc.hash.clear = clearSelectedBtn(rc.hash);
 			}
+
+			if (rc.length() + 1 === currentFileCount) {
+				document.querySelector("#select-all").checked = true;
+			}
+
 			const fileType = el.getAttribute("fileType");
 			rc.items[filename] = { filename: filename, fileType: fileType, el: el };
 		} else {
+			document.querySelector("#select-all").checked = false;
+
 			if (rc.hash.isSingle() && rc.hash.clear) {
 				rc.hash.clear();
 			} else {
@@ -105,6 +112,7 @@ function selectionClass() {
 	};
 
 	rc.clearSelections = () => {
+		document.querySelector("#select-all").checked = false;
 		rc.current.clear();
 
 		rc.forEach(selection => {
@@ -197,7 +205,7 @@ function selectionClass() {
 };
 
 let currentPath = localStorage.getItem('user') + "/";
-
+let currentFileCount = 0;
 let filesHash = {};
 
 const selectionHash = selectionClass();

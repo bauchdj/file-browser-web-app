@@ -229,6 +229,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		});
 
 		newTableBody.appendChild(tableRow);
+
 		if (!filesHash[fileStats.filename]) {
 			filesHash[fileStats.filename] = fileStats;
 		}
@@ -266,6 +267,7 @@ function openTrash(event) {
 function getFiles() {
 	ajaxPost('/getfiles', { path: currentPath }, data => {
 		filesHash = {};
+		currentFileCount = data.length;
 		addFilesToTable(data)
 	});
 }
