@@ -215,20 +215,16 @@ exports.fileRoutes = function (app) {
 				const source = usersPath + path + file;
 				const destination = usersPath + req.body.path + (name ? name : file); // renames file to name if it exists
 				console.log('Rename', source, "to", destination);
-				/*
 				fs.rename(source, destination, err => {
 					if (err) {
 						results.error[source] = err.toString();
 					} else {
-						*/
 						results.success[source] = destination;
 						if (--count === 0) {
 							res.end(JSON.stringify({ success: true, data: results }));
 						}
-						/*
 					}
 				});
-				*/
 			}
 		}
 	});
