@@ -7,16 +7,18 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
-- API for Sat JavaScript Service
-- Send each file separately for move, copy, etc
-- Upload [Html5 File Selector Forked Repo](https://github.com/tine20/html5-file-selector/blob/master/src/Html5FileSelector.js)
+- Add file type symbolic link to backend && frontend
+- Accept object with success and error list
+- Add backend error handling for rename, copy, trash (rename)
+- Symbolic link backend
 - Home view
 - Shared view
 - Backend search
 - Custom path input function, backend handling
 - Create Link
   - Add logic for different inputTypes in input btn component. Needs to check current links, prompt for different link if already exists
-- Class Actions: Create file / folder, Upload, URL download to server, Download, Rename, Create Link, Move, Copy, Symbollic link, Trash, Delete
+  - Create link front end (single == input, multiple == options)
+- Class Actions: Create file / folder, Upload, URL download to server, Download, Rename, Create Link, Move, Copy, Symbolic link, Trash, Delete
 
 BACKEND Duplicate name handler (based on duplicates at origin and/or destination)
   - Creating: check if file exists at destination
