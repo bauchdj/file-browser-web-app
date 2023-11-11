@@ -239,20 +239,16 @@ exports.fileRoutes = function (app) {
 				const source = usersPath + path + file;
 				const destination = usersPath + req.body.path + file;
 				console.log('Copy', source, "to", destination);
-				/*
 				fs.copy(source, destination, err => {
 					if (err) {
 						results.error[source] = err.toString();
 					} else {
-						*/
 						results.success[source] = destination;
 						if (--count === 0) {
 							res.end(JSON.stringify({ success: true, data: results }));
 						}
-						/*
 					}
 				});
-				*/
 			}
 		}
 	});
@@ -262,9 +258,8 @@ exports.fileRoutes = function (app) {
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
 
-		const timeDir = usersPath + ".trash/" + new Date().localTime(time, true) + "/";
-		console.log(timeDir);
-		return;
+		const date = new Date();
+		const timeDir = usersPath + ".trash/" + date.localTime(date.getTime(), true) + "/";
 		fs.mkdir(timeDir, err => {
 			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
 
@@ -272,21 +267,17 @@ exports.fileRoutes = function (app) {
 				for (const file in data[path]) {
 					const source = usersPath + path + file;
 					const destination = timeDir + file;
-					console.log('Trashed', source);
-					/*
+					console.log('Trashed', source, "to", destination);
 					fs.rename(source, destination, err => {
 						if (err) {
 							results.error[source] = err.toString();
 						} else {
-							*/
 							results.success[source] = destination;
 							if (--count === 0) {
 								res.end(JSON.stringify({ success: true, data: results }));
 							}
-							/*
 						}
 					});
-					*/
 				}
 			}
 		});

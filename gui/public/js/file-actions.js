@@ -7,6 +7,10 @@ function options({ numSelected, route, title, message, cbTitle, cbMessage }) {
 	const data = selectionHash.files();
 
 	createPopUp("options", { title: title, message: message, btns: { primary: [ { text: title } ] }, callback: event => {
+		if (selectionHash.clear) {
+			selectionHash.clear();
+		}
+
 		ajaxPost(route, { data: data, count: numSelected }, postValue => {
 			const message = cbMessage({ postValue: postValue });
 
@@ -17,6 +21,20 @@ function options({ numSelected, route, title, message, cbTitle, cbMessage }) {
 			}});
 		});
 	}});
+}
+
+function trash(event) {
+	const numSelected = selectionHash.length();
+	const filenames = selectionHash.filenames();
+
+	options({
+		numSelected: numSelected,
+		route: '/trash',
+		title: "Trash",
+		message: `Confirm trashing of ${numSelected}. Files include: "${filenames.join(', ')}"`,
+		cbTitle: ({ value, postValue }) => "Trashed files",
+		cbMessage: ({ value, postValue }) => `Trashed "${filenames.join(', ')}"`,
+	});
 }
 
 function del(event) {
@@ -112,6 +130,9 @@ function download(event) {
 		};
 
 		createPopUp("options", { title: title + (numSelected === 1 ? '' : ` - ${numSelected} files`), message: message, btns: btns, callback: event => {
+			if (selectionHash.clear) {
+				selectionHash.clear();
+			}
 			createPopUp("message", { title: "Downloading file / files", message: `Currently preparing zip or downloading file / files: "${filenames.join(', ')}"` });
 		}});
 	} else {
@@ -124,6 +145,9 @@ function download(event) {
 		};
 
 		createPopUp("options", { title: `${title} - ${numSelected} items`, message: message, btns: btns, callback: event => {
+			if (selectionHash.clear) {
+				selectionHash.clear();
+			}
 			createPopUp("message", { title: "Downloading folder", message: `Currently preparing zip for download: "${filenames.join(', ')}"` });
 		}});
 	}
@@ -270,20 +294,6 @@ function copy(event) {
 		message: ({ value }) => `Confirm copy of ${numSelected} to "${value}". Files include: "${filenames.join(', ')}"`,
 		cbTitle: ({ value, postValue }) => "Copied files",
 		cbMessage: ({ value, postValue }) => `Copied "${filenames.join(', ')}" to "${value}"`,
-	});
-}
-
-function trash(event) {
-	const numSelected = selectionHash.length();
-	const filenames = selectionHash.filenames();
-
-	navAction({
-		numSelected: numSelected,
-		route: '/trash',
-		title: "Trash",
-		message: ({ value }) => `Confirm trashing of ${numSelected}. Files include: "${filenames.join(', ')}"`,
-		cbTitle: ({ value, postValue }) => "Trashed files",
-		cbMessage: ({ value, postValue }) => `Trashed "${filenames.join(', ')}"`,
 	});
 }
 
