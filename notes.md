@@ -7,9 +7,9 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
-- Add file type symbolic link to backend && frontend
+- Font Awesome file type icons
 - Accept object with success and error list
-- Add backend error handling for rename, copy, trash (rename)
+- Add backend error handling for rename, copy, trash (rename), symlink
 - Symbolic link backend
 - Home view
 - Shared view
@@ -19,6 +19,7 @@
   - Add logic for different inputTypes in input btn component. Needs to check current links, prompt for different link if already exists
   - Create link front end (single == input, multiple == options)
 - Class Actions: Create file / folder, Upload, URL download to server, Download, Rename, Create Link, Move, Copy, Symbolic link, Trash, Delete
+- Replace ajax with XHR requests for efficiency
 
 BACKEND Duplicate name handler (based on duplicates at origin and/or destination)
   - Creating: check if file exists at destination
