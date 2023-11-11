@@ -143,7 +143,7 @@ function createPopUp(type, options) {
 			input: '',
 			placeholder: options.message,
 			style: { width: "100%" },
-			autofocus: '',
+			onrender: el => el.focus(),
 		}
 
 		body.children.push(hiddenDiv, input);
