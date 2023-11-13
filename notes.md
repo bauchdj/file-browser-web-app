@@ -7,29 +7,62 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
-- Cookies
-  - Log out needs to clear auth cookie && send post to clear server-side session
 - Websocket for connection status
-- Database
-  - Cannot create duplicate users
-  - Create new user
-- Font Awesome file type icons
-- Accept object with success and error list
-- Add backend error handling for rename, copy, trash (rename), symlink
-- Symbolic link backend
-- Home view
-- Shared view
-- Backend search
-- Custom path input function, backend handling
-- Create Link
-  - Add logic for different inputTypes in input btn component. Needs to check current links, prompt for different link if already exists
-  - Create link front end (single == input, multiple == options)
-- Class Actions: Create file / folder, Upload, URL download to server, Download, Rename, Create Link, Move, Copy, Symbolic link, Trash, Delete
-- Replace ajax with XHR requests for efficiency
 
-BACKEND Duplicate name handler (based on duplicates at origin and/or destination)
-  - Creating: check if file exists at destination
-  - Check if source includes duplicates going to same destination
+- Login (login.html)
+  - Create login.js instead of form doing post
+  - Alert
+    - Incorrect username or password
+	- User already exists
+
+  - Generate random session key
+    - Add key to cookie
+    - Store key under username
+
+  - Create user button
+	- Check user is not in database
+	- Create new user in database
+    - Check that user direction doesn't exist
+	- Create new user's directiory
+
+- Log out
+  - Clear auth cookie
+  - Send post req to remove key from username in database
+
+- **Add backend error handling** for rename, copy, trash (rename), symlink
+  - BACKEND Duplicate name handler (based on duplicates at origin and/or destination)
+    - Creating: check if file exists at destination
+    - Check if source includes duplicates going to same destination
+
+
+- **Symbolic link backend**
+
+- **File action results**
+  - Add each file to pop up with green CHECK or red X
+
+- Shared
+  - Check to make sure name doesn't exist, prompt again with message that previous link already exists
+  - **Create link front end** (single == input, multiple == options)
+  - Create folder and symlink files
+  - Display folders
+
+- Trash
+  - Decide how to organize trash per user
+  - Simply display files at that path
+
+- Font Awesome file type icons
+  - Create JSON file that maps file extension /  type to icon classes in Font Awesome
+
+- Backend search
+  - Search path with nodejs and return list of files to display
+
+- Custom path input function, backend handling
+  - Validate path, if invalid pop up
+  - Display files at that path
+
+- Replace ajax with XHR requests for efficiency (remove jQuery)
+
+- Class Actions: Create file / folder, Upload, URL download to server, Download, Rename, Create Link, Move, Copy, Symbolic link, Trash, Delete
 
 ## CSS
 - All checked boxes show selected row (light gray theme)

@@ -16,12 +16,12 @@ const serviceName = process.argv.length > 3 ? process.argv[3] : 'file-browser-we
 
 // Default files accessible without login
 app.use('/css/main.css', express.static(__dirname + '/public/css/main.css'));
-app.use('/css/index.css', express.static(__dirname + '/public/css/index.css'));
+app.use('/css/login.css', express.static(__dirname + '/public/css/login.css'));
 app.use('/images/file-browser-icon.png', express.static(__dirname + '/public/images/file-browser-icon.png'));
 app.use('/favicon.ico', express.static(__dirname + '/public/favicon.ico'));
 
 app.get('/', (req, res) => {
-	res.sendFile('index.html', { root: __dirname + '/public' });
+	res.sendFile('login.html', { root: __dirname + '/public' });
 });
 
 app.post('/login', async function (req, res) {
