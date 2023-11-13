@@ -32,7 +32,9 @@ app.post('/login', async function (req, res) {
 
 	if (promise.success) {
 		//const sessionId = generateNewSessionId();
-		res.cookie('isLoggedIn', 'true', { httpOnly: true, secure: true, maxAge: 3600000, sameSite: 'lax' });
+		//res.cookie('sessionId', sessionId, { secure: true, httpOnly: true, maxAge: 3600000, sameSite: 'strict' });
+		//db.addSessionId(sessionId); // Add this function to database.js
+		res.cookie('isLoggedIn', 'true', { secure: true, httpOnly: true, maxAge: 3600000, sameSite: 'strict' });
 		res.redirect('/home');
 	} else {
 		res.redirect('/');
