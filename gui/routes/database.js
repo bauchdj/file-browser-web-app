@@ -61,8 +61,6 @@ async function createUser(username, password) {
 	}
 }
 
-createUser("guest", "2bemyguestlogin");
-
 module.exports = {
 	createUser,
 	checkUserLogin
