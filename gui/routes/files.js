@@ -4,6 +4,7 @@ const path = require('path');
 const https = require('https');
 const multer = require('multer');
 const zip = require('./zip.js');
+const db = require('./database.js');
 require('./utils.js');
 
 function getBasename(filename) {
@@ -98,17 +99,18 @@ exports.fileRoutes = function (app) {
 		});
 	});
 
-	app.post('/login', (req, res) => {
+	app.post('/login', async function (req, res) {
 		const username = req.body.username;
 		const pwd = req.body.password;
-		const users = require(basePath + "users.json");
 
-		if (users[username] === undefined || users[username].pwd !== pwd) {
-			res.sendFile(basePath + "gui/public/index.html");
+		const promise = await db.checkUserLogin(username, pwd);
+
+		if (promise.success) {
+			res.sendFile(basePath + "gui/public/home.html");
 			return;
 		}
 
-		res.sendFile(basePath + "gui/public/home.html");
+		res.sendFile(basePath + "gui/public/index.html");
 	});
 
 	app.post('/create', (req, res) => {
