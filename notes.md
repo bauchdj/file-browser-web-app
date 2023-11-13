@@ -7,9 +7,11 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
-- Database
 - Cookies
 - Websocket for connection status
+- Database
+  - Cannot create duplicate users
+  - Create new user
 - Font Awesome file type icons
 - Accept object with success and error list
 - Add backend error handling for rename, copy, trash (rename), symlink
