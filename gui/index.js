@@ -55,8 +55,9 @@ app.get('/:type(css|js|images)/:file', checkAuth, (req, res) => {
 	res.sendFile(file, { root: __dirname + '/public/' + type });
 });
 
-app.get('/home', checkAuth, (req, res) => {
-	res.sendFile('home.html', { root: __dirname + '/public' });
+app.get('/:file(home|about)', checkAuth, (req, res) => {
+	const file = req.params.file + '.html';
+	res.sendFile(file, { root: __dirname + '/public' });
 });
 
 fileRoutes.fileRoutes(app);
