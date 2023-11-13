@@ -7,6 +7,9 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
+- Database
+- Cookies
+- Websocket for connection status
 - Font Awesome file type icons
 - Accept object with success and error list
 - Add backend error handling for rename, copy, trash (rename), symlink
