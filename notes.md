@@ -8,6 +8,7 @@
 
 ## To do's:
 - Cookies
+  - Log out needs to clear auth cookie && send post to clear server-side session
 - Websocket for connection status
 - Database
   - Cannot create duplicate users

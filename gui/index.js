@@ -14,8 +14,11 @@ const port = process.argv.length > 2 ? process.argv[2] : 3000;
 // Text to display for the service name
 const serviceName = process.argv.length > 3 ? process.argv[3] : 'file-browser-web-app';
 
-// Serve up the static content
-//app.use(express.static(__dirname + '/public'));
+// Default files accessible without login
+app.use('/css/main.css', express.static(__dirname + '/public/css/main.css'));
+app.use('/css/index.css', express.static(__dirname + '/public/css/index.css'));
+app.use('/images/file-browser-icon.png', express.static(__dirname + '/public/images/file-browser-icon.png'));
+app.use('/favicon.ico', express.static(__dirname + '/public/favicon.ico'));
 
 app.get('/', (req, res) => {
 	res.sendFile('index.html', { root: __dirname + '/public' });
@@ -28,21 +31,29 @@ app.post('/login', async function (req, res) {
 	const promise = await db.checkUserLogin(username, pwd);
 
 	if (promise.success) {
-		res.cookie('isLoggedIn', 'true', { httpOnly: true, maxAge: 3600000 });
+		//const sessionId = generateNewSessionId();
+		res.cookie('isLoggedIn', 'true', { httpOnly: true, secure: true, maxAge: 3600000, sameSite: 'lax' });
 		res.redirect('/home');
-		return;
+	} else {
+		res.redirect('/');
 	}
-
-	res.redirect('/');
 });
 
 function checkAuth(req, res, next) {
+	//const sessionId = req.cookies.sessionId;
+	//if (sessionId && isValidSession(sessionId)) {
 	if (req.cookies.isLoggedIn === 'true') {
 		next();
 	} else {
 		res.redirect('/');
 	}
 }
+
+app.get('/:type(css|js|images)/:file', checkAuth, (req, res) => {
+	const type = req.params.type;
+	const file = req.params.file;
+	res.sendFile(file, { root: __dirname + '/public/' + type });
+});
 
 app.get('/home', checkAuth, (req, res) => {
 	res.sendFile('home.html', { root: __dirname + '/public' });
