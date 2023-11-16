@@ -101,20 +101,28 @@ function determinePathIfFileExists(dirPath, name, callback, failIfExists = false
 	});
 }
 
-exports.fileRoutes = function (app) {
+function getFiles(directoryPath, res) {
+	getListOfFiles(directoryPath, (err, fileList) => {
+		if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
+		res.end(JSON.stringify({ success: true, data: fileList }));
+	});
+}
+
+exports.fileRoutes = function (app, checkAuth) {
 	const basePath = path.resolve(__dirname + "/../../") + "/"; // Turns relative path to absolute path. Express relative path is malicious
 	const usersPath = basePath + "users/";
 
-	app.post('/getfiles', (req, res) => {
+	app.post('/getfiles', checkAuth, (req, res) => {
 		const directoryPath = usersPath + req.body.path; // Gets directory of user
-
-		getListOfFiles(directoryPath, (err, fileList) => {
-			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
-			res.end(JSON.stringify({ success: true, data: fileList }));
-		});
+		getFiles(directoryPath, res);
 	});
 
-	app.post('/create', (req, res) => {
+	app.post('/shared/:file', checkAuth, (req, res) => {
+		const file = req.params.file;
+		// redirect to /getfiles with req.body.path `.shared/${file}`
+	});
+
+	app.post('/create', checkAuth, (req, res) => {
 		const type = req.body.type;
 		const isFile = type === "file";
 		const name = req.body.name + (isFile ? ".txt" : '');
@@ -144,7 +152,7 @@ exports.fileRoutes = function (app) {
 		}, true); // Fail if it already exists
 	});
 
-	app.post('/downloadURL', (req, res) => {
+	app.post('/downloadURL', checkAuth, (req, res) => {
 		const onError = err => {
 			console.log(err);
 			res.end(JSON.stringify({ error: 'FROM BACKEND\n' + err.toString() }));
@@ -229,7 +237,7 @@ exports.fileRoutes = function (app) {
 		redirect(url);
 	});
 
-	app.post('/rename', (req, res) => {
+	app.post('/rename', checkAuth, (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
@@ -260,7 +268,7 @@ exports.fileRoutes = function (app) {
 		}
 	});
 
-	app.post('/copy', (req, res) => {
+	app.post('/copy', checkAuth, (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
@@ -290,7 +298,7 @@ exports.fileRoutes = function (app) {
 		}
 	});
 
-	app.post('/symlink', (req, res) => {
+	app.post('/symlink', checkAuth, (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
@@ -320,7 +328,7 @@ exports.fileRoutes = function (app) {
 		}
 	});
 
-	app.post('/createLink', (req, res) => {
+	app.post('/createLink', checkAuth, (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
 		const name = req.body.name;
@@ -359,43 +367,47 @@ exports.fileRoutes = function (app) {
 		}
 	});
 
-	app.post('/trash', (req, res) => {
+	app.post('/trash', checkAuth, (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
 
+		const userDir = Object.keys(req.body.data)[0].split('/')[0];
+		const trashDir = usersPath + userDir + "/.trash/";
+
 		const date = new Date();
-		// Update to the current users .trash
-		const timeDir = usersPath + ".trash/" + date.localTime(date.getTime(), true) + "/";
+		const timeDir = trashDir + date.localTime(date.getTime(), true) + "/";
 
-		fs.mkdir(timeDir, err => {
-			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
+		fs.mkdir(trashDir, err => {
+			fs.mkdir(timeDir, err => {
+				if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
 
-			for (const path in data) {
-				for (const file in data[path]) {
-					const source = usersPath + path + file;
+				for (const path in data) {
+					for (const file in data[path]) {
+						const source = usersPath + path + file;
 
-					determinePathIfFileExists(timeDir, file, (dirPath, name) => {
-						const destination = dirPath + name;
-						console.log('Trashed', source, "to", destination);
+						determinePathIfFileExists(timeDir, file, (dirPath, name) => {
+							const destination = dirPath + name;
+							console.log('Trashed', source, "to", destination);
 
-						fs.rename(source, destination, err => {
-							if (err) {
-								results.error[source] = err.toString();
-							} else {
-								results.success[source] = destination;
-								if (--count === 0) {
-									res.end(JSON.stringify({ success: true, data: results }));
+							fs.rename(source, destination, err => {
+								if (err) {
+									results.error[source] = err.toString();
+								} else {
+									results.success[source] = destination;
+									if (--count === 0) {
+										res.end(JSON.stringify({ success: true, data: results }));
+									}
 								}
-							}
+							});
 						});
-					});
+					}
 				}
-			}
+			});
 		});
 	});
 
-	app.post('/delete', (req, res) => {
+	app.post('/delete', checkAuth, (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
@@ -417,7 +429,7 @@ exports.fileRoutes = function (app) {
 		}
 	});
 
-	app.get('/download*', (req, res) => {
+	app.get('/download*', checkAuth, (req, res) => {
 		const type = req.query.type;
 
 		if (type === "file") {
@@ -451,7 +463,7 @@ exports.fileRoutes = function (app) {
 
 	const upload = multer({ storage: storage });
 
-	app.post('/upload', upload.array('files[]'), (req, res) => {
+	app.post('/upload', checkAuth, upload.array('files[]'), (req, res) => {
 		res.end(JSON.stringify({ success: true }));
 	});
 }

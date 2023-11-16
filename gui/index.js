@@ -63,7 +63,7 @@ app.get('/:file(home|about)', checkAuth, (req, res) => {
 	res.sendFile(file, { root: __dirname + '/public' });
 });
 
-fileRoutes.fileRoutes(app);
+fileRoutes.fileRoutes(app, checkAuth);
 
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);

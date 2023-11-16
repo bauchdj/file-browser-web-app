@@ -261,7 +261,7 @@ function openShared(event) { // Both shared and trash will remove path input and
 }
 
 function openTrash(event) {
-	createPopUp("message", { title: "Trash", message: "Confirm to enter trash" });
+	changeDirectory(localStorage.getItem('user') + "/.trash/");
 }
 
 function getFiles() {
