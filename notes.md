@@ -35,15 +35,11 @@
   - Results, what do I want it to have? og filename and new filename? Right now it has source (path + og filename)
   - Add each file to pop up with green CHECK or red X
 
-- Shared
+- Shared **Gonna be kinda complicated...probs need to separted it from home.html, separate but similar.**
   - **Create link front end** decided against input, can rename ... (single == input, multiple == options)
   - Create folder and symlink files
   - Display folders
   - Decided to have it handle the error with numeric postfix ... Check to make sure name doesn't exist, prompt again with message that previous link already exists
-
-- Trash
-  - .trash per user, need to create .trash if it doesn't exist. Need user's path in /trash route backend
-  - Simply display files at /users/<user>/.trash/
 
 - Font Awesome file type icons
   - Create JSON file that maps file extension /  type to icon classes in Font Awesome
