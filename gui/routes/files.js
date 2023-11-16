@@ -92,8 +92,9 @@ function determinePathIfFileExists(dirPath, name, callback, failIfExists = false
 		if (failIfExists && !err) {
 			callback(dirPath, name, true);
 		} else if (!err) {
-			name = `${name} (${postfixNum})`
-			determinePathIfFileExists(dirPath, name, callback, postfixNum + 1);
+			const str = name;
+			name = postfixNum === 1 ? `${name}-(${postfixNum})` : str.replace(/\(\d\)$/, `(${postfixNum})`);
+			determinePathIfFileExists(dirPath, name, callback, failIfExists, postfixNum + 1);
 		} else {
 			callback(dirPath, name);
 		}
@@ -231,23 +232,28 @@ exports.fileRoutes = function (app) {
 	app.post('/rename', (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
-		const name = req.body.name;
 		const results = { success: {}, error: {} };
 
 		for (const path in data) {
 			for (const file in data[path]) {
 				const source = usersPath + path + file;
-				const destination = usersPath + req.body.path + (name ? name : file); // renames file to name if it exists
-				console.log('Rename', source, "to", destination);
-				fs.rename(source, destination, err => {
-					if (err) {
-						results.error[source] = err.toString();
-					} else {
-						results.success[source] = destination;
-						if (--count === 0) {
-							res.end(JSON.stringify({ success: true, data: results }));
+				const name = req.body.name ? req.body.name : file; // renames file to name if it exists
+				const dirPath = usersPath + req.body.path;
+
+				determinePathIfFileExists(dirPath, name, (dirPath, name) => {
+					const destination = dirPath + name;
+					console.log('Rename', source, "to", destination);
+
+					fs.rename(source, destination, err => {
+						if (err) {
+							results.error[source] = err.toString();
+						} else {
+							results.success[source] = destination;
+							if (--count === 0) {
+								res.end(JSON.stringify({ success: true, data: results }));
+							}
 						}
-					}
+					});
 				});
 			}
 		}
@@ -261,17 +267,22 @@ exports.fileRoutes = function (app) {
 		for (const path in data) {
 			for (const file in data[path]) {
 				const source = usersPath + path + file;
-				const destination = usersPath + req.body.path + file;
-				console.log('Copy', source, "to", destination);
-				fs.copy(source, destination, err => {
-					if (err) {
-						results.error[source] = err.toString();
-					} else {
-						results.success[source] = destination;
-						if (--count === 0) {
-							res.end(JSON.stringify({ success: true, data: results }));
+				const dirPath = usersPath + req.body.path;
+
+				determinePathIfFileExists(dirPath, file, (dirPath, name) => {
+					const destination = dirPath + name;
+					console.log('Copy', source, "to", destination);
+
+					fs.copy(source, destination, err => {
+						if (err) {
+							results.error[source] = err.toString();
+						} else {
+							results.success[source] = destination;
+							if (--count === 0) {
+								res.end(JSON.stringify({ success: true, data: results }));
+							}
 						}
-					}
+					});
 				});
 			}
 		}
@@ -283,24 +294,30 @@ exports.fileRoutes = function (app) {
 		const results = { success: {}, error: {} };
 
 		const date = new Date();
+		// Update to the current users .trash
 		const timeDir = usersPath + ".trash/" + date.localTime(date.getTime(), true) + "/";
+
 		fs.mkdir(timeDir, err => {
 			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
 
 			for (const path in data) {
 				for (const file in data[path]) {
 					const source = usersPath + path + file;
-					const destination = timeDir + file;
-					console.log('Trashed', source, "to", destination);
-					fs.rename(source, destination, err => {
-						if (err) {
-							results.error[source] = err.toString();
-						} else {
-							results.success[source] = destination;
-							if (--count === 0) {
-								res.end(JSON.stringify({ success: true, data: results }));
+
+					determinePathIfFileExists(timeDir, file, (dirPath, name) => {
+						const destination = dirPath + name;
+						console.log('Trashed', source, "to", destination);
+
+						fs.rename(source, destination, err => {
+							if (err) {
+								results.error[source] = err.toString();
+							} else {
+								results.success[source] = destination;
+								if (--count === 0) {
+									res.end(JSON.stringify({ success: true, data: results }));
+								}
 							}
-						}
+						});
 					});
 				}
 			}

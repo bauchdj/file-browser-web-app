@@ -45,6 +45,7 @@ function checkAuth(req, res, next) {
 	//const sessionId = req.cookies.sessionId;
 	//if (sessionId && isValidSession(sessionId)) {
 	if (req.cookies.isLoggedIn === 'true') {
+		res.cookie('isLoggedIn', 'true', { secure: true, httpOnly: true, maxAge: 3600000, sameSite: 'strict' });
 		next();
 	} else {
 		res.redirect('/');
