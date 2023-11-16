@@ -249,6 +249,7 @@ exports.fileRoutes = function (app) {
 							results.error[source] = err.toString();
 						} else {
 							results.success[source] = destination;
+
 							if (--count === 0) {
 								res.end(JSON.stringify({ success: true, data: results }));
 							}
@@ -278,10 +279,80 @@ exports.fileRoutes = function (app) {
 							results.error[source] = err.toString();
 						} else {
 							results.success[source] = destination;
+
 							if (--count === 0) {
 								res.end(JSON.stringify({ success: true, data: results }));
 							}
 						}
+					});
+				});
+			}
+		}
+	});
+
+	app.post('/symlink', (req, res) => {
+		let count = req.body.count;
+		const data = req.body.data;
+		const results = { success: {}, error: {} };
+
+		for (const path in data) {
+			for (const file in data[path]) {
+				const source = usersPath + path + file;
+				const dirPath = usersPath + req.body.path;
+
+				determinePathIfFileExists(dirPath, file, (dirPath, name) => {
+					const destination = dirPath + name;
+					console.log('Symlink', source, "to", destination);
+
+					fs.symlink(source, destination, err => {
+						if (err) {
+							results.error[source] = err.toString();
+						} else {
+							results.success[source] = destination;
+
+							if (--count === 0) {
+								res.end(JSON.stringify({ success: true, data: results }));
+							}
+						}
+					});
+				});
+			}
+		}
+	});
+
+	app.post('/createLink', (req, res) => {
+		let count = req.body.count;
+		const data = req.body.data;
+		const name = req.body.name;
+		const linksPath = usersPath + ".shared/";
+		const results = { success: {}, error: {} };
+
+		for (const path in data) {
+			for (const file in data[path]) {
+				const source = usersPath + path + file;
+
+				determinePathIfFileExists(linksPath, name, (dirPath, name) => {
+					const linksPath = dirPath + name + "/";
+
+					fs.mkdir(linksPath, err => {
+						determinePathIfFileExists(linksPath, file, (dirPath, name) => {
+							const destination = dirPath + name;
+
+							const type = data[path][file] === "Folder" ? "dir" : "file";
+							console.log("Create link", "of type:", type, "\n\tfrom:", source, "\n\tto:", destination, "\t|", count);
+
+							fs.symlink(source, destination, type, err => {
+								if (err) {
+									results.error[source] = err.toString();
+								} else {
+									results.success[source] = destination;
+
+									if (--count === 0) {
+										res.end(JSON.stringify({ success: true, data: results }));
+									}
+								}
+							});
+						});
 					});
 				});
 			}
@@ -342,41 +413,6 @@ exports.fileRoutes = function (app) {
 						}
 					}
 				});
-			}
-		}
-	});
-
-	app.post('/symlink', (req, res) => {
-		return;
-	});
-
-	app.post('/createLink', (req, res) => {
-		let count = req.body.count;
-		const data = req.body.data;
-		const name = req.body.name;
-		const linksPath = usersPath + ".shared/";
-		const results = { success: {}, error: {} };
-
-		for (const path in data) {
-			for (const file in data[path]) {
-				const source = usersPath + path + file;
-				const destination = linksPath + name + "/" + file;
-				const type = data[path][file] === "Folder" ? "dir" : "file";
-				console.log("Create link", "of type:", type, "\n\tfrom:", source, "\n\tto:", destination);
-				/*
-				fs.symlink(source, destination, type, err => {
-					if (err) {
-						results.error[source] = err.toString();
-					} else {
-						*/ 
-						results.success[source] = destination;
-						if (--count === 0) {
-							res.end(JSON.stringify({ success: true, data: results }));
-						}
-						/*
-					}
-				});
-				*/
 			}
 		}
 	});

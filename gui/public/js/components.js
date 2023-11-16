@@ -1,4 +1,4 @@
-function pathActionBtn(text, title, onclick) {
+function pathActionBtn(text, title, onclick, first = true) {
 	const btn = {
 		button: text,
 		title: title,
@@ -10,7 +10,12 @@ function pathActionBtn(text, title, onclick) {
 	}
 
 	const parent = document.querySelector("body > div > div.files > div > div.flex-r");
-	jsl.dom.add(parent, btn, parent.children[0]);
+
+	if (first) {
+		jsl.dom.add(parent, btn, parent.children[0]);
+	} else {
+		jsl.dom.add(parent, btn);
+	}
 
 	return btn;
 }
@@ -19,7 +24,7 @@ function clearSelectedBtn(hash) {
 	const btn = pathActionBtn("Clear", "Click to clear all selected items", event => {
 		btn.el.remove();
 		hash.clearSelections();
-	});
+	}, false);
 
 	return btn.el.onclick;
 }

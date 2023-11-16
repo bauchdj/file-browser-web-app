@@ -223,7 +223,7 @@ function rename(event) {
 		title: title,
 		message: message,
 		cbTitle: ({ value, postValue }) => "Rename",
-		cbMessage: ({ value, postValue }) => `Renamed: "${this.file}" to "${postValue}"`,
+		cbMessage: ({ value, postValue }) => `Renamed: "${value}" to "${postValue}"`,
 	});
 }
 
@@ -279,7 +279,7 @@ function move(event) {
 		title: "Move",
 		message: ({ value }) => `Confirm move of ${numSelected} to "${value}". Files include: "${filenames.join(', ')}"`,
 		cbTitle: ({ value, postValue }) => "Moved files",
-		cbMessage: ({ value, postValue }) => `Moved "${filenames.join(', ')}" to "${value}"`,
+		cbMessage: ({ value, postValue }) => `Moved: "${filenames.join(', ')}" to "${postValue}"`,
 	});
 }
 
@@ -293,55 +293,22 @@ function copy(event) {
 		title: "Copy",
 		message: ({ value }) => `Confirm copy of ${numSelected} to "${value}". Files include: "${filenames.join(', ')}"`,
 		cbTitle: ({ value, postValue }) => "Copied files",
-		cbMessage: ({ value, postValue }) => `Copied "${filenames.join(', ')}" to "${value}"`,
+		cbMessage: ({ value, postValue }) => `Copied: "${filenames.join(', ')}" to "${postValue}"`,
 	});
 }
 
 function symbolicLink(event) {
 	const numSelected = selectionHash.length();
-	const title = "Symbolic Link";
-	if (selectionHash.length() === 0) {
-		createPopUp("message", { title: title, message: "Nothing is selected silly. Select something to copy." });
-		return;
-	}
+	const filenames = selectionHash.filesnames();
 
-	return;
-
-	const files = selectionHash.files();
-	const filenames = selectionHash.filenames();
-	pathNavBtn(title, selectionHash, newPath => {
-		const message = `Confirm copy of "${filenames.join(', ')}"`;
-		createPopUp("message", { title: title, message: message, callback: () => {
-			console.log(`Request backend to copy "${filenames.join(', ')}" to "${newPath}"`);
-			/*
-			ajaxPost('/copy', { files: files, newPath: newPath }, () => {
-				const message = `Copied "${filenames.join(', ')}" to "${newPath}"`;
-				console.log(message);
-				createPopUp("message", { title: "Copied files", message: message, callback: () => { 
-					ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
-				}});
-			});
-			*/
-		}});
+	navAction({
+		numSelected: numSelected,
+		route: '/symlink',
+		title: "Symbolic Link",
+		message: ({ value }) => `Confirm symbolic link of ${numSelected} to "${value}". Files include: "${filenames.join(', ')}"`,
+		cbTitle: ({ value, postValue }) => "Symlinked files",
+		cbMessage: ({ value, postValue }) => `Symbolically linked: "${filenames.join(', ')}" to "${postValue}"`,
 	});
-	if (selectionHash.length() == 1) { // Make it work with multiple, like move and copy
-		const file = selectionHash.files();
-		pathNavBtn(title, selectionHash, newPath => {
-			const message = "Type name of link";
-			createPopUp("input", { title: title, message: message, file: filename, inputType: "filename", callback: linkName => {
-				console.log("Request to create symbolic link " + filename + " " + linkName, `Path: ${path}, newPath: ${newPath}`);
-				/*
-				ajaxPost('/symbolicLink', { path: path, newPath: newPath, filename: filename, linkName: linkName }, linkName => {
-					const message = `Symbollically linked: "${filename}" to "${linkName}"`;
-					console.log(message);
-					createPopUp("message", { title: "Created symbolic link", message: message, callback: () => {
-						ajaxPost('/getfiles', { path: currentPath }, data => addFilesToTable(data));
-					}});
-				});
-				*/
-			}});
-		});
-	}
 }
 
 function upload(event) {
