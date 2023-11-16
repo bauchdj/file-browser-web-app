@@ -99,23 +99,33 @@ exports.fileRoutes = function (app) {
 	});
 
 	app.post('/create', (req, res) => {
-		const type = req.body.type;
-		const isFile = type === "file";
-
 		const path = usersPath + req.body.path;
 		const name = req.body.name;
+
+		const type = req.body.type;
+		const isFile = type === "file";
 		const filePath = path + name + (isFile ? ".txt" : '');
 
 		const cb = (err) => {
-			if (err) return res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
-			res.end(JSON.stringify({ success: true, data: name }));
+			if (err) {
+				res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
+			} else {
+				res.end(JSON.stringify({ success: true, data: name }));
+			}
 		}
 
-		if (isFile) {
-			fs.writeFile(filePath, '', cb);
-		} else {
-			fs.mkdir(filePath, cb);
-		}
+		fs.access(filePath, fs.constants.F_OK, (err) => {
+			if (!err) {
+				res.end(JSON.stringify({ error: "File already exists. Name: " + name }))
+				return;
+			}
+
+			if (isFile) {
+				fs.writeFile(filePath, '', cb);
+			} else {
+				fs.mkdir(filePath, cb);
+			}
+		});
 	});
 
 	app.post('/downloadURL', (req, res) => {
