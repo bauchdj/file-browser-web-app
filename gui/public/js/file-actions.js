@@ -257,6 +257,7 @@ function navAction({ numSelected, route, title, message, cbTitle, cbMessage }) {
 			selectionHash.clear();
 
 			ajaxPost(route, { data: data, path: value, count: numSelected }, postValue => {
+				// postValue is results object from backend, need to loop and add each corresponding result based by looping through postValue using ${data} (aka filenames) list as keys. That way we add the files to the pop up message in the order they were sent. Otherwise they'll be grouped by success and error. I guess we could group them by success and error, we can try that first and see how it looks. None should technically error because I rename them until it works lol
 				const message = cbMessage({ value: value, postValue: postValue });
 
 				console.log(message);

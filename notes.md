@@ -9,7 +9,7 @@
 ## To do's:
 - Websocket for connection status
 
-- Login (login.html)
+- Login (login.html) **Look at Simon**
   - Create login.js instead of form doing post
   - Alert
     - Incorrect username or password
@@ -17,38 +17,33 @@
 
   - Generate random session key
     - Add key to cookie
-    - Store key under username
+    - Store key under username in MongoDB
 
   - Create user button
+    - Check for password :)
 	- Check user is not in database
 	- Create new user in database
     - Check that user direction doesn't exist
 	- Create new user's directiory
 
-- Log out
+- Log out **Look at Simon**
   - Clear auth cookie
   - Send post req to remove key from username in database
 
-- **Add backend error handling** for rename, copy, trash (rename), symlink
-  - BACKEND Duplicate name handler (based on duplicates at origin and/or destination)
-    - Creating: check if file exists at destination
-    - Check if source includes duplicates going to same destination
-
-
-- **Symbolic link backend**
-
 - **File action results**
+  - Could refactor code on backend.
+  - Results, what do I want it to have? og filename and new filename? Right now it has source (path + og filename)
   - Add each file to pop up with green CHECK or red X
 
 - Shared
-  - Check to make sure name doesn't exist, prompt again with message that previous link already exists
-  - **Create link front end** (single == input, multiple == options)
+  - **Create link front end** decided against input, can rename ... (single == input, multiple == options)
   - Create folder and symlink files
   - Display folders
+  - Decided to have it handle the error with numeric postfix ... Check to make sure name doesn't exist, prompt again with message that previous link already exists
 
 - Trash
-  - Decide how to organize trash per user
-  - Simply display files at that path
+  - .trash per user, need to create .trash if it doesn't exist. Need user's path in /trash route backend
+  - Simply display files at /users/<user>/.trash/
 
 - Font Awesome file type icons
   - Create JSON file that maps file extension /  type to icon classes in Font Awesome
@@ -61,6 +56,11 @@
   - Display files at that path
 
 - Replace ajax with XHR requests for efficiency (remove jQuery)
+
+- **Add files renamed to results, backend error handling** for rename, copy, trash (rename), symlink
+  - BACKEND Duplicate name handler (based on duplicates at origin and/or destination)
+    - Creating: check if file exists at destination
+    - Check if source includes duplicates going to same destination
 
 - Class Actions: Create file / folder, Upload, URL download to server, Download, Rename, Create Link, Move, Copy, Symbolic link, Trash, Delete
 
