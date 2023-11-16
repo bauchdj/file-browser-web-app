@@ -85,6 +85,21 @@ function getListOfFiles(directoryPath, callback) {
 	});
 }
 
+function determinePathIfFileExists(dirPath, name, callback, failIfExists = false, postfixNum = 1) {
+	const filePath = dirPath + name;
+
+	fs.access(filePath, fs.constants.F_OK, err => { // !err means it exists
+		if (failIfExists && !err) {
+			callback(dirPath, name, true);
+		} else if (!err) {
+			name = `${name} (${postfixNum})`
+			determinePathIfFileExists(dirPath, name, callback, postfixNum + 1);
+		} else {
+			callback(dirPath, name);
+		}
+	});
+}
+
 exports.fileRoutes = function (app) {
 	const basePath = path.resolve(__dirname + "/../../") + "/"; // Turns relative path to absolute path. Express relative path is malicious
 	const usersPath = basePath + "users/";
@@ -99,33 +114,33 @@ exports.fileRoutes = function (app) {
 	});
 
 	app.post('/create', (req, res) => {
-		const path = usersPath + req.body.path;
-		const name = req.body.name;
-
 		const type = req.body.type;
 		const isFile = type === "file";
-		const filePath = path + name + (isFile ? ".txt" : '');
+		const name = req.body.name + (isFile ? ".txt" : '');
+		const dirPath = usersPath + req.body.path;
 
-		const cb = (err) => {
-			if (err) {
-				res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
-			} else {
-				res.end(JSON.stringify({ success: true, data: name }));
-			}
-		}
-
-		fs.access(filePath, fs.constants.F_OK, (err) => {
-			if (!err) {
-				res.end(JSON.stringify({ error: "File already exists. Name: " + name }))
+		determinePathIfFileExists(dirPath, name, (dirPath, name, exists) => {
+			if (exists) {
+				res.end(JSON.stringify({ error: "File already exists. Name: " + name }));
 				return;
 			}
+
+			const cb = (err) => {
+				if (err) {
+					res.end(JSON.stringify({ error: "FROM BACKEND\n" + err.toString() }));
+				} else {
+					res.end(JSON.stringify({ success: true, data: name }));
+				}
+			}
+
+			const filePath = dirPath + name;
 
 			if (isFile) {
 				fs.writeFile(filePath, '', cb);
 			} else {
 				fs.mkdir(filePath, cb);
 			}
-		});
+		}, true); // Fail if it already exists
 	});
 
 	app.post('/downloadURL', (req, res) => {
@@ -186,17 +201,20 @@ exports.fileRoutes = function (app) {
 
 				if (response.statusCode === 200) {
 					const name = getName(response);
-					const path = req.body.path;
-					const filePath = usersPath + path + name;
+					const dirPath = usersPath + req.body.path;
 
-					const fws = fs.createWriteStream(filePath);
-					response.pipe(fws);
+					determinePathIfFileExists(dirPath, name, (dirPath, name) => {
+						const filePath = dirPath + name;
 
-					fws.on('finish', () => {
-						res.end(JSON.stringify({ success: true, data: name }));
+						const fws = fs.createWriteStream(filePath);
+						response.pipe(fws);
+
+						fws.on('finish', () => {
+							res.end(JSON.stringify({ success: true, data: name }));
+						});
+
+						fws.on('error', err => onError(err));
 					});
-
-					fws.on('error', err => onError(err));
 				} else {
 					res.writeHead(response.statusCode, response.headers);
 					response.pipe(res);
