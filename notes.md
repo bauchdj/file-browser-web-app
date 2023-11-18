@@ -9,27 +9,6 @@
 ## To do's:
 - Websocket for connection status
 
-- Login (login.html) **Look at Simon**
-  - Create login.js instead of form doing post
-  - Alert
-    - Incorrect username or password
-	- User already exists
-
-  - Generate random session key
-    - Add key to cookie
-    - Store key under username in MongoDB
-
-  - Create user button
-    - Check for password :)
-	- Check user is not in database
-	- Create new user in database
-    - Check that user direction doesn't exist
-	- Create new user's directiory
-
-- Log out **Look at Simon**
-  - Clear auth cookie
-  - Send post req to remove key from username in database
-
 - **File action results**
   - Could refactor code on backend.
   - Results, what do I want it to have? og filename and new filename? Right now it has source (path + og filename)
