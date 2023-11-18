@@ -85,6 +85,10 @@ async function updateSessionId(username, sessionIdLifetime, sessionId) {
 			const result = await collection.updateOne({ username: username }, { $set: { sessionId: sessionId } });
 		}
 
+		if (sessionIdHash[sessionId]) {
+			clearTimeout(sessionIdHash[sessionId]);
+		}
+
 		sessionIdHash[sessionId] = setTimeout(async () => {
 			await removeSessionId(username, sessionId);
 		}, sessionIdLifetime);
