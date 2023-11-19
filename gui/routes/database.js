@@ -100,6 +100,14 @@ async function updateSessionId(username, sessionIdLifetime, sessionId) {
 	}
 }
 
+async function setAuthCookie(user, res, sessionId) {
+	const maxAge = 3600000;
+	sessionId = await updateSessionId(user, maxAge, sessionId);
+
+	res.cookie('user', user, { secure: true, httpOnly: true, sameSite: 'strict', maxAge: maxAge });
+	res.cookie('sessionId', sessionId, { secure: true, httpOnly: true, sameSite: 'strict', maxAge: maxAge });
+}
+
 async function checkSessionId(username, sessionId) {
 	try {
 		if (sessionIdHash[sessionId]) {
@@ -138,6 +146,7 @@ async function createUser(username, password) {
 
 	try {
 		await fs.mkdir(userPath);
+		await fs.mkdir(userPath + ".trash/");
 
 		const pwd = await hashPassword(password);
 		const document = { username: username, password: pwd };
@@ -158,10 +167,10 @@ process.on("SIGINT", async () => {
 });
 
 module.exports = {
-	createUser,
 	checkUserLogin,
-	updateSessionId,
-	checkSessionId,
 	clearSessionId,
+	setAuthCookie,
+	checkSessionId,
+	createUser,
 };
 

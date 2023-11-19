@@ -108,21 +108,21 @@ function getFiles(directoryPath, res) {
 	});
 }
 
-exports.fileRoutes = function (app, checkAuth) {
+module.exports = function (router) {
 	const basePath = path.resolve(__dirname + "/../../") + "/"; // Turns relative path to absolute path. Express relative path is malicious
 	const usersPath = basePath + "users/";
 
-	app.post('/getfiles', checkAuth, (req, res) => {
+	router.post('/getfiles', (req, res) => {
 		const directoryPath = usersPath + req.body.path; // Gets directory of user
 		getFiles(directoryPath, res);
 	});
 
-	app.post('/shared/:file', checkAuth, (req, res) => {
+	router.post('/shared/:file', (req, res) => {
 		const file = req.params.file;
 		// redirect to /getfiles with req.body.path `.shared/${file}`
 	});
 
-	app.post('/create', checkAuth, (req, res) => {
+	router.post('/create', (req, res) => {
 		const type = req.body.type;
 		const isFile = type === "file";
 		const name = req.body.name + (isFile ? ".txt" : '');
@@ -152,7 +152,7 @@ exports.fileRoutes = function (app, checkAuth) {
 		}, true); // Fail if it already exists
 	});
 
-	app.post('/downloadURL', checkAuth, (req, res) => {
+	router.post('/downloadURL', (req, res) => {
 		const onError = err => {
 			console.log(err);
 			res.end(JSON.stringify({ error: 'FROM BACKEND\n' + err.toString() }));
@@ -237,7 +237,7 @@ exports.fileRoutes = function (app, checkAuth) {
 		redirect(url);
 	});
 
-	app.post('/rename', checkAuth, (req, res) => {
+	router.post('/rename', (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
@@ -268,7 +268,7 @@ exports.fileRoutes = function (app, checkAuth) {
 		}
 	});
 
-	app.post('/copy', checkAuth, (req, res) => {
+	router.post('/copy', (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
@@ -298,7 +298,7 @@ exports.fileRoutes = function (app, checkAuth) {
 		}
 	});
 
-	app.post('/symlink', checkAuth, (req, res) => {
+	router.post('/symlink', (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
@@ -328,7 +328,7 @@ exports.fileRoutes = function (app, checkAuth) {
 		}
 	});
 
-	app.post('/createLink', checkAuth, (req, res) => {
+	router.post('/createLink', (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
 		const name = req.body.name;
@@ -367,7 +367,7 @@ exports.fileRoutes = function (app, checkAuth) {
 		}
 	});
 
-	app.post('/trash', checkAuth, (req, res) => {
+	router.post('/trash', (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
@@ -407,7 +407,7 @@ exports.fileRoutes = function (app, checkAuth) {
 		});
 	});
 
-	app.post('/delete', checkAuth, (req, res) => {
+	router.post('/delete', (req, res) => {
 		let count = req.body.count;
 		const data = req.body.data;
 		const results = { success: {}, error: {} };
@@ -429,14 +429,14 @@ exports.fileRoutes = function (app, checkAuth) {
 		}
 	});
 
-	app.get('/download*', checkAuth, (req, res) => {
+	router.get('/download*', (req, res) => {
 		const type = req.query.type;
 
 		if (type === "file") {
 			const filePath = usersPath + decodeURIComponent(req.query.path);
 			const filename = filePath.split('/').pop();
 
-			res.setHeader('Content-Type', 'application/force-download');
+			res.setHeader('Content-Type', 'routerlication/force-download');
 			res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
 			res.sendFile(filePath, { dotfiles: 'allow' });
 		} else if (type === "zip") {
@@ -445,7 +445,7 @@ exports.fileRoutes = function (app, checkAuth) {
 			zip.makeZip(data, (zipFile, time) => {
 				const name = "filebrowser_" + new Date().localTime(time, true) + ".zip";
 
-				res.setHeader('Content-Type', 'application/zip');
+				res.setHeader('Content-Type', 'routerlication/zip');
 				res.setHeader('Content-Disposition', `attachment; filename=${name}`);
 				res.sendFile(zipFile, { dotfiles: 'allow' });
 			});
@@ -463,7 +463,7 @@ exports.fileRoutes = function (app, checkAuth) {
 
 	const upload = multer({ storage: storage });
 
-	app.post('/upload', checkAuth, upload.array('files[]'), (req, res) => {
+	router.post('/upload', upload.array('files[]'), (req, res) => {
 		res.end(JSON.stringify({ success: true }));
 	});
 }

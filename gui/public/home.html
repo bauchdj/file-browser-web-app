@@ -11,6 +11,7 @@
 		<script src="js/jquery-3.7.1.js"></script>
 		<script src="js/jslib-dom.js"></script>
 		<script src="js/utils.js"></script>
+		<script src="js/websocket.js"></script>
 		<script src="js/components.js"></script>
 		<script src="js/selection.js"></script>
 		<script src="js/file-actions.js"></script>
@@ -57,7 +58,7 @@
 		<div>
 			<div class="menu">
 				<div>
-					<button class="btn btn-success" onclick="this.classList.toggle('btn-success');this.classList.toggle('btn-danger');this.textContent==='Connected'?this.textContent='Disconnected':this.textContent='Connected';">Connected</button>
+					<div id="connectionStatus" class="btn btn-danger">Disconnected</div>
 				</div>
 					<div class="dropdown">
 						<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Add New</button>

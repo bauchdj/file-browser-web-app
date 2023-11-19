@@ -26,10 +26,10 @@
 				<form action="login" method="post" onsubmit="handleFormSubmit(event)">
 					<legend>Login</legend>
 					<div class="mb-2">
-						<input type="text" class="form-control" name="username" placeholder="Username" required autocomplete="username">
+						<input type="text" class="form-control" name="username" placeholder="Username" required autocomplete="username" minlength="3" maxlength="20">
 					</div>
 					<div class="mb-2">
-						<input type="password" class="form-control" name="password" placeholder="Password" required pattern="^(?=.*[a-zA-Z])(?=.*\d).+$" autocomplete="current-password">
+						<input type="password" class="form-control" name="password" placeholder="Password" required autocomplete="current-password" pattern="^(?=.*[a-zA-Z])(?=.*\d).+$" minlength="5" maxlength="20">
 						<div class="form-text">Must contain at least <b>one letter</b> and <b>one number</b></div>
 						<div class="form-text">Guest login is <b>guest</b> and <b>2bemyguestlogin</b></div>
 					</div>
