@@ -77,10 +77,10 @@ If you're like me, you have photos, videos and files you want to access and shar
 
 # WebSocket deliverable
 
-- **Backend listens for WebSocket connection** - 
-- **Frontend makes WebSocket connection** - 
-- **Data sent over WebSocket connection** - 
-- **WebSocket data displayed** - 
+- **Backend listens for WebSocket connection** - Yup
+- **Frontend makes WebSocket connection** - Yup
+- **Data sent over WebSocket connection** - Just need the websocket requests for connection status.
+- **WebSocket data displayed** - Yup, top left.
 
 # React deliverable
 
