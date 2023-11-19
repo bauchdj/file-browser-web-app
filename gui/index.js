@@ -4,15 +4,19 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const authRouter = require('./routes/authRoutes.js');
 const nonAuthRouter = require('./routes/nonAuthRoutes.js');
+const wss = require('./websocket.js');
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(helmet.contentSecurityPolicy({
-    directives: {
-        "script-src": ["'self'", "https://cdn.jsdelivr.net/"]
-    }
+app.use(helmet({
+	contentSecurityPolicy: {
+		directives: {
+			"script-src": ["'self'", "https://cdn.jsdelivr.net/"],
+			"script-src-attr": "'unsafe-inline'",
+		},
+	},
 }));
 app.use(rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
@@ -29,6 +33,13 @@ app.use('/favicon.ico', express.static(__dirname + '/public/favicon.ico'));
 app.use(nonAuthRouter);
 app.use(authRouter);
 
-app.listen(port, () => {
+httpServer = app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
 });
+
+httpServer.on('upgrade', (request, socket, head) => {
+	wss.handleUpgrade(request, socket, head, ws => {
+		wss.emit('connection', ws, request);
+	});
+});
+

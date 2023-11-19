@@ -36,6 +36,7 @@ function postData(url, data, successCallback, errorCallback) {
 }
 
 function onLogin(username) {
+	localStorage.removeItem('user');
 	localStorage.setItem('user', username)
 	window.location.href = "/home";
 }
