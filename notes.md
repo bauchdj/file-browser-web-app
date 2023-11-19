@@ -7,14 +7,15 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
-- Websocket for connection status
+- Add clear selected button to the drop down menu of options.
+- Change look of "Sort by" and "Options" buttons
 
 - **File action results**
   - Could refactor code on backend.
   - Results, what do I want it to have? og filename and new filename? Right now it has source (path + og filename)
   - Add each file to pop up with green CHECK or red X
 
-- Shared **Gonna be kinda complicated...probs need to separted it from home.html, separate but similar.**
+- Shared **Gonna be kinda complicated...probs need to separte it from home.html, separate but similar.**
   - **Create link front end** decided against input, can rename ... (single == input, multiple == options)
   - Create folder and symlink files
   - Display folders
