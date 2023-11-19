@@ -64,16 +64,16 @@ If you're like me, you have photos, videos and files you want to access and shar
 
 ## DB deliverable
 
-- **MongoDB Atlas database created** - 
-- **Endpoints for data** - 
-- **Stores data in MongoDB** - 
+- **MongoDB Atlas database created** - All set up!
+- **Endpoints for data** - They're all connected
+- **Stores data in MongoDB** - Yup
 
 # Login deliverable
 
-- **User registration** - Creates a new account in the database.
-- **existing user** - 
+- **User registration** - Creates a new account in the database and new directory for user.
+- **existing user** - Logs in, takes them to home file directory.
 - **Use MongoDB to store credentials** - Store login credentials
-- **Restricts functionality** - 
+- **Restricts functionality** - They can't get passed login without a cookie and valid sessionId.
 
 # WebSocket deliverable
 
