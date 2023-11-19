@@ -39,6 +39,7 @@ app.get('/ip', (request, response) => response.send(request.ip));
 
 app.use('/css/main.css', express.static(__dirname + '/public/css/main.css'));
 app.use('/favicon.ico', express.static(__dirname + '/public/favicon.ico'));
+app.use('/images/file-browser-icon.png', express.static(__dirname + '/public/images/file-browser-icon.png'));
 
 app.use(nonAuthRouter);
 app.use(authRouter);
