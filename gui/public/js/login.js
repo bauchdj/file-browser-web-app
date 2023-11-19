@@ -20,10 +20,11 @@ function postData(url, data, successCallback, errorCallback) {
 
 	xhr.onreadystatechange = () => {
 		if (xhr.readyState === XMLHttpRequest.DONE) {
+			const data = JSON.parse(xhr.responseText);
 			if (xhr.status >= 200 && xhr.status < 300) {
-				successCallback(JSON.parse(xhr.responseText));
+				successCallback(data);
 			} else {
-				errorCallback(xhr.statusText);
+				errorCallback(xhr.statusText, data.message);
 			}
 		}
 	};
@@ -45,9 +46,9 @@ function createUser(username, password) {
 	postData('/create/user', { username, password }, data => {
 		console.log('User created:', data);
 		onLogin(username);
-	}, err => {
-		console.error('Error:', err);
-		alert("User already exists");
+	}, (err, message) => {
+		if (err) console.error('Error:', err);
+		alert(message);
 	});
 }
 
@@ -55,9 +56,9 @@ function login(username, password) {
 	postData('/login', { username, password }, res => {
 		console.log('Login successful:', res);
 		onLogin(username);
-	}, err => {
-		console.error('Error:', err);
-		alert("Invalid credentials");
+	}, (err, message) => {
+		if (err) console.error('Error:', err);
+		alert(message);
 	});
 }
 
