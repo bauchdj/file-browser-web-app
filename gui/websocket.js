@@ -1,50 +1,39 @@
 const { WebSocketServer } = require('ws');
 const crypto = require('crypto');
-//const cookie = require('cookie');
 const db = require('./routes/database.js');
 
 const wss = new WebSocketServer({ noServer: true });
 
-let connections = [];
+const connections = new Map();
 
-function connect(ws) {
-	const id = crypto.randomBytes(16).toString('hex');
-	const connection = { id: id, alive: true, ws: ws };
-	connections.push(connection);
-
-	function broadcastMessage(senderId, data) {
-		connections.forEach(c => {
-			if (c.id !== senderId) {
-				c.ws.send(data);
-			}
-		});
-	}
+function connect(ws, id) {
+	const connection = { id, alive: true, ws };
+	connections.set(id, connection);
 
 	ws.on('message', data => {
-		broadcastMessage(connection.id, data);
+		ws.send('Connection established successfully.');
 	});
 
 	ws.on('close', () => {
-		connections = connections.filter(c => c.id !== connection.id);
+		connections.delete(id);
+		console.log(`Connection closed: ${id}`);
 	});
 
 	ws.on('error', err => {
 		console.error('WebSocket error:', err);
+		connections.delete(id);
 	});
 
 	ws.on('pong', () => {
 		connection.alive = true;
 	});
-};
+}
 
 wss.on('connection', (ws, req) => {
 	try {
-		//const parsedCookies = cookie.parse(req.headers.cookie || '');
-        //const sessionId = parsedCookies.sessionId;
 		const sessionId = req.cookies.sessionId;
-
 		if (db.checkSessionId(sessionId)) {
-			connect(ws);
+			connect(ws, sessionId);
 		} else {
 			ws.close();
 		}
@@ -54,21 +43,17 @@ wss.on('connection', (ws, req) => {
 });
 
 const interval = setInterval(() => {
-	connections.forEach(c => {
-		if (!c.alive) {
-			c.ws.terminate();
+	connections.forEach((connection, id) => {
+		if (!connection.alive) {
+			connection.ws.terminate();
+			connections.delete(id);
 		} else {
-			try {
-				c.alive = false;
-				c.ws.ping();
-			} catch (error) {
-				console.error('Error sending ping:', error);
-			}
+			connection.alive = false;
+			connection.ws.ping();
 		}
 	});
 
-	// Clear the interval if there are no connections
-	if (connections.length === 0) {
+	if (connections.size === 0) {
 		clearInterval(interval);
 	}
 }, 10000);
