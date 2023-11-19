@@ -1,5 +1,5 @@
 const express = require('express');
-const cookieParser = require('cookie-parser');
+const cookie = require('cookie');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const authRouter = require('./routes/authRoutes.js');
@@ -9,7 +9,12 @@ const wss = require('./websocket.js');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+
+app.use((req, res, next) => {
+	req.cookies = cookie.parse(req.headers.cookie || '');
+	next();
+});
+
 app.use(helmet({
 	contentSecurityPolicy: {
 		directives: {
@@ -18,6 +23,7 @@ app.use(helmet({
 		},
 	},
 }));
+
 app.use(rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
 	max: 100 // limit each IP to 100 requests per windowMs
@@ -37,9 +43,10 @@ httpServer = app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
 });
 
-httpServer.on('upgrade', (request, socket, head) => {
-	wss.handleUpgrade(request, socket, head, ws => {
-		wss.emit('connection', ws, request);
+httpServer.on('upgrade', (req, socket, head) => {
+	req.cookies = cookie.parse(req.headers.cookie || '');
+	wss.handleUpgrade(req, socket, head, ws => {
+		wss.emit('connection', ws, req);
 	});
 });
 
