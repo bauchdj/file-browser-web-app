@@ -7,6 +7,8 @@ const nonAuthRouter = require('./routes/nonAuthRoutes.js');
 const wss = require('./websocket.js');
 
 const app = express();
+const numOfProxies = 1;
+app.set('trust proxy', numOfProxies);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -32,6 +34,8 @@ app.use(rateLimit({
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
 
 const serviceName = process.argv.length > 3 ? process.argv[3] : 'file-browser-web-app';
+
+app.get('/ip', (request, response) => response.send(request.ip));
 
 app.use('/css/main.css', express.static(__dirname + '/public/css/main.css'));
 app.use('/favicon.ico', express.static(__dirname + '/public/favicon.ico'));
