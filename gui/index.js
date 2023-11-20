@@ -21,7 +21,8 @@ app.use(helmet({
 	contentSecurityPolicy: {
 		directives: {
 			"script-src": ["'self'", "https://cdn.jsdelivr.net/"],
-			"script-src-attr": "'unsafe-inline'",
+			"script-src-attr": ["'unsafe-inline'"],
+			"connect-src": ["'self'", "https://api.chucknorris.io/jokes/"],
 		},
 	},
 }));
