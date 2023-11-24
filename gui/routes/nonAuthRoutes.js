@@ -17,8 +17,8 @@ router.post('/create/user', [
 		.escape(),
 
 	body('password')
-		.isLength({ min: 8, max: 20 })
-		.withMessage('Password must be between 8 and 20 characters long')
+		.isLength({ min: 5, max: 20 })
+		.withMessage('Password must be between 5 and 20 characters long')
 		.matches(/^(?=.*[a-zA-Z])(?=.*\d).+$/)
 		.withMessage('Password must contain at least one letter and one number'),
 
