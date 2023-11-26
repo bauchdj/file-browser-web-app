@@ -7,6 +7,11 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
+- MongoDB set auto delete in database
+- Pull all users in database on startup to make it faster
+
+- Reconnecting Websocket logic
+
 - Add clear selected button to the drop down menu of options.
 - Change look of "Sort by" and "Options" buttons
 
