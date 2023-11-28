@@ -1,5 +1,4 @@
 const { WebSocketServer } = require('ws');
-const crypto = require('crypto');
 const db = require('./routes/database.js');
 
 const wss = new WebSocketServer({ noServer: true });
@@ -11,7 +10,7 @@ function connect(ws, id) {
 	connections.set(id, connection);
 
 	ws.on('message', data => {
-		ws.send('Connection established successfully.');
+		console.log(data);
 	});
 
 	ws.on('close', () => {
@@ -27,6 +26,8 @@ function connect(ws, id) {
 	ws.on('pong', () => {
 		connection.alive = true;
 	});
+
+	ws.send('Connection established successfully.');
 }
 
 wss.on('connection', (ws, req) => {

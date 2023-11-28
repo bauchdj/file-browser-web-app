@@ -1,18 +1,3 @@
-// Function to update the div based on WebSocket status
-function updateConnectionStatus(isConnected) {
-	const statusDiv = document.getElementById('connectionStatus');
-	if (isConnected) {
-		statusDiv.classList.remove('btn-danger');
-		statusDiv.classList.add('btn-success');
-		statusDiv.textContent = 'Connected';
-	} else {
-		statusDiv.classList.remove('btn-success');
-		statusDiv.classList.add('btn-danger');
-		statusDiv.textContent = 'Disconnected';
-	}
-}
-
-// Initialize WebSocket
 function getWebSocketUrl() {
 	const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 	const host = window.location.hostname;
@@ -20,25 +5,34 @@ function getWebSocketUrl() {
 	return `${protocol}//${host}${port}`;
 }
 
-const webSocketUrl = getWebSocketUrl();
-const webSocket = new WebSocket(webSocketUrl);
+let webSocket;
 
-// WebSocket event handlers
-webSocket.onopen = function(event) {
-	updateConnectionStatus(true);
-};
+function connectWebSocket() {
+	const webSocketUrl = getWebSocketUrl();
+	webSocket = new WebSocket(webSocketUrl);
 
-webSocket.onclose = function(event) {
-	updateConnectionStatus(false);
-};
+	webSocket.onopen = event => {
+		const connectionStatusDiv = document.getElementById('connectionStatus');
+		connectionStatusDiv.className = 'btn btn-success';
+		connectionStatusDiv.textContent = 'Connected';
+		connectionStatusDiv.onclick = null; // Remove the click handler
+	};
 
-webSocket.onerror = function(error) {
-	updateConnectionStatus(false);
-	console.error('WebSocket Error:', error);
-};
+	webSocket.onclose = event => {
+		const connectionStatusDiv = document.getElementById('connectionStatus');
+		connectionStatusDiv.className = 'btn btn-danger';
+		connectionStatusDiv.textContent = 'Reconnect';
+		connectionStatusDiv.onclick = connectWebSocket; // Add click handler to reconnect
+	};
 
-// Optional: Handle messages from the server
-webSocket.onmessage = function(event) {
-	console.log('WebSocket message received:', event.data);
-};
+	webSocket.onerror = err => {
+		console.error('WebSocket error:', err);
+	};
+
+	webSocket.onmessage = event => {
+		console.log(event);
+	};
+}
+
+connectWebSocket();
 
