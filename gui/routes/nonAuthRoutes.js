@@ -11,14 +11,14 @@ router.get('/js/login.js', (req, res) => { res.sendFile('login.js', { root: publ
 
 router.post('/create/user', [
 	body('username')
-		.isLength({ min: 3, max: 20 })
-		.withMessage('Username must be between 3 and 20 characters long')
+		.isLength({ min: 2, max: 30 })
+		.withMessage('Username must be between 2 and 30 characters long')
 		.trim()
 		.escape(),
 
 	body('password')
-		.isLength({ min: 5, max: 20 })
-		.withMessage('Password must be between 5 and 20 characters long')
+		.isLength({ min: 5, max: 30 })
+		.withMessage('Password must be between 5 and 30 characters long')
 		.matches(/^(?=.*[a-zA-Z])(?=.*\d).+$/)
 		.withMessage('Password must contain at least one letter and one number'),
 
