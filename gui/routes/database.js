@@ -89,10 +89,7 @@ async function updateSessionId(username, sessionId) {
 			}, maxAge);
 
 			const sessionUpdate = { $set: { sessionId: sessionId, createdAt: currentTime } };
-			//await sessionsCollection.updateOne({ username: username }, sessionUpdate, { upsert: true });
 			sessionsCollection.updateOne({ username: username }, sessionUpdate, { upsert: true });
-
-			console.log("Session Id timeout updated", sessions.get(sessionId));
 		}
 
 		async function getLastActivity() {
@@ -102,7 +99,6 @@ async function updateSessionId(username, sessionId) {
 
 			const data = await sessionsCollection.findOne({ username: username, sessionId: sessionId });
 			const date = new Date(data.createdAt);
-			console.log("Database createdAt:", date);
 			return date;
 		}
 
@@ -113,8 +109,6 @@ async function updateSessionId(username, sessionId) {
 			setSessionIdBasedOnTime(currentTime);
 		} else {
 			const lastActivity = await getLastActivity(); // Uses sessions Map or queries MongoDB
-
-			console.log("Time difference:", (currentTime - lastActivity));
 
 			if ((currentTime - lastActivity) > 5000) {
 				setSessionIdBasedOnTime(currentTime);
