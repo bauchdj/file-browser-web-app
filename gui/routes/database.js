@@ -8,13 +8,16 @@ const config = require("./db-config.json");
 const uri = `mongodb+srv://${config.username}:${config.password}@${config.hostname}`;
 const client = new MongoClient(uri);
 const db = client.db("Cluster0");
-const collection = db.collection("users");
+const usersCollection = db.collection("users");
+const sessionsCollection = db.collection("sessions");
 
-const sessionIdHash = {};
+const maxAge = 3600000;
+const sessions = new Map();
 
 // This will asynchronously test the connection and exit the process if it fails
 (async function testConnection() {
 	await client.connect();
+	await sessionsCollection.createIndex({ "createdAt": 1 }, { expireAfterSeconds: maxAge / 1000 });
 	await db.command({ ping: 1 });
 })().catch((ex) => {
 	console.log(`Unable to connect to database with ${uri} because ${ex.message}`);
@@ -33,7 +36,7 @@ async function checkPassword(inputPassword, storedHashedPassword) {
 
 async function findUserByUsername(username) {
 	try {
-		const user = await collection.findOne({ username: username });
+		const user = await usersCollection.findOne({ username: username });
 		return user;
 	} catch (err) {
 		console.error("Error finding user:", err);
@@ -58,40 +61,65 @@ async function checkUserLogin(username, password) {
 	}
 }
 
-async function removeSessionId(username, sessionId) {
-	try {
-		delete sessionIdHash[sessionId];
-		await collection.updateOne({ username: username }, { $unset: { sessionId: "" } });
-		console.log(`Session ID for ${username} has been cleared`);
-		return true;
-	} catch (err) {
-		console.error("Error removing user session:", err);
-		return false;
-	}
+function removeSessionId(sessionId) {
+	sessions.delete(sessionId);
+	console.log(`Session ID for ${username} has been cleared`);
 }
 
-async function clearSessionId(username, sessionId) {
-	clearTimeout(sessionIdHash[sessionId]);
-	return await removeSessionId(username, sessionId);
+async function clearSessionIdOnLogout(sessionId) {
+	clearTimeout(sessions.get(sessionId).timeoutFunction);
+	removeSessionId(sessionId);
 }
 
-async function updateSessionId(username, sessionIdLifetime, sessionId) {
+async function updateSessionId(username, sessionId) {
 	try {
-		if (sessionId === undefined) {
-			function generateNewSessionId() {
-				return crypto.randomBytes(16).toString('hex');
+		function setSessionIdBasedOnTime(currentTime) {
+			if (sessions.get(sessionId)) {
+				sessions.get(sessionId).lastActivity = currentTime;
+			} else {
+				sessions.set(sessionId, { lastActivity: currentTime });
 			}
-			sessionId = generateNewSessionId();
-			const result = await collection.updateOne({ username: username }, { $set: { sessionId: sessionId } });
+
+			if (sessions.get(sessionId).timeoutFunction) {
+				clearTimeout(sessions.get(sessionId).timeoutFunction);
+			}
+
+			sessions.get(sessionId).timeoutFunction = setTimeout(() => {
+				removeSessionId(sessionId);
+			}, maxAge);
+
+			const sessionUpdate = { $set: { sessionId: sessionId, createdAt: currentTime } };
+			//await sessionsCollection.updateOne({ username: username }, sessionUpdate, { upsert: true });
+			sessionsCollection.updateOne({ username: username }, sessionUpdate, { upsert: true });
+
+			console.log("Session Id timeout updated", sessions.get(sessionId));
 		}
 
-		if (sessionIdHash[sessionId]) {
-			clearTimeout(sessionIdHash[sessionId]);
+		async function getLastActivity() {
+			if (sessions.get(sessionId)) {
+				return sessions.get(sessionId).lastActivity;
+			}
+
+			const data = await sessionsCollection.findOne({ username: username, sessionId: sessionId });
+			const date = new Date(data.createdAt);
+			console.log("Database createdAt:", date);
+			return date;
 		}
 
-		sessionIdHash[sessionId] = setTimeout(async () => {
-			await removeSessionId(username, sessionId);
-		}, sessionIdLifetime);
+		const currentTime = new Date();
+
+		if (sessionId === undefined) {
+			sessionId = crypto.randomBytes(16).toString('hex');
+			setSessionIdBasedOnTime(currentTime);
+		} else {
+			const lastActivity = await getLastActivity(); // Uses sessions Map or queries MongoDB
+
+			console.log("Time difference:", (currentTime - lastActivity));
+
+			if ((currentTime - lastActivity) > 5000) {
+				setSessionIdBasedOnTime(currentTime);
+			}
+		}
 
 		return sessionId;
 	} catch (err) {
@@ -101,8 +129,7 @@ async function updateSessionId(username, sessionIdLifetime, sessionId) {
 }
 
 async function setAuthCookie(user, res, sessionId) {
-	const maxAge = 3600000;
-	sessionId = await updateSessionId(user, maxAge, sessionId);
+	sessionId = await updateSessionId(user, sessionId);
 
 	res.cookie('user', user, { secure: true, httpOnly: true, sameSite: 'strict', maxAge: maxAge });
 	res.cookie('sessionId', sessionId, { secure: true, httpOnly: true, sameSite: 'strict', maxAge: maxAge });
@@ -110,11 +137,11 @@ async function setAuthCookie(user, res, sessionId) {
 
 async function checkSessionId(username, sessionId) {
 	try {
-		if (sessionIdHash[sessionId]) {
+		if (sessions.get(sessionId)) {
 			return true;
 		}
 
-		const user = await collection.findOne({ username: username, sessionId: sessionId } );
+		const user = await sessionsCollection.findOne({ username: username, sessionId: sessionId } );
 
 		if (user && user.sessionId) {
 			return true;
@@ -150,7 +177,7 @@ async function createUser(username, password) {
 
 		const pwd = await hashPassword(password);
 		const document = { username: username, password: pwd };
-		await collection.insertOne(document);
+		await usersCollection.insertOne(document);
 
 		return true;
 	} catch (err) {
@@ -168,7 +195,8 @@ process.on("SIGINT", async () => {
 
 module.exports = {
 	checkUserLogin,
-	clearSessionId,
+	clearSessionIdOnLogout,
+	updateSessionId,
 	setAuthCookie,
 	checkSessionId,
 	createUser,

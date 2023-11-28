@@ -5,7 +5,7 @@ const wss = new WebSocketServer({ noServer: true });
 
 const connections = new Map();
 
-function connect(ws, id) {
+function connect(ws, req, id) {
 	const connection = { id, alive: true, ws };
 	connections.set(id, connection);
 
@@ -15,6 +15,7 @@ function connect(ws, id) {
 
 	ws.on('close', () => {
 		connections.delete(id);
+		db.updateSessionId(req.cookies.user, id);
 		console.log(`Connection closed: ${id}`);
 	});
 
@@ -34,7 +35,7 @@ wss.on('connection', (ws, req) => {
 	try {
 		const sessionId = req.cookies.sessionId;
 		if (db.checkSessionId(sessionId)) {
-			connect(ws, sessionId);
+			connect(ws, req, sessionId);
 		} else {
 			ws.close();
 		}
