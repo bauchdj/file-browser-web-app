@@ -63,12 +63,17 @@ async function checkUserLogin(username, password) {
 
 function removeSessionId(sessionId) {
 	sessions.delete(sessionId);
-	console.log(`Session ID for ${username} has been cleared`);
 }
 
 async function clearSessionIdOnLogout(sessionId) {
-	clearTimeout(sessions.get(sessionId).timeoutFunction);
-	removeSessionId(sessionId);
+	try {
+		clearTimeout(sessions.get(sessionId).timeoutFunction);
+		removeSessionId(sessionId);
+		await sessionsCollection.deleteOne({ sessionId: sessionId });
+		return true;
+	} catch (err) {
+		return false;
+	}
 }
 
 async function updateSessionId(username, sessionId) {
@@ -98,6 +103,10 @@ async function updateSessionId(username, sessionId) {
 			}
 
 			const data = await sessionsCollection.findOne({ username: username, sessionId: sessionId });
+			if (data === null) { // On logout -> causing websocket close, it is null
+				return false;
+			}
+
 			const date = new Date(data.createdAt);
 			return date;
 		}
@@ -109,6 +118,10 @@ async function updateSessionId(username, sessionId) {
 			setSessionIdBasedOnTime(currentTime);
 		} else {
 			const lastActivity = await getLastActivity(); // Uses sessions Map or queries MongoDB
+
+			if (lastActivity === false) {
+				return false;
+			}
 
 			if ((currentTime - lastActivity) > 5000) {
 				setSessionIdBasedOnTime(currentTime);

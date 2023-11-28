@@ -25,11 +25,16 @@ router.post('/logout', async (req, res) => {
 	const user = req.cookies.user;
 	const sessionId = req.cookies.sessionId;
 
-	db.clearSessionIdOnLogout(sessionId);
+	const cleared = await db.clearSessionIdOnLogout(sessionId);
 
-	res.clearCookie('user');
-	res.clearCookie('sessionId');
-	res.json({ success: true, message: 'Logout successful' });
+	if (cleared) {
+		res.clearCookie('user');
+		res.clearCookie('sessionId');
+		res.json({ success: true, message: 'Logout successful' });
+		return;
+	}
+
+	res.status(500).json({ success: false, message: 'Logout failed' });
 });
 
 router.get('/:type(css|js|images)/:file', (req, res) => {
