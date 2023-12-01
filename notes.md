@@ -7,13 +7,13 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
-- MongoDB set auto delete in database
-- Pull all users in database on startup to make it faster
-
-- Reconnecting Websocket logic
-
 - Add clear selected button to the drop down menu of options.
 - Change look of "Sort by" and "Options" buttons
+- Recheck alignment of all file action / path buttons for consistency, Make it look good :)
+
+- New secret patten method for user creation
+
+- Rewrite ajax jQuery as XHR && replace all file action post requests with websocket messages
 
 - **File action results**
   - Could refactor code on backend.
