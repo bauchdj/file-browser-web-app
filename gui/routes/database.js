@@ -171,7 +171,7 @@ async function userPathExists(path) {
 }
 
 async function createUser(username, password) {
-	const basePath = path.resolve(__dirname + "/../") + "/"; // Turns relative path to absolute path. Express relative path is malicious
+	const basePath = path.resolve(__dirname + "/../../") + "/"; // Turns relative path to absolute path. Express relative path is malicious
 	const userPath = basePath + "users/" + username + "/";
 	if (await userPathExists(userPath)) return false;
 
