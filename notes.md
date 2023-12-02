@@ -14,6 +14,7 @@
 - New secret patten method for user creation
 
 - Rewrite ajax jQuery as XHR && replace all file action post requests with websocket messages
+- Remove user from localStorage. Use websocket id to lookup user, thereby connecting the websocket to user to directory for each fileAction
 
 - **File action results**
   - Could refactor code on backend.
