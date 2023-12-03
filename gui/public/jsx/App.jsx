@@ -4,7 +4,6 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import LoginPage from './LoginPage';
 //import HomePage from './HomePage';
 //import AboutPage from './AboutPage';
-import Footer from './Footer';
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -12,7 +11,6 @@ function App() {
 	return (
 		<div>
 			<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
-			<Footer />
 		</div>
 	)
 

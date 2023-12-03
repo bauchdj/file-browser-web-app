@@ -1,4 +1,5 @@
 import React from 'react';
+import Footer from './Footer';
 import '../js/login.js';
 import '../css/login.css'
 
@@ -14,11 +15,11 @@ function LoginPage(props) {
 					<a className="navbar-brand" href="">Login page</a>
 					<div className="flex-fill"></div>
 					<a className="navbar-brand" href="">
-						<img src="images/file-browser-icon.png" />
+						<img src="/images/file-browser-icon.png" />
 					</a>
 				</nav>
 			</header>
-			<div>
+			<div id="main">
 				<form action="login" method="post" onSubmit={onSubmit}>
 					<legend>Login</legend>
 					<div className="mb-2">
@@ -36,6 +37,7 @@ function LoginPage(props) {
 					</div>
 				</form>
 			</div>
+			<Footer />
 		</div>
 	);
 }
