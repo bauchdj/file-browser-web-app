@@ -1,4 +1,4 @@
-function handleFormSubmit(event) {
+function handleFormSubmit(event, setIsLoggedIn) {
 	event.preventDefault(); // Prevent default form submission
 
 	const form = event.target;
@@ -7,9 +7,9 @@ function handleFormSubmit(event) {
 	const isCreateUser = form.querySelector('#createUserCheckbox').checked;
 
 	if (isCreateUser) {
-		createUser(username, password);
+		createUser(username, password, setIsLoggedIn);
 	} else {
-		login(username, password);
+		login(username, password, setIsLoggedIn);
 	}
 }
 
@@ -36,26 +36,27 @@ function postData(url, data, successCallback, errorCallback) {
 	xhr.send(JSON.stringify(data));
 }
 
-function onLogin(username) {
+function onLogin(username, setIsLoggedIn) {
 	localStorage.removeItem('user');
 	localStorage.setItem('user', username)
+	setIsLoggedIn(true);
 	window.location.href = "/home";
 }
 
-function createUser(username, password) {
+function createUser(username, password, setIsLoggedIn) {
 	postData('/create/user', { username, password }, data => {
 		console.log('User created:', data);
-		onLogin(username);
+		onLogin(username, setIsLoggedIn);
 	}, (err, message) => {
 		if (err) console.error('Error:', err);
 		alert(message);
 	});
 }
 
-function login(username, password) {
+function login(username, password, setIsLoggedIn) {
 	postData('/login', { username, password }, res => {
 		console.log('Login successful:', res);
-		onLogin(username);
+		onLogin(username, setIsLoggedIn);
 	}, (err, message) => {
 		if (err) console.error('Error:', err);
 		alert(message);
