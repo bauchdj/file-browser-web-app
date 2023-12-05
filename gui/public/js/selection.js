@@ -115,11 +115,11 @@ function selectionClass() {
 		document.querySelector("#select-all").checked = false;
 		rc.current.clear();
 
-		rc.forEach(selection => {
-			if (selection != rc.current) {
-				delete selection;
+		for (const path in rc.paths) {
+			if (rc.paths[path] != rc.current) {
+				delete rc.paths[path];
 			}
-		});
+		}
 	};
 
 	rc.onlyFiles = () => {

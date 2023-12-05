@@ -218,6 +218,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 						el.setAttribute(attr, obj.attrs[attr]);
 					});
 					if (obj.type == 'checkbox' && selectionHash.current.includesFile(fileStats.filename)) {
+						selectionHash.current.items[fileStats.filename].el = el;
 						el.checked = true;
 					}
 				}
