@@ -13,7 +13,7 @@ function openFile(path) {
 }
 
 function updateDirectoryBtns(path) {
-	const container = document.querySelector("body > div > div.files > div > div.flex-r > div:last-child");
+	const container = document.querySelector("#filePathButtons");
 	const newContainer = $(container.outerHTML);
 	newContainer.empty();
 

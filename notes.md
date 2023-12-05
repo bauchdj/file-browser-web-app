@@ -7,6 +7,8 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
+- Fix clear btn
+  - Add item, change dir, then go back. Clear does not change UI. There appears to be many bugs actually. It didn't clear items in sub dir either :(
 - Add clear selected button to the drop down menu of options.
 - Change look of "Sort by" and "Options" buttons
 - Recheck alignment of all file action / path buttons for consistency, Make it look good :)
