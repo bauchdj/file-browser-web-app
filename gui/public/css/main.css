@@ -1,4 +1,4 @@
-body > div#root > div > div {
+#body {
 	display: flex;
 	flex-direction: column;
 	margin: 0;

@@ -9,7 +9,7 @@ function LoginPage(props) {
 	}
 
 	return (
-		<div>
+		<div id="body">
 			<header>
 				<nav className="navbar bg-body-tertiary">
 					<a className="navbar-brand" href="">Login page</a>

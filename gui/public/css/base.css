@@ -1,4 +1,4 @@
-body > div {
+#content {
 	flex: auto;
 	margin: 0.4rem;
 	display: flex;
