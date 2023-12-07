@@ -54,17 +54,17 @@ function HomePage(props) {
 					<div>
 						<div id="connectionStatus" class="btn btn-danger" onclick="connectWebSocket()">Reconnect</div>
 					</div>
-						<div class="dropdown">
-							<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Add New</button>
-							<ul class="dropdown-menu">
-								<li class="dropdown-item" onclick="createFolder(event)">New folder</li>
-								<li class="dropdown-item" onclick="createTextFile(event)">New text file</li>
-								<li><hr class="dropdown-divider"></li>
-								<li class="dropdown-item" onclick="upload(event)">Upload</li>
-								<li><hr class="dropdown-divider"></li>
-								<li class="dropdown-item" onclick="downloadURL(event)">URL to download</li>
-							</ul>
-						</div>
+					<div class="dropdown">
+						<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Add New</button>
+						<ul class="dropdown-menu">
+							<li class="dropdown-item" onclick="createFolder(event)">New folder</li>
+							<li class="dropdown-item" onclick="createTextFile(event)">New text file</li>
+							<li><hr class="dropdown-divider"></li>
+							<li class="dropdown-item" onclick="upload(event)">Upload</li>
+							<li><hr class="dropdown-divider"></li>
+							<li class="dropdown-item" onclick="downloadURL(event)">URL to download</li>
+						</ul>
+					</div>
 					<div>
 						<a href="/home">
 							<button class="btn">Home</button>

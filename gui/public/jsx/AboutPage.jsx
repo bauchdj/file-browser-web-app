@@ -1,22 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Footer from './Footer';
 import '../css/base.css';
-import '../js/websocket.js';
-import '../js/logout.js';
+import ScriptLoader from './ScriptLoader';
 
 
 function AboutPage(props) {
-  const toggleMenuDisplay = () => {
-    const style = document.querySelector("div.menu").style;
-    style.display = style.display === "" ? "none" : "";
-  };
+	const [isWebsocketLoaded, setWebsocketLoaded] = useState(false);
+	const [isLogoutLoaded, setLogoutLoaded] = useState(false);
 
-  const connectWS = () => {
-  	connectWebSocket();
-  };
+	const toggleMenuDisplay = () => {
+		const style = document.querySelector("div.menu").style;
+		style.display = style.display === "" ? "none" : "";
+	};
+
+	const connectWS = () => {
+		connectWebSocket();
+	};
 
 	return (
 		<div id="body">
+			<ScriptLoader src="../js/websocket.js" onLoad={() => setWebsocketLoaded(true)} />
+			<ScriptLoader src="../js/logout.js" onLoad={() => setLogoutLoaded(true)} />
 			<header>
 				<nav className="navbar bg-body-tertiary">
 					<button className="btn btn-primary navbar-brand" onClick={toggleMenuDisplay}>
@@ -37,6 +41,15 @@ function AboutPage(props) {
 				<div className="menu">
 					<div>
 						<div id="connectionStatus" className="btn btn-danger" onClick={connectWS}>Reconnect</div>
+					</div>
+					<div className="dropdown">
+						<button className="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Add New</button>
+						<ul className="dropdown-menu">
+							<li><a className="dropdown-item" href="#">Action</a></li>
+							<li><a className="dropdown-item" href="#">Another action</a></li>
+							<li><hr className="dropdown-divider" /></li>
+							<li><a className="dropdown-item" href="#">Something else here</a></li>
+						</ul>
 					</div>
 					<div>
 						<a href="/home">

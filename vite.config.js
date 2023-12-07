@@ -7,7 +7,6 @@ export default defineConfig({
   plugins: [react()],
   root: path.resolve(__dirname, 'gui/public'),
   server: {
-    //open: '/index.html',
     historyApiFallback: true,
   }
 });
