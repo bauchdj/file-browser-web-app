@@ -162,6 +162,7 @@ function HomePage(props) {
 					</table>
 				</div>
 			</div>
+			<Footer />
 		</div>
 	);
 }
