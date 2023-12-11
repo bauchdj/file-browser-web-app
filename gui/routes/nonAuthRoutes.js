@@ -5,7 +5,6 @@ const db = require('./database.js');
 const path = require('path');
 const publicDir = path.resolve(__dirname + "/../public/") + "/"; // Turns relative path to absolute path. Express relative path is malicious
 
-//router.get(['/', '/login'], (req, res) => { res.sendFile('index.html', { root: publicDir }); });
 router.get(['/', '/login'], (req, res) => { res.sendFile('index.html', { root: publicDir + 'dist' }); });
 router.get('/css/login.css', (req, res) => { res.sendFile('login.css', { root: publicDir + 'css' }); });
 router.get('/js/login.js', (req, res) => { res.sendFile('login.js', { root: publicDir + 'js' }); });

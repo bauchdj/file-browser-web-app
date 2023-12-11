@@ -39,10 +39,9 @@ const serviceName = process.argv.length > 3 ? process.argv[3] : 'file-browser-we
 app.get('/ip', (request, response) => response.send(request.ip));
 
 //app.use(express.static('public'));
-app.use('/assets/:file(home|about)', (req, res) => {
+app.use('/assets/:file', (req, res) => {
 	const file = req.params.file;
-	res.sendFile(file, { root: publicDir + 'dist/assets' });
-	//res.sendFile(file, { root: publicDir + 'dist' });
+	res.sendFile(file, { root: __dirname + '/public/dist/assets' });
 });
 app.use('/css/main.css', express.static(__dirname + '/public/css/main.css'));
 app.use('/favicon.ico', express.static(__dirname + '/public/favicon.ico'));
