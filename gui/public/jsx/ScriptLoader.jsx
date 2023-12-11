@@ -5,7 +5,7 @@ const ScriptLoader = ({ src, onLoad }) => {
 		// Create script element
 		const script = document.createElement('script');
 		script.src = src;
-		script.async = true;
+		script.async = false;
 
 		// Define load event listener
 		const handleLoad = () => {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './LoginPage';
-//import HomePage from './HomePage';
+import HomePage from './HomePage';
 import AboutPage from './AboutPage';
 
 function App() {
@@ -17,7 +17,9 @@ function PathLogger() {
 	return (
 		<BrowserRouter basename="/">
 			<Routes>
+				<Route path="/" element={isLoggedIn ? <Navigate replace to="/home" /> : <Navigate replace to="/login" />} />
 				<Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
+				<Route path="/home" element={<HomePage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
 				<Route path="/about" element={<AboutPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
 			</Routes>
 		</BrowserRouter>

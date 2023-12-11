@@ -13,10 +13,6 @@ function AboutPage(props) {
 		style.display = style.display === "" ? "none" : "";
 	};
 
-	const connectWS = () => {
-		connectWebSocket();
-	};
-
 	return (
 		<div id="body">
 			<ScriptLoader src="../js/websocket.js" onLoad={() => setWebsocketLoaded(true)} />
@@ -40,7 +36,7 @@ function AboutPage(props) {
 			<div id="content">
 				<div className="menu">
 					<div>
-						<div id="connectionStatus" className="btn btn-danger" onClick={connectWS}>Reconnect</div>
+						<div id="connectionStatus" className="btn btn-danger" onClick={() => connectWebSocket()}>Reconnect</div>
 					</div>
 					<div className="dropdown">
 						<button className="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Add New</button>
