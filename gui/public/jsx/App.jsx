@@ -8,43 +8,22 @@ import AboutPage from './AboutPage';
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-function PathLogger() {
-    const location = useLocation();
-    console.log("Current path:", location.pathname);
-    return null; // This component doesn't render anything
-}
+	function PathLogger() {
+		const location = useLocation();
+		console.log("Current path:", location.pathname);
+		return null; // This component doesn't render anything
+	}
 
 	return (
 		<BrowserRouter basename="/">
 			<Routes>
 				<Route path="/" element={isLoggedIn ? <Navigate replace to="/home" /> : <Navigate replace to="/login" />} />
-				<Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
+				<Route path="/login" element={isLoggedIn ? <Navigate replace to="/home" /> : <LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
 				<Route path="/home" element={<HomePage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
 				<Route path="/about" element={<AboutPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
 			</Routes>
 		</BrowserRouter>
-	)
-
-	/*
-	return (
-		<BrowserRouter>
-			<Route path="/login">
-				<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
-			</Route>
-			<Route path="/home">
-				<HomePage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
-			</Route>
-			<Route path="/about">
-				<AboutPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
-			</Route>
-			<Route exact path="/">
-				<HomePage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
-			</Route>
-			<div>404</div>
-			<Footer />
-		</BrowserRouter>
-	)
-	*/
+	);
 }
 
 export default App

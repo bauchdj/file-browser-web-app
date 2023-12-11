@@ -13,7 +13,7 @@ function openFile(path) {
 }
 
 function updateDirectoryBtns(path) {
-	const container = document.querySelector("body > div > div.files > div > div.flex-r > div:last-child");
+	const container = document.querySelector("div.files > div > div.flex-r > div:last-child");
 	const newContainer = $(container.outerHTML);
 	newContainer.empty();
 
@@ -36,7 +36,7 @@ function updateDirectoryBtns(path) {
 		newContainer.get(0).appendChild(button);
 	});
 
-	const fileOptions = document.querySelector("body > div > div.files > div > div.flex-r");
+	const fileOptions = document.querySelector("div.files > div > div.flex-r");
 	fileOptions.removeChild(container);
 	fileOptions.appendChild(newContainer.get(0));
 }
@@ -45,10 +45,10 @@ function changeDirectory(path) {
 	currentPath = path;
 	selectionHash.add(currentPath);
 
-	const selectAllEl = document.querySelector("body > div > div.files > table > thead > tr > td > input[type=checkbox]")
+	const selectAllEl = document.querySelector("div.files > table > thead > tr > td > input[type=checkbox]")
 	selectAllEl.checked = selectionHash.current.allSelected;
 
-	const input = document.querySelector("body > div > div.files > div > div.flex-0-1 > input");
+	const input = document.querySelector("div.files > div > div.flex-0-1 > input");
 	input.value = path;
 
 	updateDirectoryBtns(path);
@@ -142,17 +142,14 @@ function sortArrayOfObjects(arr, key, direction = 1) {
 }
 
 function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey = "filename") {
-	const row = document.querySelector("body > div > div.files > table > thead > tr");
+	const row = document.querySelector("div.files > table > thead > tr");
 	const columns = Array.from(row.children)
 	columns.forEach(el => el.classList.remove('selected'));
 	document.querySelector("#" + sortKey).classList.add('selected');
 
 	fileList = sortArrayOfObjects(fileList, sortKey, sortDirection);
-	//if (sortKey === "filename") {
-	//	sortArrayOfObjects(fileList, "fileExtension", sortDirection);
-	//}
 
-	const sortOptions = document.querySelector("body > div > div.files > div > div.flex-r ul").children;
+	const sortOptions = document.querySelector("div.files > div > div.flex-r ul").children;
 	Array.from(sortOptions).forEach(el => {
 		const value = el.dataset.value;
 		el.onclick = e => {
@@ -170,7 +167,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 	const numFiles = fileList.length;
 	document.querySelector("#file-count").textContent = "File count: " + numFiles;
 
-	const tableBody = document.querySelector("body > div > div.files > table > tbody.table-group-divider");
+	const tableBody = document.querySelector("div.files > table > tbody.table-group-divider");
 	const newTableBody = document.createElement("tbody");
 	newTableBody.className = "table-group-divider";
 
@@ -235,7 +232,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		}
 	});
 
-	const table = document.querySelector("body > div > div.files > table");
+	const table = document.querySelector("div.files > table");
 	table.removeChild(tableBody);
 	table.appendChild(newTableBody);
 }
