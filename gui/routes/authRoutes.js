@@ -44,8 +44,9 @@ router.get('/:type(css|js|images)/:file', (req, res) => {
 });
 
 router.get('/:file(home|about)', (req, res) => {
-	const file = req.params.file + '.html';
-	res.sendFile(file, { root: publicDir });
+	const file = 'index.html';
+	//res.sendFile(file, { root: publicDir });
+	res.sendFile(file, { root: publicDir + 'dist' });
 });
 
 fileRoutes(router);

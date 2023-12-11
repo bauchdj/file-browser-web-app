@@ -15,15 +15,15 @@ function HomePage(props) {
 
 	return (
 		<div id="body">
-			<ScriptLoader src="../js/jquery-3.7.1.js" />
-			<ScriptLoader src="../js/jslib-dom.js" />
-			<ScriptLoader src="../js/utils.js" />
-			<ScriptLoader src="../js/websocket.js" />
-			<ScriptLoader src="../js/components.js" />
-			<ScriptLoader src="../js/selection.js" />
-			<ScriptLoader src="../js/file-actions.js" />
-			<ScriptLoader src="../js/base.js" />
-			<ScriptLoader src="../js/logout.js" />
+			<ScriptLoader src="/js/jquery-3.7.1.js" />
+			<ScriptLoader src="/js/jslib-dom.js" />
+			<ScriptLoader src="/js/utils.js" />
+			<ScriptLoader src="/js/websocket.js" />
+			<ScriptLoader src="/js/components.js" />
+			<ScriptLoader src="/js/selection.js" />
+			<ScriptLoader src="/js/file-actions.js" />
+			<ScriptLoader src="/js/base.js" />
+			<ScriptLoader src="/js/logout.js" />
 
 			<header>
 				<nav className="navbar bg-body-tertiary">
@@ -59,7 +59,7 @@ function HomePage(props) {
 						<input type="checkbox" id="subfolder-search" />
 					</div>
 					<a className="navbar-brand" href="">
-						<img src="images/file-browser-icon.png" alt="File Browser Icon" />
+						<img src="/images/file-browser-icon.png" alt="File Browser Icon" />
 					</a>
 				</nav>
 			</header>
