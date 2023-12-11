@@ -1,15 +1,18 @@
 import React from 'react';
+import ScriptLoader from './ScriptLoader';
 import Footer from './Footer';
 import '../js/login.js';
 import '../css/login.css'
 
 function LoginPage(props) {
 	function onSubmit(event) {
+		event.preventDefault();
 		handleFormSubmit(event, props.setIsLoggedIn);
 	}
 
 	return (
 		<div id="body">
+			<ScriptLoader src="/js/login.js" />
 			<header>
 				<nav className="navbar bg-body-tertiary">
 					<a className="navbar-brand" href="">Login page</a>
