@@ -1,5 +1,6 @@
 import React from 'react';
 import ScriptLoader from './ScriptLoader';
+import Footer from './Footer';
 import '../css/base.css';
 import '../css/home.css';
 

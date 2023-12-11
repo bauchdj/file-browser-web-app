@@ -84,7 +84,7 @@ If you're like me, you have photos, videos and files you want to access and shar
 
 # React deliverable
 
-- **Bundled and transpiled** - 
-- **Components** - 
-- **Router** - 
-- **Hooks** - 
+- **Bundled and transpiled** - Yup!
+- **Components** - I made multiple components in jsx folder
+- **Router** - in App.jsx
+- **Hooks** - App.jsx state hook, effect hook in ScriptLoader, and other hooks as needed
