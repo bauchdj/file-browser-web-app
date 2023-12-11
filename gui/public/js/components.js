@@ -9,7 +9,7 @@ function pathActionBtn(text, title, onclick, first = true) {
 		onclick: onclick,
 	}
 
-	const parent = document.querySelector("body > div > div.files > div > div.flex-r");
+	const parent = document.querySelector("div.files > div > div.flex-r");
 
 	if (first) {
 		jsl.dom.add(parent, btn, parent.children[0]);
