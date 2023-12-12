@@ -48,6 +48,24 @@
 
 - Class Actions: Create file / folder, Upload, URL download to server, Download, Rename, Create Link, Move, Copy, Symbolic link, Trash, Delete
 
+- Bootstrap Icon URL's
+  - https://icons.getbootstrap.com/?q=folders
+  - https://icons.getbootstrap.com/icons/plus-circle/
+  - https://icons.getbootstrap.com/icons/folder-plus/
+  - https://icons.getbootstrap.com/icons/file-earmark/
+  - https://icons.getbootstrap.com/icons/upload/
+  - https://icons.getbootstrap.com/icons/cloud-arrow-down/
+  - https://icons.getbootstrap.com/icons/link/
+  - https://icons.getbootstrap.com/icons/download/
+  - https://icons.getbootstrap.com/icons/input-cursor-text/
+  - https://icons.getbootstrap.com/icons/trash/
+  - https://icons.getbootstrap.com/icons/x-circle/
+  - https://icons.getbootstrap.com/icons/link-45deg/
+  - https://icons.getbootstrap.com/icons/arrows-move/
+  - https://icons.getbootstrap.com/icons/copy/
+  - https://icons.getbootstrap.com/icons/folder-symlink/
+  - https://icons.getbootstrap.com/icons/info-circle/
+
 ## CSS
 - All checked boxes show selected row (light gray theme)
 - Add icons to side bar
