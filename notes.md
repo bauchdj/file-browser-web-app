@@ -46,6 +46,8 @@
     - Creating: check if file exists at destination
     - Check if source includes duplicates going to same destination
 
+- jslib HTML files into components
+
 - Class Actions: Create file / folder, Upload, URL download to server, Download, Rename, Create Link, Move, Copy, Symbolic link, Trash, Delete
 
 - Bootstrap Icon URL's
