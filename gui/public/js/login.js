@@ -20,8 +20,8 @@ function postData(url, data, successCallback, errorCallback) {
 
 	xhr.onreadystatechange = () => {
 		if (xhr.readyState === XMLHttpRequest.DONE) {
-			const data = JSON.parse(xhr.responseText);
 			if (xhr.status >= 200 && xhr.status < 300) {
+				const data = JSON.parse(xhr.responseText);
 				successCallback(data);
 			} else {
 				errorCallback(xhr.statusText, data.message);
