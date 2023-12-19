@@ -149,6 +149,25 @@ function sortArrayOfObjects(arr, key, direction = 1) {
 	return sortLowerCase(arr);
 }
 
+let fileTypeToClassName = {};
+function getFileTypeToFontAwesomeObj() {
+	const xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = () => {
+		if (xhr.readyState === XMLHttpRequest.DONE) {
+			if (xhr.status === 200) {
+				const data = JSON.parse(xhr.responseText);
+				fileTypeToClassName = data;
+			} else {
+				console.error('Error loading JSON:', xhr.statusText);
+			}
+		}
+	};
+	xhr.open('GET', '/json/fileType-to-FontawesomeClass.json', true);
+	xhr.send();
+}
+getFileTypeToFontAwesomeObj();
+
+
 function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey = "filename") {
 	const row = document.querySelector("body > div > div.files > table > thead > tr");
 	const columns = Array.from(row.children)
@@ -186,9 +205,12 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		const modifiedDate = new Date().localTime(fileStats.modifiedDate);
 		const creationDate = new Date().localTime(fileStats.creationDate);
 		const tableRow = document.createElement('tr');
+		const fileTypeClass = fileTypeToClassName[fileStats.fileExtension.toLowerCase()];
+		const iconClass = 'fa-regular ' + (fileTypeClass != undefined ? fileTypeClass : 'fa-file')
 		const els = [
 			{ el: 'input', type: 'checkbox', className: 'checkbox', onclick: event => selectionHash.current.click(event.target), attrs: { filename: fileStats.filename, fileType: fileStats.fileExtension } },
-			{ el: 'img', src: 'images/file-browser-icon.png', style: 'width:2.5rem' },
+			//{ parent: { el: 'div' }, el: 'i', className: iconClass },
+			{ el: 'i', className: iconClass },
 			{ text: fileStats.filename },
 			{ text: modifiedDate },
 			{ text: creationDate },
@@ -205,7 +227,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		els.forEach(obj => {
 			const tableData = document.createElement('td');
 
-			if (Object.keys(obj).length == 1 && obj.text) {
+			if (Object.keys(obj).length === 1 && obj.text) {
 				tableData.textContent = obj.text;
 				if (obj.text === fileStats.filename) {
 					if (fileStats.isDirectory) {
@@ -216,6 +238,12 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 				}
 			} else {
 				const el = document.createElement(obj.el);
+				if (obj.parent) {
+					const p = document.createElement(obj.parent.el);
+					if (obj.parent.className) p.className = obj.parent.className;
+					p.appendChild(el);
+					tableData.appendChild(p);
+				}
 				if (obj.type) el.type = obj.type;
 				if (obj.src) el.src = obj.src;
 				if (obj.className) el.className = obj.className;
@@ -225,13 +253,13 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 					Object.keys(obj.attrs).forEach(attr => {
 						el.setAttribute(attr, obj.attrs[attr]);
 					});
-					if (obj.type == 'checkbox' && selectionHash.current.includesFile(fileStats.filename)) {
+					if (obj.type === 'checkbox' && selectionHash.current.includesFile(fileStats.filename)) {
 						selectionHash.current.items[fileStats.filename].el = el;
 						el.checked = true;
 					}
 				}
 
-				tableData.appendChild(el);
+				if (!obj.parent) tableData.appendChild(el);
 			}
 
 			tableRow.appendChild(tableData);

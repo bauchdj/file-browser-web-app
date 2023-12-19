@@ -37,7 +37,12 @@ router.post('/logout', async (req, res) => {
 	res.status(500).json({ success: false, message: 'Logout failed' });
 });
 
-router.get('/:type(css|js|images)/:file', (req, res) => {
+router.get('/webfonts/:file', (req, res) => {
+	const file = req.params.file;
+	res.sendFile(file, { root: publicDir + '/css/webfonts' });
+});
+
+router.get('/:type(css|js|images|json)/:file', (req, res) => {
 	const type = req.params.type;
 	const file = req.params.file;
 	res.sendFile(file, { root: publicDir + type });
