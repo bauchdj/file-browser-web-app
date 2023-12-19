@@ -7,13 +7,12 @@
 - [Convert API](https://www.convertapi.com/)
 
 ## To do's:
-- Add clear selected button to the drop down menu of options.
 - Change look of "Sort by" and "Options" buttons
-- Recheck alignment of all file action / path buttons for consistency, Make it look good :)
 
 - New secret patten method for user creation
 
 - Rewrite ajax jQuery as XHR && replace all file action post requests with websocket messages
+- Replace ajax with XHR requests for efficiency (remove jQuery)
 - Remove user from localStorage. Use websocket id to lookup user, thereby connecting the websocket to user to directory for each fileAction
 
 - **File action results**
@@ -27,17 +26,9 @@
   - Display folders
   - Decided to have it handle the error with numeric postfix ... Check to make sure name doesn't exist, prompt again with message that previous link already exists
 
-- Font Awesome file type icons
-  - Create JSON file that maps file extension /  type to icon classes in Font Awesome
-
 - Backend search
   - Search path with nodejs and return list of files to display
 
-- Custom path input function, backend handling
-  - Validate path, if invalid pop up
-  - Display files at that path
-
-- Replace ajax with XHR requests for efficiency (remove jQuery)
 
 - **Add files renamed to results, backend error handling** for rename, copy, trash (rename), symlink
   - BACKEND Duplicate name handler (based on duplicates at origin and/or destination)
