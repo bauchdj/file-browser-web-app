@@ -57,7 +57,7 @@ function search(event) {
 
 	if (input === undefined) return false;
 
-	if (!document.querySelector("#clearSearchBtn")) {
+	if (!document.querySelector("#clear-search-btn")) {
 		const text = "Clear search results";
 		const title = "Clear search results reloading current directory";
 		const btn = pathActionBtn(text, title, event => {
@@ -65,7 +65,7 @@ function search(event) {
 			el.value = '';
 			addFilesToTable(Object.values(filesHash))
 		});
-		btn.el.setAttribute("id", "clearSearchBtn");
+		btn.el.setAttribute("id", "clear-search-btn");
 	}
 
 	const regex = (input => {

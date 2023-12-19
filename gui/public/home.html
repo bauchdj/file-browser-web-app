@@ -22,10 +22,10 @@
 		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
 	</head>
-	<body>
+	<body id="body">
 		<header>
 			<nav class="navbar bg-body-tertiary">
-				<button class="btn btn-primary navbar-brand" onclick='s=document.querySelector("body > div > div.menu").style;s.display===""?s.display="none":s.display="";'>
+				<button id="menu-toggle" class="btn btn-primary navbar-brand" onclick='s=document.querySelector("#menu").style;s.display===""?s.display="none":s.display="";'>
 					<div class="center-y">
 						<svg width="30" height="30" class="bi bi-list" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 						<path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
@@ -33,7 +33,7 @@
 					</div>
 				</button>
 				<div class="flex-fill"></div>
-				<div class="flex-r">
+				<div id="search-bar" class="flex-r">
 					<input class="form-control me-2" type="text" placeholder="Search" onchange="search(event)">
 					<button class="btn btn-primary" style="padding: 0 0.2rem 0 0.2rem">
 						<div class="center-y">
@@ -53,33 +53,33 @@
 					<input type="checkbox" id="subfolder-search">
 				</div>
 				<a class="navbar-brand" href="">
-					<img src="images/file-browser-icon.png" />
+					<img style="width: 2.5rem" src="/images/file-browser-icon.png" />
 				</a>
 			</nav>
 		</header>
-		<div>
-			<div class="menu">
+		<div id="content">
+			<div id="menu">
 				<div>
 					<div id="connectionStatus" class="btn btn-danger" onclick="connectWebSocket()">Reconnect</div>
 				</div>
-					<div class="dropdown">
-						<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Add New</button>
-						<ul class="dropdown-menu">
-							<li class="dropdown-item" onclick="createFolder(event)">New folder</li>
-							<li class="dropdown-item" onclick="createTextFile(event)">New text file</li>
-							<li><hr class="dropdown-divider"></li>
-							<li class="dropdown-item" onclick="upload(event)">Upload</li>
-							<li><hr class="dropdown-divider"></li>
-							<li class="dropdown-item" onclick="downloadURL(event)">URL to download</li>
-						</ul>
-					</div>
+				<div id="menu-dropdown" class="dropdown">
+					<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Add New</button>
+					<ul class="dropdown-menu">
+						<li class="dropdown-item" onclick="createFolder(event)">New folder</li>
+						<li class="dropdown-item" onclick="createTextFile(event)">New text file</li>
+						<li><hr class="dropdown-divider"></li>
+						<li class="dropdown-item" onclick="upload(event)">Upload</li>
+						<li><hr class="dropdown-divider"></li>
+						<li class="dropdown-item" onclick="downloadURL(event)">URL to download</li>
+					</ul>
+				</div>
 				<div>
 					<a href="/home">
 						<button class="btn">Home</button>
 					</a>
 				</div>
 				<div>
-					<button class="btn" onclick="opeShared(event)">Shared</button>
+					<button class="btn" onclick="openShared(event)">Shared</button>
 				</div>
 				<div>
 					<button class="btn" onclick="openTrash(event)">Trash</button>
@@ -92,12 +92,11 @@
 				<div>
 					<button class="btn" onclick="logout(event)">Log out</button>
 				</div>
-				<div id="file-count" class="btn">File count: 3</div>
-				<div class="btn" onclick="getJoke(event)">Need a joke?</div>
+				<div id="file-count" class="btn">File count: 0</div>
 			</div>
-			<div class="files">
-				<div class="flex-c">
-					<div class="flex-r" style="margin: 0 0 0.3rem 0;">
+			<div id="files">
+				<div id="files-menu" class="flex-c">
+					<div id="file-action-bar" class="flex-r" style="margin: 0 0 0.3rem 0;">
 						<div id="dropdowns" class="flex-r">
 							<div class="dropdown">
 								<button class="btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -131,11 +130,8 @@
 								</ul>
 							</div>
 						</div>
-						<div id="filePathButtons" class="flex-r flex-0-1 overflow-x-auto"></div>
 					</div>
-					<div class="flex-0-1">
-						<input class="form-control" type="text" name="path" placeholder="Type in a valid path" value="">
-					</div>
+					<div id="file-path-btns" class="flex-r flex-0-1 overflow-x-auto"></div>
 				</div>
 				<table class="table table-hover">
 					<thead>

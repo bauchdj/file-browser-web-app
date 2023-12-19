@@ -1,27 +1,38 @@
+#search-bar {
+	flex: 0.5;
+}
+
 @media (max-width: 900px) {
 	header > nav > .flex-fill {
 		flex: 0 !important;
 	}
-	header > nav > div.flex-r {
+	#search-bar {
 		flex: 1;
 	}
 }
 
-#filePathButtons {
+#file-path-btns {
 	padding: 0 0.5rem 0 0.5rem;
 }
 
-div.files {
+#files {
 	width: -webkit-fill-available;
 	overflow: auto;
 }
 
-div.files > div.flex-c{
+#files-menu {
 	width: 100%;
 }
 
 th, td {
 	white-space: nowrap;
+}
+
+.dropdown {
+	display: flex;
+	justify-content: left;
+	flex-wrap: wrap;
+	align-content: center;
 }
 
 .popupContainer { 

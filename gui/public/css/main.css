@@ -1,4 +1,4 @@
-body {
+#body {
 	display: flex;
 	flex-direction: column;
 	margin: 0;
@@ -14,10 +14,6 @@ footer {
 	padding: 0.5rem;
 }
 
-header > nav > div.flex-r {
-	flex: 0.5;
-}
-
 .navbar {
 	display: flex;
 	flex-direction: row;
@@ -26,10 +22,6 @@ header > nav > div.flex-r {
 
 .navbar-brand {
 	margin: 0 0.5rem 0 0.5rem;
-}
-
-header > nav > a > img {
-	width: 2.5rem;
 }
 
 .black-transparent {

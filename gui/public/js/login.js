@@ -4,7 +4,7 @@ function handleFormSubmit(event) {
 	const form = event.target;
 	const username = form.querySelector('input[name="username"]').value;
 	const password = form.querySelector('input[name="password"]').value;
-	const isCreateUser = form.querySelector('#createUserCheckbox').checked;
+	const isCreateUser = form.querySelector('#create-user-checkbox').checked;
 
 	if (isCreateUser) {
 		createUser(username, password);

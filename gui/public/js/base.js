@@ -1,24 +1,19 @@
-function getJoke(event) {
-	const el = event.target;
-	const url = "https://api.chucknorris.io/jokes/random?category=dev";
-	fetch(url)
-		.then(res => res.json())
-		.then(out => createPopUp("message", { title: "Joke", message: out.value }))
-		.catch(err => console.error("No joke:", err));
-}
-
 function openFile(path) {
 	const filename = path.split('/').slice(-2);
 	console.log('Tried to open ' + filename);
 }
 
 function updateDirectoryBtns(path) {
-	document.querySelector("#filePathButtons").remove();
+	document.querySelector("#file-path-btns").remove();
 	const container = {
 		tag: "div",
-		id: "filePathButtons",
+		id: "file-path-btns",
 		"class": "flex-r flex-0-1 overflow-x-auto",
-		children: [],
+		children: [ {
+			tag: "div",
+			"class": "center-y",
+			text: '/',
+		} ],
 	}
 
 	const buttonList = path.split('/');
@@ -45,7 +40,7 @@ function updateDirectoryBtns(path) {
 		container.children.push(btn, div);
 	});
 
-	const parent = document.querySelector("body > div > div.files > div > div.flex-r");
+	const parent = document.querySelector("#files-menu");
 	jsl.dom.add(parent, container);
 }
 
@@ -53,13 +48,9 @@ function changeDirectory(path) {
 	currentPath = path;
 	selectionHash.add(currentPath);
 
-	const selectAllEl = document.querySelector("body > div > div.files > table > thead > tr > td > input[type=checkbox]")
+	const selectAllEl = document.querySelector("table > thead > tr > td > input[type=checkbox]")
 	selectAllEl.checked = selectionHash.current.allSelected;
 
-	const input = document.querySelector("body > div > div.files > div > div.flex-0-1 > input");
-	input.value = path;
-
-	updateDirectoryBtns(path);
 	getFiles();
 }
 
@@ -150,13 +141,14 @@ function sortArrayOfObjects(arr, key, direction = 1) {
 }
 
 let fileTypeToClassName = {};
-function getFileTypeToFontAwesomeObj() {
+function getFileTypeToFontAwesomeObj(callback) {
 	const xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = () => {
 		if (xhr.readyState === XMLHttpRequest.DONE) {
 			if (xhr.status === 200) {
 				const data = JSON.parse(xhr.responseText);
 				fileTypeToClassName = data;
+				callback();
 			} else {
 				console.error('Error loading JSON:', xhr.statusText);
 			}
@@ -165,21 +157,17 @@ function getFileTypeToFontAwesomeObj() {
 	xhr.open('GET', '/json/fileType-to-FontawesomeClass.json', true);
 	xhr.send();
 }
-getFileTypeToFontAwesomeObj();
-
 
 function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey = "filename") {
-	const row = document.querySelector("body > div > div.files > table > thead > tr");
+	// Adds selected class to the current columns files are sorted by
+	const row = document.querySelector("table > thead > tr");
 	const columns = Array.from(row.children)
 	columns.forEach(el => el.classList.remove('selected'));
 	document.querySelector("#" + sortKey).classList.add('selected');
 
 	fileList = sortArrayOfObjects(fileList, sortKey, sortDirection);
-	//if (sortKey === "filename") {
-	//	sortArrayOfObjects(fileList, "fileExtension", sortDirection);
-	//}
 
-	const sortOptions = document.querySelector("body > div > div.files > div > div.flex-r ul").children;
+	const sortOptions = document.querySelector("#files > div > div.flex-r ul").children;
 	Array.from(sortOptions).forEach(el => {
 		const value = el.dataset.value;
 		el.onclick = e => {
@@ -194,10 +182,11 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		document.querySelector("#" + value).onclick = el.onclick; // Sets column onclick to sort option onclick
 	});
 
+	// Update file count displayed
 	const numFiles = fileList.length;
 	document.querySelector("#file-count").textContent = "File count: " + numFiles;
 
-	const tableBody = document.querySelector("body > div > div.files > table > tbody.table-group-divider");
+	const tableBody = document.querySelector("table > tbody");
 	const newTableBody = document.createElement("tbody");
 	newTableBody.className = "table-group-divider";
 
@@ -272,7 +261,7 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 		}
 	});
 
-	const table = document.querySelector("body > div > div.files > table");
+	const table = document.querySelector("table");
 	table.removeChild(tableBody);
 	table.appendChild(newTableBody);
 }
@@ -305,11 +294,10 @@ function getFiles() {
 	ajaxPost('/getfiles', { path: currentPath }, data => {
 		filesHash = {};
 		currentFileCount = data.length;
+		updateDirectoryBtns(currentPath);
 		addFilesToTable(data)
 	});
 }
 
-$(document).ready(function() {
-	getFiles();
-});
+getFileTypeToFontAwesomeObj(getFiles);
 

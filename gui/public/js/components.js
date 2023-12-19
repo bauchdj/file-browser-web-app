@@ -1,21 +1,16 @@
-function pathActionBtn(text, title, onclick, first = true) {
+function pathActionBtn(text, title, onclick) {
 	const btn = {
 		button: text,
 		title: title,
 		"class": "btn btn-primary",
 		style: {
-			margin: "0 0.3rem 0 0",
+			margin: "0 0 0 0.3rem",
 		},
 		onclick: onclick,
 	}
 
-	const parent = document.querySelector("body > div > div.files > div > div.flex-r");
-
-	if (first) {
-		jsl.dom.add(parent, btn, parent.children[0]);
-	} else {
-		jsl.dom.add(parent, btn);
-	}
+	const parent = document.querySelector("#file-action-bar");
+	jsl.dom.add(parent, btn);
 
 	return btn;
 }
@@ -24,15 +19,13 @@ function clearSelectedBtn(hash) {
 	const btn = pathActionBtn("Clear", "Click to clear all selected items", event => {
 		btn.el.remove();
 		hash.clearSelections();
-	}, false);
+	});
 
 	return btn.el.onclick;
 }
 
 function pathNavBtn(text, callback) {
-	//if (selectionHash.clear) {
-		selectionHash.clear();
-	//}
+	selectionHash.clear();
 
 	const dropdowns = document.querySelector("#dropdowns");
 	const displayValue = window.getComputedStyle(dropdowns).getPropertyValue('display');;
