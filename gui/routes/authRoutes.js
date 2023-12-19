@@ -18,7 +18,7 @@ router.use(async (req, res, next) => {
 		}
 	}
 
-	res.redirect('/');
+	res.redirect('/login');
 });
 
 router.post('/logout', async (req, res) => {
