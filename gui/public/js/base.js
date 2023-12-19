@@ -13,32 +13,40 @@ function openFile(path) {
 }
 
 function updateDirectoryBtns(path) {
-	const container = document.querySelector("#filePathButtons");
-	const newContainer = $(container.outerHTML);
-	newContainer.empty();
+	document.querySelector("#filePathButtons").remove();
+	const container = {
+		tag: "div",
+		id: "filePathButtons",
+		"class": "flex-r flex-0-1 overflow-x-auto",
+		children: [],
+	}
 
-	let steppingPath = '';
 	const buttonList = path.split('/');
 	buttonList.pop();
+
+	let steppingPath = '';
 	buttonList.forEach(elText => {
-		const button = document.createElement('button');
-		button.textContent = elText;
-		button.className = "btn";
 		steppingPath += elText + '/';
 		let jumpToPath = steppingPath;
-		button.onclick = function (event) {
-			changeDirectory(jumpToPath);
+
+		const btn = {
+			tag: "button",
+			"class": "btn",
+			text: elText,
+			onclick: event => changeDirectory(jumpToPath),
 		}
-		const div = document.createElement('div');
-		div.textContent = '/';
-		div.className = 'center-y';
-		newContainer.get(0).appendChild(div);
-		newContainer.get(0).appendChild(button);
+
+		const div = {
+			tag: "div",
+			"class": "center-y",
+			text: '/',
+		}
+
+		container.children.push(btn, div);
 	});
 
-	const fileOptions = document.querySelector("body > div > div.files > div > div.flex-r");
-	fileOptions.removeChild(container);
-	fileOptions.appendChild(newContainer.get(0));
+	const parent = document.querySelector("body > div > div.files > div > div.flex-r");
+	jsl.dom.add(parent, container);
 }
 
 function changeDirectory(path) {
