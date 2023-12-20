@@ -1,4 +1,5 @@
 {
+	"ext-to-className": "true",
 	"folder": "fa-folder",
 	"doc": "fa-file-word",
 	"docx": "fa-file-word",

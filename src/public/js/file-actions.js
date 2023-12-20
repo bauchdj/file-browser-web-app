@@ -4,13 +4,12 @@ function options({ numSelected, route, title, message, cbTitle, cbMessage }) {
 		return;
 	}
 
-	const data = selectionHash.files();
-
 	createPopUp("options", { title: title, message: message, btns: { primary: [ { text: title } ] }, callback: event => {
 		if (selectionHash.clear) {
 			selectionHash.clear();
 		}
 
+		const data = selectionHash.files();
 		ajaxPost(route, { data: data, count: numSelected }, postValue => {
 			const message = cbMessage({ postValue: postValue });
 

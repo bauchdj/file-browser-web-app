@@ -6,12 +6,15 @@ function getWebSocketUrl() {
 }
 
 let webSocket;
+let fileTypeToClassName = {};
 
 function connectWebSocket() {
 	const webSocketUrl = getWebSocketUrl();
 	webSocket = new WebSocket(webSocketUrl);
 
 	webSocket.onopen = event => {
+		webSocket.send(JSON.stringify({ type: "fileExt to class" }));
+		getFiles();
 		const connectionStatusDiv = document.getElementById('connectionStatus');
 		connectionStatusDiv.className = 'btn btn-success';
 		connectionStatusDiv.textContent = 'Connected';
@@ -30,7 +33,20 @@ function connectWebSocket() {
 	};
 
 	webSocket.onmessage = event => {
-		console.log(event);
+		const data = JSON.parse(event.data);
+
+		if (data.success === false) {
+			return console.error(data.error);
+		} else if (data.type === "list dir") {
+			filesHash = {};
+			updateDirectoryBtns(currentPath);
+			addFilesToTable(data.data)
+		} else if (data["ext-to-className"]) {
+			delete data["ext-to-className"];
+			fileTypeToClassName = data;
+		}
+
+		console.log(data);
 	};
 }
 

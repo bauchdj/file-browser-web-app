@@ -1,5 +1,6 @@
 const { WebSocketServer } = require('ws');
 const db = require('./routes/database.js');
+const files = require('./ws-files.js');
 
 const wss = new WebSocketServer({ noServer: true });
 
@@ -10,7 +11,7 @@ function connect(ws, req, id) {
 	connections.set(id, connection);
 
 	ws.on('message', data => {
-		console.log(data);
+		files(ws, JSON.parse(data));
 	});
 
 	ws.on('close', () => {
@@ -28,7 +29,7 @@ function connect(ws, req, id) {
 		connection.alive = true;
 	});
 
-	ws.send('Connection established successfully.');
+	ws.send(JSON.stringify({ success: true, type: 'Connection established successfully.' }));
 }
 
 wss.on('connection', (ws, req) => {

@@ -140,24 +140,6 @@ function sortArrayOfObjects(arr, key, direction = 1) {
 	return sortLowerCase(arr);
 }
 
-let fileTypeToClassName = {};
-function getFileTypeToFontAwesomeObj(callback) {
-	const xhr = new XMLHttpRequest();
-	xhr.onreadystatechange = () => {
-		if (xhr.readyState === XMLHttpRequest.DONE) {
-			if (xhr.status === 200) {
-				const data = JSON.parse(xhr.responseText);
-				fileTypeToClassName = data;
-				callback();
-			} else {
-				console.error('Error loading JSON:', xhr.statusText);
-			}
-		}
-	};
-	xhr.open('GET', '/json/fileType-to-FontawesomeClass.json', true);
-	xhr.send();
-}
-
 function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, lastSortKey = "filename") {
 	// Adds selected class to the current columns files are sorted by
 	const row = document.querySelector("table > thead > tr");
@@ -183,8 +165,8 @@ function addFilesToTable(fileList, sortKey = "filename", sortDirection = 1, last
 	});
 
 	// Update file count displayed
-	const numFiles = fileList.length;
-	document.querySelector("#file-count").textContent = "File count: " + numFiles;
+	currentFileCount = fileList.length;
+	document.querySelector("#file-count").textContent = "File count: " + currentFileCount;
 
 	const tableBody = document.querySelector("table > tbody");
 	const newTableBody = document.createElement("tbody");
@@ -291,13 +273,13 @@ function openTrash(event) {
 }
 
 function getFiles() {
+	webSocket.send(JSON.stringify({ type: "list dir", path: currentPath }));
+	/*
 	ajaxPost('/getfiles', { path: currentPath }, data => {
 		filesHash = {};
-		currentFileCount = data.length;
 		updateDirectoryBtns(currentPath);
 		addFilesToTable(data)
 	});
+	*/
 }
-
-getFileTypeToFontAwesomeObj(getFiles);
 
