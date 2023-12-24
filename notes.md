@@ -1,7 +1,3 @@
-### Current Ideas List
-- [File extension to MIME JSON](https://gist.github.com/AshHeskes/6038140)
-- [MIME types to Font Awesome Icon](https://gist.github.com/colemanw/9c9a12aae16a4bfe2678de86b661d922?permalink_comment_id=2632557#gistcomment-2632557)
-
 ### Future api's to implement when I have more time
 - [Cloud Mersive](https://cloudmersive.com/convert-api)
 - [Convert API](https://www.convertapi.com/)
@@ -10,6 +6,8 @@
 - Change look of "Sort by" and "Options" buttons
 
 - New secret patten method for user creation
+
+- Use id to determine user dir instead of handling it on the front end.
 
 - Rewrite ajax jQuery as XHR && replace all file action post requests with websocket messages
 - Replace ajax with XHR requests for efficiency (remove jQuery)
