@@ -176,8 +176,8 @@ try {
 		var hl = { div:"", style:{
 			left:rect.left,
 			top:rect.top,
-			width:rect.width,	
-			height:rect.height,	
+			width:rect.width,
+			height:rect.height,
 			border:"2px red solid",
 			borderRadius:9
 		}};
@@ -235,21 +235,21 @@ try {
 		rect.top = r.top;
 		rect.width = r.width;
 		rect.height = r.height;
-		
+
 		jsl.util.dbg(el.tagName, rect);
 		//window.alert(JSON.stringify(rect));
-	
+
 		rect.left -= window.highlightIds[id].x;
 		rect.width += (2*window.highlightIds[id].x);
 		rect.top -= window.highlightIds[id].y;
 		rect.height += (2*window.highlightIds[id].y);
-	
+
 		['left', 'width', 'top', 'height'].forEach(function (d) {
 			if( window.highlightIds[id][d] ) {
 				rect[d] += window.highlightIds[id][d];
 			}
 		});
-		
+
 		jsl.util.dbg(el.tagName, rect);
 		jsl.dom.hlCanvas.el.style.display = "block";
 		var ctx = jsl.dom.hlCanvas.el.getContext("2d");
@@ -306,7 +306,7 @@ jsl.terms = {
 	"Remove sort":{
 		sp:"Eliminar orden"
 	},
-	"Sort":{	
+	"Sort":{
 		sp:"Ordenar"
 	},
 	"Please enter password":{
@@ -725,7 +725,7 @@ jsl.dom.add = function ( pnode, obj, beforeRef ) {
 		if( !jsl.dom.body ) {
 			jsl.dom.init();
 		}
-	
+
 		//dbg("subParse", obj);
 		if( typeof obj === 'string' && obj.substring(0,8) === 'function' ) {
 			var fn;
@@ -733,9 +733,9 @@ jsl.dom.add = function ( pnode, obj, beforeRef ) {
 			dbg("FN:", typeof fn);
 			obj = fn();
 		}
-	
+
 		var rc, onRender, addText = true, i = 0, ch, tn;
-		
+
 		if( obj === undefined ) {
 			pnode.id = "this is the node";
 		dbg( "jsl.dom.subParse: object is undefined:", pnode.tagName );
@@ -779,10 +779,10 @@ jsl.dom.add = function ( pnode, obj, beforeRef ) {
 			}
 			var sztag = obj.tag ? obj.tag.toUpperCase() : "notag";
 			if( jsl.dom.constructors[sztag] ) { // do we have a specific constructor
-				rc = jsl.dom.constructors[sztag]( obj );	
+				rc = jsl.dom.constructors[sztag]( obj );
 			}
 			else if( obj.tag ) {
-				rc = jsl.dom.createElement( obj.tag, {}, obj );	
+				rc = jsl.dom.createElement( obj.tag, {}, obj );
 			}
 			else {
 				dbg( "object has no tag" );
@@ -800,7 +800,7 @@ jsl.dom.add = function ( pnode, obj, beforeRef ) {
 			rc = obj.el;
 			addText = false;
 		}
-	
+
 		if( highlightId ) {
 			//console.log("highlightId: " + JSON.stringify(highlightId));
 			if( !window.highlightIds ) {
@@ -820,7 +820,7 @@ jsl.dom.add = function ( pnode, obj, beforeRef ) {
 				window.highlightIds[highlightId.id].el = rc;
 			}
 		}
-	
+
 		if( beforeRef ) {
 			pnode.insertBefore( rc, beforeRef );
 		}
@@ -889,164 +889,166 @@ jsl.dom.createElement = function ( tag, to, po ) {
 };
 
 jsl.dom.applyDefaultSettings = function ( dst, src ) {
-		var f;
-		for( f in src ) {
-			if( dst[f] === undefined ) {
-				dst[f] = src[f];
-			}
+	var f;
+	for( f in src ) {
+		if( dst[f] === undefined ) {
+			dst[f] = src[f];
 		}
+	}
 };
 
 jsl.dom.numericProperties = {
-			width:true,
-			minWidth:true,
-			maxWidth:true,
-			height:true,
-			minHeight:true,
-			maxHeight:true,
-			left:true,
-			top:true,
-			right:true,
-			bottom:true,
-			fontSize:true,
-			paddingLeft:true,
-			paddingTop:true,
-			paddingRight:true,
-			paddingBottom:true,
-			marginLeft:true,
-			marginTop:true,
-			marginRight:true,
-			marginBottom:true,
-			borderRadius:true, mozBorderRadius:true, webkitBorderRadius:true,
-			borderWidth:true
+	width:true,
+	minWidth:true,
+	maxWidth:true,
+	height:true,
+	minHeight:true,
+	maxHeight:true,
+	left:true,
+	top:true,
+	right:true,
+	bottom:true,
+	fontSize:true,
+	paddingLeft:true,
+	paddingTop:true,
+	paddingRight:true,
+	paddingBottom:true,
+	marginLeft:true,
+	marginTop:true,
+	marginRight:true,
+	marginBottom:true,
+	borderRadius:true, mozBorderRadius:true, webkitBorderRadius:true,
+	borderWidth:true
 };
 
 jsl.dom.applyProperties = function ( rc, po ) { // dst, src
 
-		var positionProperties = {
-			left:true,
-			top:true,
-			right:true,
-			bottom:true
+	var positionProperties = {
+		left:true,
+		top:true,
+		right:true,
+		bottom:true
+	};
+
+	var f, lf, tpo;
+	var func = function (pf) {
+		var lastClick = 0;
+		return function (e) {
+			//thought .. e.stopPropagation();
+				var now = (new Date()).getTime();
+			if( now - lastClick > 800 ) {
+				lastClick = now;
+			tpo[pf](e);
+			}
 		};
-					
-		var f, lf, tpo;
-		var func = function (pf) {
-			var lastClick = 0;
-			return function (e) {
-				//thought .. e.stopPropagation();
-					var now = (new Date()).getTime();
-				if( now - lastClick > 800 ) {
-					lastClick = now;
-		 		tpo[pf](e);
+	};
+
+	if( po.ondoubleclick ) {
+		var dc = po.ondoubleclick;
+		var sc = po.onclick;
+		delete po.ondoubleclick;
+		delete po.onclick;
+		rc.onclick = (function () {
+			var last = 0;
+			var clicks = 0;
+			var cancelled = false;
+			return function () {
+				var now = (new Date()).getTime();
+				if( now - last > 500 ) {
+					last = 0;
+				}
+				if( last == 0 ) {
+					clicks++;
+					window.setTimeout(function () {
+						if( !cancelled && sc ) {
+							sc();
+						}
+					}, 500);
+					last = now;
+					return;
+				}
+				last = now;
+				clicks++;
+				if( clicks == 2 && dc ) {
+					cancelled = true;
+					clicks = 0;
+					last = 0;
+					dc();
+					window.setTimeout(function () {
+						cancelled = false;
+					}, 500);
 				}
 			};
-		};
+		})();
+	}
 
-		if( po.ondoubleclick ) {
-			var dc = po.ondoubleclick;
-			var sc = po.onclick;
-			delete po.ondoubleclick;
-			delete po.onclick;
-			rc.onclick = (function () {
-				var last = 0;
-				var clicks = 0;
-				var cancelled = false;
-				return function () {
-					var now = (new Date()).getTime();
-					if( now - last > 500 ) {
-						last = 0;
+	for( f in po ) {
+		if( f == "style" ) {
+			if( !rc.style ) {
+				rc.style = {};
+			}
+			var s, sobj = po["style"];
+			for( s in sobj ) {
+				if( jsl.dom.numericProperties[s] && typeof sobj[s] === 'number' ) {
+					rc.style[s] = sobj[s] + 'px';
+				}
+				else {
+					rc.style[s] = sobj[s];
+				}
+
+				if( positionProperties[s] ) {
+					if( po.style.position === undefined ) {
+						rc.style.position = 'absolute';
 					}
-					if( last == 0 ) {
-						clicks++;
-						window.setTimeout(function () {
-							if( !cancelled && sc ) {
-								sc();
-							}
-						}, 500);
-						last = now;
-						return;
-					}
-					last = now;
-					clicks++;
-					if( clicks == 2 && dc ) {
-						cancelled = true;
-						clicks = 0;
-						last = 0;
-						dc();
-						window.setTimeout(function () {
-							cancelled = false;	
-						}, 500);
-					}	
-				};
-			})();
+				}
+			}
 		}
-
-		for( f in po ) {
-			if( f == "style" ) {
-				if( !rc.style ) {
-					rc.style = {};
-				}
-				var s, sobj = po["style"];
-				for( s in sobj ) {
-					if( jsl.dom.numericProperties[s] && typeof sobj[s] === 'number' ) {
-						rc.style[s] = sobj[s] + 'px';
-					}
-					else {
-						rc.style[s] = sobj[s];
-					}
-
-					if( positionProperties[s] ) {
-						if( po.style.position === undefined ) {
-							rc.style.position = 'absolute';
-						}
-					}
-				}
-			}
-			else if( f === "text" || f === "buttons" || f === "button" ) {
-				//this.mydbg( "skipping " + f );
-			}
-			else if( f.substring(0,2) == "on" && typeof po[f] === "function" ) {
-				tpo = po;
-				rc[f] = func( f );
-			}
-			else if( f.indexOf( "Helper" ) != -1 ||
-				 f == "tag" || f == "children" || f == "options" || f == "el" ) {
-				//this.mydbg( "skipping " + f );
-			}
-			else if( typeof po[f] == "function" ) {
-				//this.mydbg( "skipping function " + f );
-			}
-			else if( typeof po[f] == "object" ) {
-				//this.mydbg( "skipping object " + f );
-			}
+		else if( f === "text" || f === "buttons" || f === "button" ) {
+			//this.mydbg( "skipping " + f );
+		}
+		else if( f.substring(0,2) == "on" && typeof po[f] === "function" ) {
+			tpo = po;
+			rc[f] = func( f );
+		}
+		else if( f.indexOf( "Helper" ) != -1 ||
+			 f == "tag" || f == "children" || f == "options" || f == "el" ) {
+			//this.mydbg( "skipping " + f );
+		}
+		else if( typeof po[f] == "function" ) {
+			//this.mydbg( "skipping function " + f );
+		}
+		else if( typeof po[f] == "object" ) {
+			//this.mydbg( "skipping object " + f );
+		}
 /** TODO ?
-			else if( this.utilIsArray( po[f] ) ) {
-				//this.mydbg( "skipping array " + f );
-			}
-**/
-			else if( f === "title" ) {
-				var t = jsl.cw(po[f]);
-				if( jsl.language === "sp" && t === po[f] ) {
-					console.log("TRANSLATE: " + t);
-				}
-				rc.setAttribute(f, t);
-			}
-			else if( f === "checked" ) {
-				rc.checked = po[f];
-			}
-			else {
-				/*if( typeof po[f] == "object" ) {
-					//for( lf in po[f] ) { this.mydbg( lf + " = " + po[f][lf] ); }
-				}*/
-				//this.dbg( "calling set attribute: " + f + " = " + po[f] );
-				rc.setAttribute( f, po[f] );
-			}
+		else if( this.utilIsArray( po[f] ) ) {
+			//this.mydbg( "skipping array " + f );
 		}
-		return rc;
+**/
+		else if( f === "title" ) {
+			var t = jsl.cw(po[f]);
+			if( jsl.language === "sp" && t === po[f] ) {
+				console.log("TRANSLATE: " + t);
+			}
+			rc.setAttribute(f, t);
+		}
+		else if( f === "checked" ) {
+			rc.checked = po[f];
+		}
+		else {
+			/*if( typeof po[f] == "object" ) {
+				//for( lf in po[f] ) { this.mydbg( lf + " = " + po[f][lf] ); }
+			}*/
+			//this.dbg( "calling set attribute: " + f + " = " + po[f] );
+			const atr = f == "className" ? "class" : f;
+			rc.setAttribute( atr, po[f] );
+		}
+	}
+	return rc;
 };
 
 jsl.dom.addOptionsToSelect = function (sel,ar) {
+
 	var textField, idField, i;
 
 	var createOption = function (text, id) {
