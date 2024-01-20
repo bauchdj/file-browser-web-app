@@ -8,9 +8,9 @@ jsl.dom.add(parentNode, {
 	id: "uniqueID", // ID of the new element
 	className: "myClass", // Class name for the element
 	style: { // Inline styles for the element
-		    color: "red",
-		    fontSize: "14px"
-		    // ... other styles
+		color: "red",
+		fontSize: "14px"
+		// ... other styles
 	},
 	text: "Hello, World!", // Text content for the element
 	children: [ // Nested children elements
@@ -269,7 +269,7 @@ jsl.dom.add( div.el, ... some object to add inside of the div .. );
 
 There are whole books on TDD, but my opinion is simply this ... I cannot think of a bug that was still there after I tested/fixed the code that had the bug -- **key being tested**.
 
-Bugs are born in untested code -- either the code itself was never tested or it was never tested in its current "environment".  By environment, I mean supporting code that the buggy codes relies on or injects into. 
+Bugs are born in untested code -- either the code itself was never tested or it was never tested in its current "environment". By environment, I mean supporting code that the buggy codes relies on or injects into. 
 
 I would say that 99% of bugs I have created were due to unintended consequences -- I changed some code to effect a new feature and as a result something I didn’t mean to change broke. 
 
