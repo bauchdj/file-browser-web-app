@@ -22,6 +22,7 @@
 	"bmp": "fa-file-image",
 	"tiff": "fa-file-image",
 	"svg": "fa-file-image",
+	"ico": "fa-file-image",
 	"heif": "fa-file-image",
 	"heic": "fa-file-image",
 	"mp3": "fa-file-audio",
