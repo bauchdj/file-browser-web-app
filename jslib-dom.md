@@ -7,11 +7,11 @@ jsl.dom.add(parentNode, {
 	tag: "div", // HTML tag to be created
 	id: "uniqueID", // ID of the new element
 	className: "myClass", // Class name for the element
-	  style: { // Inline styles for the element
+	style: { // Inline styles for the element
 		    color: "red",
 		    fontSize: "14px"
 		    // ... other styles
-	  },
+	},
 	text: "Hello, World!", // Text content for the element
 	children: [ // Nested children elements
 		{
